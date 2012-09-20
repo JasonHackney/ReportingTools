@@ -1,0 +1,96 @@
+miniplot <- function (x, data = NULL, panel = panel.boxandstrip, 
+    scales=list(draw=FALSE), xlab=NULL, ylab=NULL, horizontal=TRUE, 
+    par.settings = list(), ...)
+{
+    par.settings$layout.heights <- list(
+        top.padding = 0,
+        main.key.padding = 0,
+        key.axis.padding = 0,
+        axis.xlab.padding = 0,
+        xlab.key.padding = 0,
+        key.sub.padding = 0,
+        bottom.padding = 0)
+    par.settings$layout.widths <- list(
+        left.padding = 0,
+        key.ylab.padding = 0,
+        ylab.axis.padding = 0,
+        axis.key.padding = 0,
+        right.padding = 0)
+    
+    args <- list(...)
+    do.call("stripplot", c(list(x=x, data=data, panel = panel, 
+            par.settings = par.settings, scales = scales, xlab = xlab, 
+            ylab = ylab, horizontal=horizontal), args))
+}
+
+panel.boxandstrip <- function (x, y, jitter.data = T, do.out = FALSE, ...) 
+{
+    panel.bwplot(x, y, pch = "|", cex = 5, do.out = do.out, ...)
+    panel.stripplot(x, y, jitter.data = jitter.data, ...)
+}
+
+reporting.theme <- function()
+{
+    op <- standard.theme()
+    rib.palette <- colorRampPalette(c("darkblue", "ivory", "darkred"))
+    op$background$col <- "transparent"
+    op$regions$col <- rib.palette(128)
+    op$plot.symbol$col <- "darkgrey"
+    op$plot.symbol$pch <- 21
+    op$plot.symbol$fill <- "#33333355"
+    op$plot.line$col <- "black"
+    op$superpose.symbol$col <- c("#7FC97F", "#BEAED4", "#FDC086", "#FFFF99", 
+        "#386CB0", "#F0027F", "#BF5B17", "#666666")
+    op$superpose.symbol$pch <- 21
+    op$superpose.symbol$fill <- c("#7FC97F55", "#BEAED455", "#FDC08655", 
+        "#FFFF9955", "#386CB055", "#F0027F55", "#BF5B1755", "#66666655")
+    op$superpose.polygon$col <- c("#7FC97F", "#BEAED4", "#FDC086", "#FFFF99", 
+        "#386CB0", "#F0027F", "#BF5B17", "#666666")
+    op$superpose.line$col <- c("#7FC97F", "#BEAED4", "#FDC086", "#FFFF99", 
+        "#386CB0", "#F0027F", "#BF5B17", "#666666")
+    op$strip.background$col <- "white"
+    op$box.umbrella$col <- "black"
+    op$box.umbrella$lty <- 1
+    op$box.rectangle$col <- "black"
+    op$box.dot$pch <- "|"
+    op$dot.symbol$col <- "black"
+    op$plot.polygon$col <- "lightgrey"
+    invisible(op)
+}
+
+
+plotGOResults<-function(hgGO,pvalueCutoff=0.01,categorySize=10,reportDir){
+    hgGOdf<-summary(hgGO, pvalue=pvalueCutoff)
+    GOids<-hgGOdf[,1]
+    g2<-inducedTermGraph(hgGO,id=GOids, children=FALSE, parents=TRUE)
+    svg(filename=file.path(reportDir,"GOPlot.svg"), height=25, width=25)
+    plotGOTermGraph(g2,  hgGO,node.colors=c(sig="peachpuff", not="white"), add.counts=TRUE, max.nchar=20, node.shape="ellipse")
+    dev.off()
+}
+
+
+hyperGPlot<-function(nInGroup1,nInGroup2,nInBothGroups, ontologyNum, ontologyName){
+	totalElements<-nInGroup1+nInGroup2+nInBothGroups
+	x1<-nInGroup1/totalElements
+	x2<-nInBothGroups/totalElements+x1
+
+	plot(c(0,1), c(0,1.35), type="n", xlab="", ylab="", xaxt='n', yaxt='n',ann=FALSE)
+	rect(xleft=0, ybottom=0,xright=x1,ytop=1, col="white")  
+	rect(xleft=x1, ybottom=0,xright=x2,ytop=1, col="mediumvioletred") 
+	rect(xleft=x2, ybottom=0,xright=1,ytop=1, col="gray65")
+	text(x1/2,1/2, as.character(nInGroup1), font=2)
+	text((x1+x2)/2,1/2, as.character(nInBothGroups), font=2, col="white")
+	text((1+x2)/2,1/2, as.character(nInGroup2), font=2)
+	if (nchar(ontologyName)>65){
+		ontologyNameSplit<-unlist(strsplit(ontologyName, " "))
+		name1<-paste(ontologyNameSplit[1:5], collapse=" ")
+		name2<-paste(ontologyNameSplit[6:length(ontologyNameSplit)], collapse=" ")
+		ontologyName<-paste(name1, name2, sep="\n")
+	}
+	rect(xleft=0, ybottom=1.22,xright=.05,ytop=1.27, col="white")
+	text(.055,1.245, paste0("Genes in ", ontologyNum, ",\n", ontologyName), col="black", pos=4)
+	rect(xleft=0, ybottom=1.12,xright=.05,ytop=1.17, col="mediumvioletred")
+	text(.055,1.145, "Overlap ", col="black",pos=4)
+	rect(xleft=0, ybottom=1.02,xright=.05,ytop=1.07, col="gray65")
+	text(.055,1.045, "Selected Genes ", col="black", pos=4)	
+}

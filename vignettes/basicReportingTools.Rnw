@@ -1,0 +1,152 @@
+% \VignetteIndexEntry{ReportingTools basics}
+% \VignetteDepends{}
+% \VignetteKeywords{reprise}
+% \VignettePackage{ReportingTools}
+\documentclass[10pt]{article}
+
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage{Sweave}
+
+\textwidth=6.5in
+\textheight=8.5in
+\oddsidemargin=-.1in
+\evensidemargin=-.1in
+\headheight=-.3in
+
+\title{Basics of ReportingTools}
+\author{Jason A. Hackney and Jessica L. Larson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Frequently, when performing an analysis, it is helpful to be able to share these results in several formats at once: as HTML tables, csv files or even as R data packages. \verb@ReportingTools@ attempts to make this as painless as possible. At its heart, \verb@ReportingTools@ is nothing more than a set of S4 classes that describe what kinds of reports to generate, and a set of S4 methods that describe how to publish something in that format.  In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results; for more details, please refer to the corresponding vignettes.
+
+\section{Basics of Reporting}
+
+The easiest type of report to generate is a csv file. This is done using the \verb@CSVFile@ class and the publish method. To start we'll create a \verb@data.frame@ that we'll use throughout the vignette.
+
+<<makeBasicDataFrame>>=
+
+my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
+                    RPKM = c(4, 5, 3, 100, 75),
+                    DE = c("Yes", "Yes", "No", "No", "No"))
+my.df
+@
+
+Next, we'll create the \verb@CSVFile@ object to which we'll publish our results.
+
+<<makeCSVFile, eval=FALSE>>=
+library(ReportingTools)
+
+csvFile <- CSVFile(shortName = "my_csv_file", 
+    reportDirectory = "./reports/")
+publish(my.df, csvFile)
+@
+
+Obviously, this isn't much less work than just calling \verb@write.csv@ on the \verb@data.frame@ itself, but this is really just a toy example. We can also publish the \tt data.frame \rm as an HTML report.
+
+<<basicHTMLReport, eval=FALSE>>=
+htmlRep <- HTMLReport(shortName = "my_html_file",
+    reportDirectory = "./reports/")
+publish(my.df, htmlRep)
+finish(htmlRep)
+@
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html1.png}
+\caption{Resulting page created by \tt publish \rm for \tt my.df\rm.}
+\end{figure}
+
+
+It's necessary to call \tt finish \rm on the \tt HTMLReport\rm, to allow the contents to be written to the file. \\
+
+It's also possible to publish the same object in two separate formats at once. 
+
+<<reportingTwoTypes, eval=FALSE>>=
+csvFile2 <- CSVFile(shortName = "my_csv_file2", 
+    reportDirectory = "./reports/")
+htmlRep2 <- HTMLReport(shortName = 'my_html_file2',
+    reportDirectory = "./reports/")
+publish(my.df, list(csvFile2, htmlRep2))
+finish(htmlRep2)
+@
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html2.png}
+\caption{Resulting page created by calling \tt publish \rm for \tt my.df \rm to \tt htmlRep2\rm.}
+\end{figure}
+
+The same few lines of code could be used to publish, for example, the results of a \verb@limma@ differential expression analysis, or the results of a Gene Ontology analysis, all without worrying about coercing the objects to a tabular format ourselves.  For more information, see the microarray and RNA-seq vignettes.
+
+
+\section{Adding plots or text to a report}
+
+To add additional text or plots to a report, simply open the report with \tt HTMLReport \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
+
+
+<<AddTextPlot, eval=FALSE>>=
+png(filename="reports/barplot.png")
+barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID", 
+	ylab="RPKM", main="Bar plot of RPKMs", col="blue")
+dev.off()
+
+library(hwriter)
+htmlRep3 <- HTMLReport(shortName = "my_html_file3",
+    reportDirectory = "./reports/")
+hwrite("Bar chart of results", p=page(htmlRep3), heading=2)
+himg<-hwriteImage("barplot.png", link="barplot.png")
+hwrite(himg, page(htmlRep3), br=TRUE)
+hwrite("Results Table", p=page(htmlRep3), heading=2)
+publish(my.df, htmlRep3)
+finish(htmlRep3)
+@
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html3.png}
+\caption{Resulting page created after adding additional figures and text.}
+\end{figure}
+
+
+
+\section{Styled Tables}
+
+If you have a preferred table style, defined in css, it's easy to style your tables consistently using the \tt link.css \rm parameter when creating an \tt HTMLReport\rm.  Below we use a simpler table format.
+
+<<styledCss, eval=FALSE>>=
+css.file <- system.file('extdata/table.css', package='ReportingTools')
+htmlRep4 <- HTMLReport(shortName = 'my_html_file4',
+    reportDirectory = "./reports/", link.css=css.file)
+publish(my.df, htmlRep4)
+finish(htmlRep4)
+@
+
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html4.png}
+\caption{Resulting page created by calling \tt publish \rm for \tt my.df \rm with specific styling.}
+\end{figure}
+
+\section{More advanced reporting}
+
+For publishing experimental results, including how to publish a \verb@limma@-based linear model and an \verb@edgeR@ RNA-seq analysis, please see the relevant vignette.  Example output is shown below.
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray1.png}
+\caption{Resulting page created for analysis of a microarray study with \tt limma@\rm.}
+\end{figure}
+
+\end{document}

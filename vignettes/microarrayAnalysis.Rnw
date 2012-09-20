@@ -1,0 +1,264 @@
+% \VignetteIndexEntry{Reporting on microarray differential expression}
+% \VignetteDepends{}
+% \VignetteKeywords{reprise}
+% \VignettePackage{ReportingTools}
+\documentclass[10pt]{article}
+
+\usepackage{times}
+\usepackage{hyperref}
+\usepackage{Sweave}
+
+\textwidth=6.5in
+\textheight=8.5in
+\oddsidemargin=-.1in
+\evensidemargin=-.1in
+\headheight=-.3in
+
+\title{Using ReportingTools in an Analysis of Microarray Data}
+\author{Jason A. Hackney and Jessica L. Larson}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{Introduction}
+The \tt ReportingTools \rm package is particularly useful in displaying results from a microarray experiment.  In this vignette we show how to display results from differential gene expression, Gene Ontology (GO), protein families (PFAM) and gene set enrichment analyses.  In the final section, we create an index page where the user can easily access any of these results. 
+
+\section{Differential expression analysis using limma}
+For this vignette we will examine the \tt ALL \rm dataset.  First we load our \tt ReportingTools \rm package and the data.  This dataset is from a clinical trial in acute lymphoblastic leukemia (ALL) and  is available from Bioconductor.  
+<<load ALL data, eval=FALSE>>=
+library(ReportingTools)
+library(ALL)
+library(hgu95av2.db)
+library(genefilter)
+
+data(ALL)
+@
+
+We will compare the gene expression between the \tt BCR/ABL \rm and \tt NEG \rm samples. We use \tt featureFilter \rm to remove most of the unexpressed genes.
+
+<<filter ALL data, eval=FALSE>>=
+ALL <- ALL[, ALL$mol.biol %in% c('NEG','BCR/ABL') &
+    !is.na(ALL$sex)]
+ALL$mol.biol <- factor(ALL$mol.biol, 
+    levels = c('NEG', 'BCR/ABL'))
+ALL <- featureFilter(ALL)
+@
+
+Next we use \tt limma \rm to find statistical evidence of differential genes.
+
+<<limma linear model, eval=FALSE>>=
+library(limma)
+
+model <- model.matrix(~mol.biol+sex, ALL)
+fit <- eBayes(lmFit(ALL, model))
+@
+
+With the \tt limma \rm output we can make our differential analysis report.  To publish \tt MArrayLM \rm objects, we supply the \tt eSet \rm and \tt factor \rm used in our analysis.  
+
+<<making the DE report, eval=FALSE>>=
+library(lattice)
+rep.theme <- reporting.theme()
+lattice.options(default.theme = rep.theme)
+
+deReport <- HTMLReport(shortName = 'de_analysis',
+    title = 'Analysis of BCR/ABL translocation differential expression',
+    reportDirectory = "./reports/",
+    baseUrl = "")
+publish(fit, deReport, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
+finish(deReport)
+@
+
+The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the data.
+
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray1.png}
+\caption{Resulting page created by \tt publish \rm for \tt fit \rm.}
+\end{figure}
+
+
+
+\section{GO analysis using GOstats}
+In this section, we show how to use \tt ReportingTools \rm to \tt publish \rm a GO analysis to an html file.  First we select the top 100 differential genes and then run the \tt hyperGTest \rm from the \tt GOstats \rm package.
+
+<<Do GO analysis, eval=FALSE>>=
+library(GOstats)
+tt <- topTable(fit, coef = 2, n = 100)
+selectedIDs <- unlist(mget(tt$ID, hgu95av2ENTREZID))
+universeIDs <- unlist(mget(featureNames(ALL), hgu95av2ENTREZID))
+goParams <- new("GOHyperGParams", 
+    geneIds = selectedIDs, 
+    universeGeneIds = universeIDs, 
+    annotation = annotation(ALL), 
+    ontology = "BP", 
+    pvalueCutoff = 0.01,
+    conditional = TRUE, 
+    testDirection = "over")
+goResults <- hyperGTest(goParams)
+@
+
+With these results, we can then make the GO report.  We must supply \tt publish \rm with the genes of interest and the species annotation for this dataset.  The default p-value cutoff is 0.01 and the minimum category size is 10 genes.
+
+<<make the GO report, eval=FALSE>>=
+goReport <- HTMLReport(shortName = 'go_analysis',
+    title = 'GO analysis of BCR/ABL translocation',
+    reportDirectory = "./reports/",
+    baseUrl = "")
+publish(goResults, goReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
+finish(goReport)
+@
+The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the overlap for each category.
+
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray2.png}
+\caption{Resulting page created by \tt publish \rm for \tt goResults\rm.}
+\end{figure}
+
+
+\section{PFAM analysis}
+In this section, we show how to use \tt ReportingTools \rm to write a table of PFAM analysis results to an html file.  First we run the \tt hyperGTest \rm from the \tt Category \rm package.
+
+<<Do PFAM analysis, eval=FALSE>>=
+library(Category)
+pfamParams <- new("PFAMHyperGParams", 
+    geneIds = selectedIDs, 
+    universeGeneIds = universeIDs, 
+    annotation = annotation(ALL),  
+    pvalueCutoff = 0.01,
+    testDirection = "over")
+PFAMResults <- hyperGTest(pfamParams)
+@
+
+Then we make the PFAM report.  Again we supply \tt publish \rm with the genes of interest and the species annotation for this dataset.  We set the minimum category size to 3 genes.
+
+<<make the PFAM report, eval=FALSE>>=
+PFAMReport <- HTMLReport(shortName = 'pfam_analysis',
+    title = 'PFAM analysis of BCR/ABL translocation',
+    reportDirectory = "./reports/",
+    baseUrl = "")
+publish(PFAMResults, PFAMReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3)
+finish(PFAMReport)
+@
+
+The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the overlap for each category.
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray3.png}
+\caption{Resulting page created by \tt publish \rm for \tt PFAMResults\rm.}
+\end{figure}
+
+
+\section{GSEA analysis}
+In this section we show how to use \tt publish \rm to display \tt GeneSetCollection \rm objects and their corresponding gene set enrichment statistics.  For this example, we will randomly select our gene sets and create our collection.
+
+<<Make Gene Sets, eval=FALSE>>=
+library(GSEAlm)
+library(GSEABase)
+mapped_genes <- mappedkeys(org.Hs.egSYMBOL)
+eidsAndSymbols <- as.list(org.Hs.egSYMBOL[mapped_genes])
+geneEids<-names(eidsAndSymbols)
+set.seed(123)
+set1<-GeneSet(geneIds=sample(geneEids,100, replace=FALSE), setName="set1", 
+	shortDescription="This is set1")
+set2<-GeneSet(geneIds=sample(geneEids,10, replace=FALSE), setName="set2",  
+	shortDescription="This is set2")
+set3<-GeneSet(geneIds=sample(geneEids,37, replace=FALSE), setName="set3",  
+	shortDescription="This is set3")
+set4<-GeneSet(geneIds=sample(geneEids,300, replace=FALSE), setName="set4", 
+	shortDescription="This is set4")
+geneSets<-GeneSetCollection(c(set1,set2,set3,set4))
+@
+
+We can now make a very simple \tt GeneSetCollection \rm html table with \tt ReportingTools \rm.
+<<Make Simple Gene Set Table, eval=FALSE>>=
+geneSetsReport <- HTMLReport(shortName = "gene_sets",
+	title = "Gene Sets", 
+	reportDirectory = "./reports",
+	baseUrl = "")
+publish(geneSets, geneSetsReport, annotation.db="org.Hs.eg")
+finish(geneSetsReport)
+@
+
+The resulting output is displayed on an .html page and includes the gene sets and links to pages listing the genes within the corresponding set.
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray4.png}
+\caption{Resulting page created by \tt publish \rm for \tt geneSets\rm.}
+\end{figure}
+
+
+Often, investigators would like more information about the enrichment of certain gene sets.  Thus, we will proceed with gene set enrichment analysis (GSEA).  To begin, we determine the overlap between our sets and our genes of interest by creating an incidence matrix.
+
+<<Get incidence matrix , eval=FALSE>>=
+mat <- matrix(data=0, ncol=length(universeIDs),nrow=length(geneSets))
+for(i in 1:length(geneSets)){
+	geneIdEntrez<-unlist(geneIds(geneSets[[i]]))
+	mat[i,match(geneIdEntrez, universeIDs)] <- 1
+}
+colnames(mat) <- universeIDs
+rownames(mat) <- sapply(geneSets, function(x) x@setName)
+@
+
+Now we can run the GSEA and obtain set-specific statistics and p-values.
+
+<<Run GSEA, eval=FALSE>>=
+lm<-lmPerGene(ALL, ~mol.biol+sex, na.rm=TRUE)
+GSNorm<-GSNormalize(lm$tstat[2,], mat)
+#one-sided p-values
+pVals<-gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
+bestPval<-apply(pVals,1, min)
+@
+
+We can add these statistics to our report page.
+
+<<make the GSEA report, eval=FALSE>>=
+gseaReport <- HTMLReport(shortName = "gsea_analysis",
+	title = "GSEA analysis", 
+	reportDirectory = "./reports",
+	baseUrl = "")
+publish(geneSets, gseaReport, annotation.db="org.Hs.eg", setStats=GSNorm, setPValues=2*bestPval)
+finish(gseaReport)
+@
+
+The resulting output is displayed on an .html page and includes our set statistics and p-values.  Links to set-specific pages are also created. 
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray5.png}
+\caption{Resulting updated page created by \tt publish \rm for \tt geneSets \rm after we include the set statistics and p-values.}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray6.png}
+\caption{The set-specific page.}
+\end{figure}
+
+\section{Putting it all together}
+We now make an index page to put all the output together.
+<<make the index page, eval=FALSE>>=
+indexPage <- HTMLReport(shortName = "index",
+    title = "Analysis of ALL Gene Expression",
+    reportDirectory = "./reports",
+    baseUrl = "")
+publish(c(deReport, goReport, PFAMReport, gseaReport), indexPage)
+finish(indexPage)
+@
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray7.png}
+\caption{The page created from calling \tt publish \rm on all of our previous pages.}
+\end{figure}
+
+\end{document}

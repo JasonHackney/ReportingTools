@@ -1,0 +1,313 @@
+/*
+ * Colour dictionary:
+ *
+ * Table control elements:   #6a6a6a with text color: #ffffff;
+ * Header cells:             #AAAAAA
+ * Body header cells:        #91c5d4
+ * Body content cells:       #FFFFFF
+ * Body content cells (alt): #bcd9e1
+ * Footer header:            #b0cc7f
+ * Footer content:           #d7e1c5
+ */
+
+
+
+/*
+ * Page setup styles
+ */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-right:50px;
+    margin-left:50px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+h1, h2, h3 { 
+    margin-bottom: 5px; 
+    padding-bottom: 0;     
+    font-weight: bold;
+}
+h1 {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin: 1em 0;
+}
+.page-header {    
+	font-size: 20pt;
+	font-weight: bold;
+	color: #005166;       
+	padding: 0px 0px 10px 2px;
+}
+#container {
+    display: table;
+}
+
+
+
+/*
+ * DataTables framework
+ */
+div.dataTables_wrapper {
+	background: #6a6a6a;
+        color: #ffffff;
+        font-size: 9pt;
+	font-weight: bold;
+}
+div.dataTables_length {
+	float: right;
+}
+div.dataTables_filter {
+	float: left;
+}
+div.dataTables_info {
+	padding: 9px 6px 6px 6px;
+	float: left;
+}
+div.dataTables_paginate {
+	float: right;
+}
+div.dataTables_length,
+div.dataTables_filter,
+div.dataTables_paginate {
+	padding: 6px;
+}
+/* Self clearing - http://www.webtoolkit.info/css-clearfix.html */
+.dataTables_wrapper:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+html[xmlns] .dataTables_wrapper {
+	display: block;
+}
+* html .dataTables_wrapper {
+	height: 1%;
+}
+
+
+
+/*
+ * Table styles
+ */
+table.pretty {
+    	width: 100%; 
+	clear: both;
+}
+table.pretty td {
+	padding: 5px;
+	border: 1px solid #fff;
+}
+table.pretty tbody tr.odd td { 
+	background: #EFEFEE;
+}
+table.pretty tbody tr.even td { 
+	background: #FFFFFF;
+}
+
+
+
+/* 
+ * Header cells
+ */
+/* style of the content in the top header row 
+   The column headings are padded to allow room for
+   the icons (two header rows are requried by js
+   sorting library) */
+table.pretty th.top-header-row { 
+ 	background: #AAAAAA; 
+ 	font-size: 0pt; 
+ 	padding: 4px; 
+} 
+table.pretty th.bottom-header-row {
+	text-align: center;
+	background: #AAAAAA;
+	font-size: 9pt;
+	font-weight: bold;
+        padding-left: 20px !important;
+        color: white;
+	padding: 10px;
+	border: 1px solid #fff;
+}
+/* Body cells */
+table.pretty tbody th {
+	text-align: left;
+  	background: #91c5d4;
+	font-size: 10pt;
+	color: #000;
+}	
+table.pretty tbody td {
+	text-align: center;
+	background: #ffffff;
+	font-size: 10pt;
+        font-weight: normal;
+        text-align: left;
+	color: #000;
+}
+/* Footer cells-- a footer is only included because
+   it is needed for the sorting.  The styling here
+   makes that text invisible */	
+div foot {
+    font-size:0;
+}
+
+
+	
+/*
+ * Filtering: from-to box styling
+ */
+/* from-to box: style of the text labeling the boxes */
+table.pretty th.filter-num{
+    background:#6A6A6A;
+    font-weight: bold;
+    border: 1px solid white;
+    font-size:10pt;
+
+}
+/* from-to box: size of the input boxes */
+input.number_range_filter {
+    width:25px;
+}
+/* styling of input text */
+table.pretty input {
+	text-align: center;
+        color: #000000;
+	font-size:8pt;
+        font-weight: bold;
+}
+
+
+
+/*
+ * Pagination
+ */
+a.paginate_button,
+a.paginate_active {
+	display: inline-block;
+	background: #777777;
+	padding: 2px 6px;
+	margin-left: 2px;
+	cursor: pointer;
+}
+a.paginate_active {
+	background: transparent;
+	border: 1px solid black;
+}
+a.paginate_button_disabled {
+	color: #505050;
+}
+.paging_full_numbers a:active {
+	outline: none
+}
+.paging_full_numbers a:hover {
+	text-decoration: none;
+}
+div.dataTables_paginate span>a  {
+	width: 15px;
+	text-align: center;
+}
+
+
+/*
+ * Sorting
+ */
+table.pretty thead th.sorting_asc {
+        background: #6d94b0;
+	background-image:url("images/sort_asc.png");
+	background-position:5px;
+	background-repeat:no-repeat;
+}
+table.pretty thead th.sorting_desc {
+        background: #6d94b0;
+	background-image:url("images/sort_desc.png");
+	background-position:5px;
+	background-repeat:no-repeat;
+}
+table.pretty thead th.sorting {
+        background: #AAAAAA;
+	background-image:url("images/sort_both.png");
+	background-position:5px;
+	background-repeat:no-repeat;
+}
+table.pretty tbody tr.odd td.sorting_1 {
+   background: #Dfeaf2;
+}
+table.pretty tbody tr.odd td.sorting_2 {
+	background: #Dfeaf2;
+}
+
+table.pretty tbody tr.odd td.sorting_3 {
+	background: #Dfeaf2;
+}
+table.pretty tbody tr.even td.sorting_1 {
+   background: #ffffff;
+}
+table.pretty tbody tr.even td.sorting_2 {
+    background: #ffffff;
+}
+table.pretty tbody tr.even td.sorting_3 {
+    background: #ffffff;
+}
+a:link {
+	color: #069;
+	text-decoration: none;
+}
+a:active {
+	color: #0CF;
+}
+a:visited {
+	color: #063;
+	text-decoration: none;
+}
+a:hover {
+	color: #09C;
+	text-decoration: underline;
+}
+
+
+
+/* Not implemented in this version of ReportingTools,
+ * but the use of this span class will allow the use of css 
+ * for tooltips (hover text on mouseover)
+ */ 
+table.pretty span.namewrap {
+    display: inline-block;
+    width: 200px;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;	/* required for Opera */
+    -ms-text-overflow: ellipsis;	/* required for IE8, allegedly */
+    -moz-binding: url('ellipsis.xml#ellipsis');
+    white-space: nowrap;
+    overflow: hidden;
+    display:block;
+}
+a.tooltip{position:relative;}
+a.tooltip:hover{z-index:25; text-decoration: none; color: #09C;cursor:default}
+a.tooltip:hover:active{color: #0CF;;pointer-events: none;cursor: default;}
+a.tooltip:link { color: black; text-decoration: none;}
+a.tooltip:visited {color: black; text-decoration: none; }
+a.tooltip span.hov{
+    display: none;
+    position: absolute; 
+    bottom: 0px;
+    left: 190px;
+    /* the line above is all that is necessary in a.tooltip 
+       span the rest is formatting */
+    padding-top:0px;
+    padding-bottom:0px;
+    padding-right:3px;
+    padding-left:2px;
+    border:1px solid Grey; 
+    width:300px;
+    color:#3C3C3C;
+    background-color:White;
+    border-radius: 3px 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
+}
+a.tooltip:hover span.hov{display:block;}

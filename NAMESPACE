@@ -1,0 +1,27 @@
+importClassesFrom(Category, HyperGResultBase, PFAMHyperGResult)
+importClassesFrom(GOstats, GOHyperGResult)
+importClassesFrom(Biobase, ExpressionSet)
+importClassesFrom(limma, MArrayLM)
+importClassesFrom(edgeR, DGEExact)
+importClassesFrom(GSEABase, GeneSetCollection)
+
+importFrom(annotate, getAnnMap)
+importFrom(limma, topTable)
+importFrom(edgeR, topTags)
+importFrom(GOstats, termGraphs, inducedTermGraph, plotGOTermGraph)
+
+importMethodsFrom(AnnotationDbi, summary, mget)
+importMethodsFrom(Category, summary, geneIdsByCategory, geneIdUniverse)
+importMethodsFrom(GOstats, summary)
+importMethodsFrom(GSEABase, geneIds)
+
+import(lattice)
+import(PFAM.db)
+
+importFrom(hwriter, openPage, hwrite, closePage, hwriteImage)
+
+export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme)
+exportMethods(publish, name, title, 'title<-', reportDirectory,
+    'reportDirectory<-', filename, path, url, page, 'page<-', finish,
+    show, basePath, baseUrl, dependencies, "dependencies<-")
+exportClasses(DataPackage, CSVFile, HTMLReport, BaseReport)

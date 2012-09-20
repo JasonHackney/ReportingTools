@@ -1,0 +1,17 @@
+Package: ReportingTools
+Title: Tools for making reports in various formats
+Version: 0.99.10
+Author: Jason A. Hackney, Melanie Huntley, Jessica L. Larson, Christina Chaivorapol, and Josh Kaminker
+Maintainer: Jason A. Hackney <hackney.jason@gene.com>
+Depends: methods
+Imports:
+        Biobase,hwriter,Category,GOstats,limma,lattice,AnnotationDbi,edgeR,
+        annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6)
+Suggests: RUnit
+Type: Package
+LazyLoad: yes
+License: Artistic-2.0
+Description: The ReportingTools software package enables users to easily display reports of analysis results generated from sources such as microarray and sequencing data.  The package allows users to create HTML pages that may be viewed on a web browser such as Safari, or in other formats readable by programs such as Excel.  Users can generate tables with sortable and filterable columns, make and display plots, and link table entries to other data sources such as NCBI or larger plots within the HTML page.  Using the package, users can also produce a table of contents page to link various reports together for a particular project that can be viewed in a web browser.
+ByteCompile: TRUE
+biocViews: Bioinformatics, Software, Visualization, Microarray, RNAseq,
+        GO

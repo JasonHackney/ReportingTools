@@ -1,6 +1,6 @@
 Package: ReportingTools
 Title: Tools for making reports in various formats
-Version: 1.0.0
+Version: 1.1.0
 Author: Jason A. Hackney, Melanie Huntley, Jessica L. Larson, Christina Chaivorapol, and Josh Kaminker
 Maintainer: Jason A. Hackney <hackney.jason@gene.com>
 Depends: methods

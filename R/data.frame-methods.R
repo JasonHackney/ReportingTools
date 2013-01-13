@@ -25,7 +25,8 @@ setMethod("publish",
         object          = "data.frame", 
         publicationType = "HTMLReport"
     ),
-    definition = function(object, publicationType, tableTitle="", ...){
+    definition = function(object, publicationType, tableTitle="",
+      filter.columns = sapply(object, is.numeric), ...){
         
         if(! validConnection(publicationType))
             stop("Cannot write to closed connection.")
@@ -35,18 +36,35 @@ setMethod("publish",
         
         if(ncol(object) == 0)
             stop("No columns available in data.")
+
+        filter.columns <-
+          IRanges:::normalizeSingleBracketSubscript(filter.columns, object)
         
-        col.classes <- list(
-            "numeric"   = "filter-num sort-num",
-            "integer"   = "filter-num sort-num",
-            "character" = "sort-string",
-            "logical"   = "sort-string",
-            "factor"    = "sort-string"
+        sort.class.map <- c(
+            "numeric"   = "sort-num",
+            "integer"   = "sort-num",
+            "Date"      = "sort-date"
         )
+        sort.classes <- sort.class.map[sapply(object, class)]
+        sort.classes[is.na(sort.classes)] <- "sort-string"
+        
+        filter.class.map <- c(
+            "numeric" = "filter-num",
+            "integer" = "filter-num",
+            "logical" = "filter-cat",
+            "factor"  = "filter-cat",
+            "Date"    = "filter-date")
+        filter.classes <- filter.class.map[sapply(object, class)]
+        filter.classes[is.na(filter.classes)] <- "filter-string"
+        sel.filter.classes <- filter.classes[filter.columns]
+        col.classes <- sort.classes
+        col.classes[filter.columns] <-
+          paste(sel.filter.classes, col.classes[filter.columns])
+        
         col.specs <- data.frame(
             column  = seq_along(object),
             label   = colnames(object),
-            class   = unlist(col.classes[sapply(object, class)]),
+            class   = col.classes,
             stringsAsFactors = FALSE
         )
         
@@ -106,7 +124,8 @@ setMethod("publish",
     titleHtml <- sub("</.*?>","</p>",titleHtml)
 
     ## mainHtml is the table html for the page
-    tableHtml <- hwrite(df, col.class=as.list(col.class), row.names=FALSE, table.id="example", table.class="pretty")
+    tableHtml <- hwrite(df, col.class=as.list(col.class), row.names=FALSE,
+                        table.class="dataTable pretty")
 
     ## make the top row of the table html a header row
     ## (sub only replaces on first match)

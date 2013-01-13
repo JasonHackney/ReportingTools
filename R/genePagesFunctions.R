@@ -1,4 +1,5 @@
-makeGeneListPages<-function(hg, reportDir,pvalueCutoff=0.01,categorySize=10,selectedIDs, annotation.db, GO, baseUrl = "", basePath=""){
+makeGeneListPages<-function(hg, reportDir, pvalueCutoff=0.01, categorySize=10, 
+    selectedIDs, annotation.db, GO, baseUrl = "", basePath=""){
     df<-summary(hg, pvalue=pvalueCutoff, categorySize)
         num<-dim(df)[1]
     if (length(num)<1) {stop("No ontologies match your criteria")}
@@ -36,8 +37,8 @@ makeGeneListPages<-function(hg, reportDir,pvalueCutoff=0.01,categorySize=10,sele
 }
 
 
-makeGeneListPagesGSC<-function(geneSets, reportDir, annotation.db,
-    baseUrl = "", basePath="")
+makeGeneListPagesGSC <- function(geneSets, reportDir, annotation.db,
+    geneStats = NULL, baseUrl = "", basePath="")
 {
 	ann.map <- NULL
 	if(!is.null(annotation.db)) {
@@ -67,6 +68,9 @@ makeGeneListPagesGSC<-function(geneSets, reportDir, annotation.db,
         		setTable <- data.frame(EntrezId=setTable$entrezLink, 
             		Symbol=setTable$symbol, GeneName=setTable$name)
             }
+        }
+        if(!is.null(geneStats)){
+            setTable$Gene.Statistic <- geneStats[entrez]
         }
         table_title <- paste("Genes in ", setName, " -- ", description , sep="")
         Report <- HTMLReport(shortName = setName, title = table_title, 

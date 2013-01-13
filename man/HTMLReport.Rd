@@ -4,15 +4,13 @@
 Creating and initializing an HTMLReport object
 }
 \description{
-This is the function one should use to instantiate an HTMLReport. It basically
+This is the function one shoud use to instantiate an HTMLReport. It basically
 creates the report in the appropriate place, creating directories if needed.
 Special care should be taken if non-default javacsript or css files are used, as
 detailed below.
 }
 \usage{
-HTMLReport(shortName, title = NULL, reportDirectory = ".",
-    baseUrl = "localhost", basePath = "", page = NULL,
-    link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
+HTMLReport(shortName, title = NULL, reportDirectory = ".", baseUrl = "localhost", basePath = "", page = NULL, link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
 }
 \arguments{
   \item{shortName}{

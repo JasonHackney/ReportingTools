@@ -7,6 +7,7 @@ importClassesFrom(GSEABase, GeneSetCollection)
 
 importFrom(annotate, getAnnMap)
 importFrom(limma, topTable)
+importFrom(grid, grid.newpage, viewport, pushViewport, upViewport, unit)
 importFrom(edgeR, topTags)
 importFrom(GOstats, termGraphs, inducedTermGraph, plotGOTermGraph)
 
@@ -20,7 +21,7 @@ import(PFAM.db)
 
 importFrom(hwriter, openPage, hwrite, closePage, hwriteImage)
 
-export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme)
+export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme.alternate, reporting.theme, makeDESeqDf)
 exportMethods(publish, name, title, 'title<-', reportDirectory,
     'reportDirectory<-', filename, path, url, page, 'page<-', finish,
     show, basePath, baseUrl, dependencies, "dependencies<-")

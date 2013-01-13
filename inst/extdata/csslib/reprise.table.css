@@ -178,7 +178,9 @@ table.pretty input {
         font-weight: bold;
 }
 
-
+table.pretty select {
+    font-size:8pt;
+}
 
 /*
  * Pagination
@@ -304,10 +306,8 @@ a.tooltip span.hov{
     color:#3C3C3C;
     background-color:White;
     border-radius: 3px 3px;
-    -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.1);
     -webkit-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
-    -moz-box-shadow: 3px 3px rgba(0, 0, 0, 0.1);
 }
 a.tooltip:hover span.hov{display:block;}

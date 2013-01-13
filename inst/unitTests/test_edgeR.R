@@ -11,7 +11,7 @@ edgeR.de <- exactTest(d)
 min.pval <- min(edgeR.de$table$PValue)/10
 
 test_1dataframe <- function(){
-    df <- ReportingTools:::.edgeR.to.data.frame(edgeR.de, 
+    df <- ReportingTools:::.DGEExact.to.data.frame(edgeR.de, 
         annotation.db='org.Mm.eg', pvalueCutoff=1, lfc=0, n=100)
     checkTrue(nrow(df) == 100, 
         "100 rows are returned in coercing fit to data.frame")
@@ -24,7 +24,7 @@ test_2html <- function(){
     htmlRep <- HTMLReport("testhtmlPage3", reportDirectory = 'testHTMLDirectory',
         title = "Test Report 3")
 
-    html.df <- ReportingTools:::.edgeR.to.html(edgeR.de, htmlRep, 
+    html.df <- ReportingTools:::.DGEExact.to.html(edgeR.de, htmlRep, 
         d$counts, conditions, annotation.db='org.Mm.eg', pvalueCutoff=1, 
         lfc=0, n=100)
     checkTrue(nrow(html.df) == 100, 

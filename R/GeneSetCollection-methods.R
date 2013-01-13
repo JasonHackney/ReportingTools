@@ -35,17 +35,17 @@ setMethod("publish",
         publicationType = "HTMLReport"
     ),
     definition = function(object, publicationType, annotation.db=NULL, 
-        setStats=NULL, setPValues=NULL,...){
+        setStats=NULL, setPValues=NULL, geneStats=NULL, ...){
         
         df <- .GeneSetCollection.to.html(object,publicationType, annotation.db, 
-            setStats=setStats, setPValues=setPValues)
+            setStats=setStats, setPValues=setPValues, geneStats = geneStats)
         publish(df, publicationType, ...)
     }
 )
 
 
 .GeneSetCollection.to.html <- function(object, htmlRep, annotation.db=NULL, 
-    setStats=NULL, setPValues=NULL)
+    setStats=NULL, setPValues=NULL, geneStats = NULL)
 {
     pages.dirname <- paste0('GeneSetCollectionPages', name(htmlRep))  
     page.directory <- file.path(basePath(htmlRep), 
@@ -53,7 +53,8 @@ setMethod("publish",
     .safe.dir.create(page.directory)  
     gs.reportDirectory <- paste(reportDirectory(htmlRep), pages.dirname, sep="/")
     makeGeneListPagesGSC(object, reportDir=gs.reportDirectory, 
-        annotation.db, baseUrl=baseUrl(htmlRep), basePath=basePath(htmlRep))
+        annotation.db, geneStats = geneStats, baseUrl=baseUrl(htmlRep), 
+        basePath=basePath(htmlRep))
    
     setLink <- paste('<a href="',pages.dirname,"/", names(object), 
         ".html",'">', names(object), '</a>', sep="")

@@ -29,8 +29,8 @@
 The \tt ReportingTools \rm package can be used with differential gene expression results from RNA-sequencing analysis.  In this vignette we show how to \tt publish \rm output from an \tt edgeR\rm, Gene Ontology (GO) and/or Protein family (PFAM) analysis.  In the final section we \tt publish \rm all our pages onto one, creating a comprehensive output page.
 
 
-\section{Differential expression analysis}
-In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes.
+\section{Differential expression analysis with \tt edgeR \rm}
+In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt edgeR \rm software.
 We begin by loading our library and data set.  The \tt mockRnaSeqData \rm contains random RNA-seq output for random mouse genes.
 
 <<load data, eval=FALSE>>=
@@ -75,6 +75,34 @@ finish(deReport)
 \includegraphics[scale = .5]{rnaseq1}
 \caption{Resulting page created by \tt publish \rm for \tt edgeR.de\rm.}
 \end{figure}
+
+
+\section{Differential expression analysis with \tt DESeq \rm}
+In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq \rm software.
+We begin by loading our library and data set.  The \tt mockRnaSeqData \rm contains random RNA-seq output for random mouse genes.
+
+Next, we run \tt DESeq \rm to find differentially expressed genes.
+<<run_DESeq, eval=FALSE>>=
+library(DESeq)
+cds<-newCountDataSet(mockRnaSeqData, conditions)
+cds<-estimateSizeFactors(cds)
+cds<-estimateDispersions(cds)
+res<-nbinomTest(cds,"control", "case" )
+@
+
+Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. 
+<<DESeq_report, eval=FALSE>>=
+DESdf<-makeDESeqDf(res,mockRnaSeqData,pvalueCutoff=0.01,conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports")
+
+desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
+    title = 'RNA-seq analysis of differential expression using DESeq',
+    reportDirectory = "./reports/",
+    baseUrl = "")
+publish(DESdf, desReport)
+finish(desReport)
+@ 
+
+
 
 
 \section{GO analysis using GOstats}

@@ -119,6 +119,36 @@ finish(htmlRep3)
 \end{figure}
 
 
+\section{Adding plots or links to a report table}
+To add additional plots or links to a report table, we create a new data frame with the path to the plots and our links of interest.  We then \tt publish \rm this data frame.  
+
+Below we make a set of simple plots and then add the images along with new links to the ncbi gene database to our data frame.
+
+<<AddPlotLink, eval=FALSE>>=
+imagename<-c()
+for (i in 1:nrow(my.df)){
+	imagename[i]<-paste0("plot",i,".png")
+	png(filename=paste0("reports/",imagename[i]))
+	plot(my.df$RPKM[i], ylab="RPKM", xlab=my.df$EGID[i],main="RPKM Plot", col="blue")
+	dev.off()
+}
+my.df$Image<-hwriteImage(imagename, link=imagename, table=FALSE)
+my.df$Link <- hwrite(as.character(my.df$EGID), link=paste("http://www.ncbi.nlm.nih.gov/gene/",
+               as.character(my.df$EGID), sep=''), table=FALSE)
+
+htmlRep4 <- HTMLReport(shortName = "my_html_file4",
+    reportDirectory = "./reports/")
+publish(my.df, htmlRep4)
+finish(htmlRep4)
+@
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html4.png}
+\caption{Resulting page created after adding figures and links to table.}
+\end{figure}
+
+
 
 \section{Styled Tables}
 
@@ -126,16 +156,16 @@ If you have a preferred table style, defined in css, it's easy to style your tab
 
 <<styledCss, eval=FALSE>>=
 css.file <- system.file('extdata/table.css', package='ReportingTools')
-htmlRep4 <- HTMLReport(shortName = 'my_html_file4',
+htmlRep5<- HTMLReport(shortName = 'my_html_file5',
     reportDirectory = "./reports/", link.css=css.file)
 publish(my.df, htmlRep4)
-finish(htmlRep4)
+finish(htmlRep5)
 @
 
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{html4.png}
+\includegraphics[scale = .5]{html5.png}
 \caption{Resulting page created by calling \tt publish \rm for \tt my.df \rm with specific styling.}
 \end{figure}
 

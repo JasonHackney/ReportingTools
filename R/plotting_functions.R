@@ -1,3 +1,64 @@
+.remove.axis.and.padding <- function (plot)
+{
+    plot$par.settings$layout.heights <- list(
+        top.padding = 0,
+        main.key.padding = 0,
+        key.axis.padding = 0,
+        axis.xlab.padding = 0,
+        xlab.key.padding = 0,
+        key.sub.padding = 0,
+        bottom.padding = 0)
+    plot$par.settings$layout.widths <- list(
+        left.padding = 0,
+        key.ylab.padding = 0,
+        ylab.axis.padding = 0,
+        axis.key.padding = 0,
+        right.padding = 0)
+    plot$x.scales$draw <- FALSE
+    plot$y.scales$draw <- FALSE
+    plot$xlab <- NULL
+    plot$ylab <- NULL
+    return(plot)
+}
+
+.make.gene.plots <- function(df, expression.dat, factor, figure.directory,
+    ylab.type = "Expression Value"){
+
+    if(inherits(expression.dat, "eSet")){
+        expression.dat <- exprs(expression.dat)
+    }
+    
+    for(probe in rownames(df)){
+        if("Symbol" %in% colnames(df)){
+            ylab <- paste(df[probe, 'Symbol'], ylab.type)
+        } else {
+            ylab <- paste(probe, ylab.type)
+        }
+        bigplot <- stripplot(expression.dat[ probe, ] ~ factor,
+            panel=panel.boxandstrip, groups=factor, ylab=ylab,
+            scales = list(x=list(rot=45)))
+        
+        miniplot <- .remove.axis.and.padding(bigplot)
+        minipng.filename <- paste("mini", probe ,"png", sep='.')
+        minipng.file <- file.path(figure.directory, minipng.filename)
+        
+        png(minipng.file, height=40, width=200)
+        grid.newpage()
+        pushViewport(viewport(angle = 270, height = unit(220, 'points'), 
+            width = unit(44, 'points'), name = "VP"))
+        print(miniplot, newpage = FALSE)
+        upViewport()
+        dev.off()
+        
+        pdf.filename <- paste("boxplot", probe, "pdf", sep=".")
+        pdf.file <- file.path(figure.directory, pdf.filename)
+        
+        pdf(pdf.file, height=4.5, width=4.5)
+        print(bigplot)
+        dev.off()
+    }
+}
+
 miniplot <- function (x, data = NULL, panel = panel.boxandstrip, 
     scales=list(draw=FALSE), xlab=NULL, ylab=NULL, horizontal=TRUE, 
     par.settings = list(), ...)
@@ -58,6 +119,35 @@ reporting.theme <- function()
     invisible(op)
 }
 
+reporting.theme.alternate <- function()
+{
+    cols <- c("#FFD700","#FF0000", "#0000FF", "#006400","#FF00FF" ,"#000000", "#FFA500", "#BEBEBE")
+    colsAlpha = sapply(cols, function(x) {paste(x,"75",sep="")})
+    op <- standard.theme()
+    rib.palette <- colorRampPalette(c("darkblue", "ivory", "darkred"))
+    op$background$col <- "transparent"
+    op$regions$col <- rib.palette(128)
+    op$plot.symbol$col <- "darkgrey"
+    op$plot.symbol$pch <- 21
+    op$plot.symbol$fill <- "#33333355"
+    op$plot.line$col <- "black"
+    op$superpose.symbol$col <- "grey40"
+    op$superpose.symbol$pch <- 21
+    op$superpose.symbol$cex <- 1.25
+    op$superpose.symbol$fill <- colsAlpha
+    op$superpose.polygon$col <- "grey40"
+    op$superpose.line$col <- cols
+    op$strip.background$col <- "white"
+    op$box.umbrella$col <- "black"
+    op$box.umbrella$lty <- 1
+    op$box.rectangle$col <- "black"
+    op$box.dot$pch <- "|"
+    op$dot.symbol$col <- "black"
+    op$plot.polygon$col <- "lightgrey"
+    invisible(op)
+}
+
+
 
 plotGOResults<-function(hgGO,pvalueCutoff=0.01,categorySize=10,reportDir){
     hgGOdf<-summary(hgGO, pvalue=pvalueCutoff)
@@ -93,4 +183,37 @@ hyperGPlot<-function(nInGroup1,nInGroup2,nInBothGroups, ontologyNum, ontologyNam
 	text(.055,1.145, "Overlap ", col="black",pos=4)
 	rect(xleft=0, ybottom=1.02,xright=.05,ytop=1.07, col="gray65")
 	text(.055,1.045, "Selected Genes ", col="black", pos=4)	
+}
+
+
+makeDESeqFigures<-function(countTable, conditions,symbols,expName, reportDir){
+	miniFiles<-c()
+	pdfFiles<-c()
+	countTable <- log2(countTable + 1)
+	for(i in 1:length(symbols)){
+		gene<-as.character(symbols[i])
+		if (is.null(gene)==TRUE) {gene<-"NoSymbol"}
+        minplot <- miniplot(as.numeric(countTable[i, ])~conditions, groups=conditions)
+        ylab<-"log2 Counts"
+        bigplot <- stripplot(as.numeric(countTable[i, ]) ~ conditions,
+            panel=panel.boxandstrip, groups=conditions, ylab=ylab, main=gene,scales=list(x=list(rot=45)))
+        minipng.filename <- paste(expName,"mini", gene ,"png", sep='.')
+        minipng.file <- paste0(reportDir, "/figures/", minipng.filename)
+        if (!file.exists(minipng.file)) {
+        	png(minipng.file, height=40, width=200)
+        	print(minplot)  ##some issue with these minplots for some reason?
+        	dev.off()
+        }
+        miniFiles[i]<-paste0("figures/", minipng.filename)
+        
+        pdf.filename <- paste(expName,"boxplot", gene, "pdf", sep=".")
+        pdf.file <- paste0(reportDir, "/figures/", pdf.filename)
+        if (!file.exists(pdf.file)) {
+        	pdf(pdf.file, height=4.5, width=4.5)
+        	print(bigplot)
+        	dev.off()
+        }
+        pdfFiles[i]<-paste0("figures/", pdf.filename)
+    }
+	return(list(miniFiles, pdfFiles))
 }

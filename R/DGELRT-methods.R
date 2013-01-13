@@ -1,16 +1,17 @@
 setMethod("publish",
     signature = signature(
-        object = "DGEExact",
+        object = "DGELRT",
         publicationType = "HTMLReport"
     ),
-    definition = function(object, publicationType, countTable, conditions,
+    def = function(object, publicationType, countTable, conditions,
         annotation.db = 'org.Hs.eg', n = 1000,
         pvalueCutoff = 0.01, lfc = 0, adjust.method = 'BH', 
         sort.method = 'p.value', ...){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
-        df <- .edgeR.to.html(object, publicationType, as.matrix(countTable), 
-            conditions, annotation.db = annotation.db, n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, 
+        df <- .DGELRT.to.html(object, publicationType, as.matrix(countTable), 
+            conditions, annotation.db = annotation.db, n = n,
+            pvalueCutoff = pvalueCutoff, lfc = lfc,
             adjust.method = adjust.method, sort.method = sort.method, ...)
         publish(df, publicationType, ...)
     }
@@ -18,22 +19,22 @@ setMethod("publish",
 
 setMethod("publish",
     signature = signature(
-        object = "DGEExact",
+        object = "DGELRT",
         publicationType = "ANY"
     ),
-    definition = function(object, publicationType, annotation.db = 'org.Hs.eg', 
+    def = function(object, publicationType, annotation.db = 'org.Hs.eg', 
         n = 1000, pvalueCutoff = 0.01, lfc = 0, adjust.method = 'BH', 
         sort.method = 'p.value', ...){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
-        df <- .edgeR.to.data.frame(object, annotation.db = annotation.db,
-            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, 
+        df <- .DGELRT.to.data.frame(object, annotation.db = annotation.db,
+            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc,
             adjust.method = adjust.method, sort.method = sort.method, ...)
         publish(df, publicationType, ...)
     }
 )
 
-.edgeR.to.data.frame <- function(object, annotation.db = 'org.Hs.eg', 
+.DGELRT.to.data.frame <- function(object, annotation.db = 'org.Hs.eg', 
     pvalueCutoff = 0.01, n = 1000, lfc = 0, adjust.method='BH', 
     sort.method = 'p.value', ...)
 {
@@ -87,9 +88,9 @@ setMethod("publish",
 }
 
 
-.edgeR.to.html <- function(object, htmlRep, countTable, conditions, 
+.DGELRT.to.html <- function(object, htmlRep, countTable, conditions, 
     annotation.db = 'org.Hs.eg', pvalueCutoff = 0.01, n = 1000, lfc = 0, 
-    adjust.method = 'BH', sort.method = 'p.value', ...)
+    adjust.method = 'BH', sort.method = 'p.value', make.plots = TRUE, ...)
 {
     dat <- topTags(object, n = n, adjust.method = adjust.method, sort.by = sort.method)
 
@@ -130,50 +131,43 @@ setMethod("publish",
     }    
     
     
-    ret <- data.frame(
-        fdata,
-        Image = rep("", nrow(fdata)),
-        dat.lfc$logFC,
-        dat.lfc$padj,
-        stringsAsFactors = FALSE
-    )
+    if( ! make.plots ){
+        
+        ret <- data.frame(
+            fdata,
+            dat.lfc$logFC,
+            dat.lfc$padj,
+            stringsAsFactors = FALSE
+        )
+        
+    } else {
+        ret <- data.frame(
+            fdata,
+            Image = rep("", nrow(fdata)),
+            dat.lfc$logFC,
+            dat.lfc$padj,
+            stringsAsFactors = FALSE
+        )
 
-    figures.dirname <- paste('figures', name(htmlRep), sep='')  
-    figure.directory <- file.path(basePath(htmlRep), 
-        reportDirectory(htmlRep), figures.dirname)
-    .safe.dir.create(figure.directory)
-
-    ## Add pseudocount and log2 transform counts
-    countTable <- log2(countTable + 1)
+        ## log2 transform count data and add one for psuedocount
+        countTable <- log2(countTable + 1)
+    
+        figures.dirname <- paste('figures', name(htmlRep), sep='')  
+        figure.directory <- file.path(basePath(htmlRep), 
+            reportDirectory(htmlRep), figures.dirname)
+        .safe.dir.create(figure.directory)
         
-    for(gene in rownames(dat.lfc)){
-        miniplot <- miniplot(conditions ~ countTable[gene, ], groups=conditions)
-        ylab <- paste(fdata[gene, 'Symbol'], "Expression Value (log2)")
-        bigplot <- stripplot(countTable[gene, ] ~ conditions,
-            panel=panel.boxandstrip, groups=conditions, ylab=ylab)
+        .make.gene.plots(ret, countTable, conditions, figure.directory,
+            ylab.type = "(log2 counts per million)")
         
-        minipng.filename <- paste("mini", gene ,"png", sep='.')
-        minipng.file <- file.path(figure.directory, minipng.filename)
-        
-        png(minipng.file, height=40, width=200)
-        print(miniplot)
-        dev.off()
-        
-        pdf.filename <- paste("boxplot", gene, "pdf", sep=".")
-        pdf.file <- file.path(figure.directory, pdf.filename)
-        
-        pdf(pdf.file, height=4.5, width=4.5)
-        print(bigplot)
-        dev.off()
+        mini.image <- file.path(figures.dirname, 
+            paste("mini", rownames(dat.lfc), "png", sep="."))
+        pdf.image <- file.path(figures.dirname, 
+            paste("boxplot", rownames(dat.lfc), "pdf", sep="."))
+        ret$Image <- hwriteImage(mini.image, link=pdf.image, table=FALSE)
+    
     }
     
-    mini.image <- file.path(figures.dirname, 
-        paste("mini", rownames(dat.lfc), "png", sep="."))
-    pdf.image <- file.path(figures.dirname, 
-        paste("boxplot", rownames(dat.lfc), "pdf", sep="."))
-    ret$Image <- hwriteImage(mini.image, link=pdf.image, table=FALSE)
-
-
     colnames(ret)[which(colnames(ret) == 'dat.lfc.logFC')] <- 'logFC'
     colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'p-Value'
     

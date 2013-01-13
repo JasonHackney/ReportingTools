@@ -37,7 +37,7 @@ Class \code{"\linkS4class{BaseReport}"}, directly.
   \describe{
     \item{dependencies}{ Retrieve the list of dependencies for the data package. }
     \item{dependencies<-}{ Set the list of dependencies for the data package. }
-    \item{finish}{ This is the final step in publishing objects to the data package. It recreates the DESCRIPTION file for the data package. The package name, title, version, author, maintainer, dependencies, license and description are set from the appropriate slots in the DataPackage object. }
+    \item{finish}{ This is the final step in publishing objects to the data pacakge. It recreates the DESCRIPTION file for the data package. The package name, title, version, author, maintainer, dependencies, license and description are set from the appropriate slots in the DataPackage object. }
   }
 }
 \examples{

@@ -1,12 +1,12 @@
 Package: ReportingTools
 Title: Tools for making reports in various formats
-Version: 1.1.0
+Version: 1.2.3
 Author: Jason A. Hackney, Melanie Huntley, Jessica L. Larson, Christina Chaivorapol, and Josh Kaminker
 Maintainer: Jason A. Hackney <hackney.jason@gene.com>
 Depends: methods
 Imports:
         Biobase,hwriter,Category,GOstats,limma,lattice,AnnotationDbi,edgeR,
-        annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6)
+        annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6), grid
 Suggests: RUnit
 Type: Package
 LazyLoad: yes

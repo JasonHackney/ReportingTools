@@ -16,6 +16,20 @@ setMethod("publish",
     }
 )
 
+
+setMethod("publish",
+    signature = signature(
+        object = "DGEExact",
+        publicationType = "HTMLReportRef"
+    ),
+    def = function(object, publicationType, ...)
+          {
+            publicationType$addElement(value= object, ...)
+            
+          }
+          )
+
+
 setMethod("publish",
     signature = signature(
         object = "DGEExact",

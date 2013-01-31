@@ -25,6 +25,6 @@ importFrom(XML, htmlParse, getNodeSet, saveXML, xmlRoot, addChildren, newXMLNode
 
 export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme.alternate, reporting.theme, makeDESeqDf, htmlReportRef)
 exportMethods(publish, name, title, 'title<-', reportDirectory,
-    'reportDirectory<-', filename, path, url, page, 'page<-', finish,
+              'reportDirectory<-', filename, path, url, page, 'page<-', finish,
     show, basePath, baseUrl, dependencies, "dependencies<-")
-exportClasses(DataPackage, CSVFile, HTMLReport, BaseReport, HTMLReportRef)
+exportClasses(DataPackage, CSVFile, HTMLReport, BaseReport, HTMLReportRef, ReportHandlers)

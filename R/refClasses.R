@@ -110,7 +110,7 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
     addElement = function(name, value, ...)
     {
       if(missing(name))
-        name = paste("id", length(getNodeSet(.self$.reportDom,"//body/div")) + 1, sep="")
+        name = paste("id", length(getNodeSet(.self$.reportDOM,"//body/div")) + 1, sep="")
       if(is.character(name))
         nodes = getNodeSet(.self$.reportDOM, sprintf("//div[@id='%s']", name))
       else if (is.numeric(name))
@@ -172,9 +172,9 @@ htmlReportRef = function(shortName = "coolProject",
     htmlReport$new(title = title, shortName = shortName, reportDirectory = reportDirectory, handlers = handlers, basePath = basePath, baseUrl = baseUrl)
   }
 
-setMethod(   '[[<-', c(x="HTMLReportRef"),  function(x, i, value)
+setMethod(   '[[<-', c(x="HTMLReportRef"),  function(x, i, ...,value)
     {
-      x$addElement(i, value)
+      x$addElement(name = i, value = value, ...)
       x
     })
 

@@ -2,7 +2,7 @@ toFileHandlers = new("ReportHandlers",
   finish = function(rep, args)
   {
     if(is.null(args$file))
-      file = file.path(rep$reportDirectory, paste(rep$shortName, ".html"))
+      file = file.path(rep$reportDirectory, paste(rep$shortName, ".html", sep=""))
     else
       file = args$file
     saveXML(rep$.reportDOM, file = file)

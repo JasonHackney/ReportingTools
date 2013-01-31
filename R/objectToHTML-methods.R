@@ -1,3 +1,18 @@
+
+setMethod("objectToHTML",
+          signature = signature(
+            object = "character"),
+          definition = function(object, report, ...)
+          {
+            #if it is HTML code it will be handled as such, if not it will be spit out as text in the page (in a <p>)...
+            ret = tryCatch(htmlParse(object), error=function(e) NULL)
+            if(is.null(ret))
+              #stuff our text into a <p> node
+              newXMLNode(p, object)
+            else
+              getNodeSet(ret, "//body/*")
+          })
+
 setMethod("objectToHTML",
     signature = signature(
         object          = "data.frame"
@@ -15,7 +30,7 @@ setMethod("objectToHTML",
             stop("No columns available in data.")
 
         filter.columns <-
-          IRanges:::normalizeSingleBracketSubscript(filter.columns, object)
+          IRanges:::normalizeSingleBracketSubscript(filter.columns,object)
         
         sort.class.map <- c(
             "numeric"   = "sort-num",
@@ -163,7 +178,7 @@ setMethod("objectToHTML",
     definition = function(object, report, selectedIDs,annotation.db,pvalueCutoff = 0.01, categorySize = 10, makePlot=FALSE, ...){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
-        df <- .GOhyperG.to.html(object, report, selectedIDs, annotation.db,pvalueCutoff = pvalueCutoff, categorySize=categorySize, makePlot=makePlot)
+        df <- .GOhyperG.to.html2(object, report, selectedIDs, annotation.db,pvalueCutoff = pvalueCutoff, categorySize=categorySize, makePlot=makePlot)
        objectToHTML(df)
     }
 )
@@ -201,7 +216,7 @@ setMethod("objectToHTML",
         pages.dirname <- paste0('PFAMPages', report$shortName)  
    # page.directory <- file.path(basePath(htmlRep), 
     #    reportDirectory(htmlRep), pages.dirname)
-        page.directory <- file.path(path, pages.dirname)
+        page.directory <- file.path(report$basePath, pages.dirname)
         .safe.dir.create(page.directory)
     pfam.reportDirectory <- paste(report$reportDirectory, 
         pages.dirname, sep="/")
@@ -332,6 +347,186 @@ setMethod("objectToHTML", signature = signature(
     return(ret)
 }
 
+
+.GOhyperG.to.html2 <- function(object, htmlRep,selectedIDs,annotation.db,pvalueCutoff = 0.01, categorySize=10, makePlot=FALSE)
+{    
+	tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
+		{stop(paste0("Unable to find your annotation.db: ",annotation.db))})
+	check.eg.ids(selectedIDs,annotation.db)
+
+  	df<-summary(object, pvalue=pvalueCutoff, categorySize = categorySize)
+  	if(dim(df)[1]<1) {stop("No categories match your criteria.")}
+  	df$GOID<-df[,1]
+   	df$GOLink<-paste('<a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', df$GOID, '">', df$GOID, '</a>', sep="")
+   	df$goName<-unlist(lapply(df$GOID, function(x) {strsplit(x, ":")[[1]][2]}))
+   	
+   	#pages.dirname <- paste0('GOPages', name(htmlRep))
+        pages.dirname <- paste0('GOPages', htmlRep$shortName)  
+   # page.directory <- file.path(basePath(htmlRep), 
+    #    reportDirectory(htmlRep), pages.dirname)
+        page.directory <- file.path(htmlRep$basePath,
+                                    htmlRep$reportDirectory, pages.dirname)
+    .safe.dir.create(page.directory)
+    go.reportDirectory <- paste(htmlRep$reportDirectory, 
+        pages.dirname, sep="/")
+   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, baseUrl=htmlRep$baseUrl, basePath=htmlRep$basePath)  
+   	
+   	df$CountLink<-paste('<a href="',pages.dirname, "/" ,df$goName, ".html",'">', df$Count, '</a>', sep="")
+   	df$SizeLink<-paste('<a href="',pages.dirname, "/",df$goName, "All.html",'">', df$Size, '</a>', sep="")
+ 	ret<-data.frame(df$GOLink,df$Term,df$SizeLink,Image = rep("", nrow(df)), df$CountLink,signif(df$OddsRatio, 3), signif(df$Pvalue, 3),stringsAsFactors = FALSE)
+ 	colnames(ret)<-c("Accession", "GO Term","Category Size" ,"Image","Overlap", "Odds Ratio", "P-value" )
+ 
+ 	figure.dirname <- paste0('GOFigures', htmlRep$shortName)
+    figure.directory <- file.path(htmlRep$basePath, htmlRep$reportDirectory, figure.dirname)
+    .safe.dir.create(figure.directory)
+        if (makePlot==TRUE){
+		plotGOResults(object,pvalueCutoff, categorySize, reportDir=figure.directory)
+		plotret = hwrite(hwriteImage(paste(figure.dirname,"GOPlot.svg", sep="/"), link=paste(figure.dirname,"GOPlot.svg", sep="/"),width=400, height=400), br = TRUE)
+	}
+    numSelectedIDs<-length(selectedIDs)    
+	largestTerm<-max(df$Size)
+	for (i in 1:dim(df)[1]){
+  		GONum<-as.character(strsplit(df$GOID[i], ":")[[1]][2])
+  		png.filename <- paste(GONum ,"png", sep='.')
+ 	 	png.file <- file.path(figure.directory, png.filename)
+  		png(png.file)
+  		hyperGPlot(df$Size[i]-df$Count[i],numSelectedIDs-df$Count[i], df$Count[i], df$GOID[i], df$Term[i])
+  		dev.off()
+  		
+  		pdf.filename <- paste(GONum, "pdf", sep=".")
+        pdf.file <- file.path(figure.directory, pdf.filename)
+        pdf(pdf.file)
+  		hyperGPlot(df$Size[i]-df$Count[i],numSelectedIDs-df$Count[i], df$Count[i], df$GOID[i], df$Term[i])
+        dev.off()
+        
+        ret$Image[i] <- hwriteImage(paste(figure.dirname,png.filename, sep="/"), link=paste(figure.dirname,pdf.filename, sep="/"), table=FALSE,width=100, height=100)
+	}
+        if(makePlot)
+          #If we have the plot we need to mash it all together into HTML here because of how the dispatch is currently set up. We may want to change this in the future...
+          paste("<div>",retplot, objectToHTML(ret), "</div>", sep="\n") 
+        else
+          ret
+      }
+
+setMethod("publish", signature = signature(
+                       object = "MArratLM",
+                       publicationType="HTMLReportRef"),
+          definition = function(object, publicationType, ...) publicationType$addElement(value = object, ...)
+          )
+
+setMethod("objectToHTML",
+    signature = signature(
+        object = "MArrayLM"
+      ),
+    definition = function(object, publicationType, eSet, factor, n = 1000, 
+        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
+        make.plots = TRUE, ...){
+        ## First, make a data.frame for publication,
+        ## then call publish on that data.frame
+        df <- .marrayLM.to.html2(object, publicationType, eSet, factor,
+            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, coef = coef, 
+            adjust.method = adjust.method, make.plots = make.plots, ...)
+        objectToHTML(df)
+      }
+          )
+
+
+.marrayLM.to.html2 <- function(object, htmlRep, eSet, factor, n = 1000,
+    pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
+    make.plots = TRUE, ...)
+{
+    
+    dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
+        adjust.method = adjust.method, coef = coef, ...)
+    if(is.null(coef))
+        coef <- 1:ncol(object)
+    
+    selection <- as.numeric(rownames(dat))
+    if(length(selection) == 0)
+        stop("No probes meet selection criteria. 
+Try changing the log-fold change or p-value cutoff.")
+    padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
+    padj <- padj[selection, coef]
+    object <- object[selection, coef]
+    eSet <- eSet[selection, ]
+    
+    ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
+        error=function(e){ return(FALSE) })
+        
+    if(inherits(ann.map.available, "AnnDbBimap")){
+        fdata <- data.frame(
+            ProbeId = featureNames(eSet),
+            EntrezId = unlist(mget(featureNames(eSet), 
+                getAnnMap("ENTREZID", annotation(eSet)))),
+            Symbol = unlist(mget(featureNames(eSet), 
+                getAnnMap("SYMBOL", annotation(eSet)))),
+            GeneName = unlist(mget(featureNames(eSet), 
+                getAnnMap("GENENAME", annotation(eSet)))),
+            stringsAsFactors = FALSE
+        )
+    } else {
+        if(ncol(fData(eSet)) > 0){
+            fdata <- fData(eSet)
+        } else {
+            fdata <- data.frame(featureNames(eSet), stringsAsFactors = FALSE)
+        }
+    }
+    
+    if("EntrezId" %in% colnames(fdata)){
+        fdata$EntrezId <- hwrite(fdata$EntrezId, 
+            link=paste("http://www.ncbi.nlm.nih.gov/gene/",
+                fdata$EntrezId, sep=''), table=FALSE)
+    }
+    
+    
+    if(!make.plots){
+        ret <- data.frame(
+            fdata,
+            object$coef,
+            padj,
+            stringsAsFactors = FALSE
+        )
+        fc.cols <- (ncol(fdata)+1):(ncol(fdata)+ncol(object$coef))
+        colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
+
+        pv.cols <- (ncol(fdata)+1+length(fc.cols)):ncol(ret)
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+        
+    } else {
+        ret <- data.frame(
+            fdata,
+            Image = rep("", nrow(fdata)),
+            object$coef,
+            padj,
+            stringsAsFactors = FALSE
+        )
+        
+        ret$Image <- rep("", nrow(fdata))
+        
+        figures.dirname <- paste('figures', htmlRep$shortName, sep='')  
+        figure.directory <- file.path(htmlRep$basePath, 
+            htmlRep$reportDirectory, figures.dirname)
+        .safe.dir.create(figure.directory)
+        
+        .make.gene.plots(ret, eSet, factor, figure.directory)
+        
+        mini.image <- file.path(figures.dirname, 
+            paste("mini", rownames(object), "png", sep="."))
+        pdf.image <- file.path(figures.dirname, 
+            paste("boxplot", rownames(object), "pdf", sep="."))
+        ret$Image <- hwriteImage(mini.image, link=pdf.image, table=FALSE)
+        
+        fc.cols <- (ncol(fdata)+2):(ncol(fdata)+1+ncol(object$coef))
+        colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
+        
+        pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+        
+    }
+    
+    
+    return(ret)
+}
 
 
 

@@ -18,6 +18,17 @@ setMethod("publish",
 setMethod("publish",
     signature = signature(
         object = "MArrayLM",
+        publicationType = "HTMLReportRef"
+    ),
+    definition = function(object, publicationType, ...)
+          publicationType$addElement(value=object, ...)
+)
+
+
+
+setMethod("publish",
+    signature = signature(
+        object = "MArrayLM",
         publicationType = "ANY"
     ),
     definition = function(object, publicationType, eSet, n = 1000, 
@@ -30,6 +41,7 @@ setMethod("publish",
         publish(df, publicationType, ...)
     }
 )
+
 
 
 

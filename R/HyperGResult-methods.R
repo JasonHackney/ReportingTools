@@ -42,6 +42,16 @@ setMethod("publish",
 )
 
 setMethod("publish",
+          signature = signature(
+            object = "GOHyperGResult",
+            publicationType = "HTMLReportRef"),
+          definition = function(object, publicationType, ...)
+          publicationType$addElement(value = object, ...)
+          )
+
+
+
+setMethod("publish",
     signature = signature(
         object = "PFAMHyperGResult",
         publicationType = "ANY"
@@ -67,6 +77,13 @@ setMethod("publish",
     }
 )
 
+setMethod("publish",
+          signature = signature(
+            object = "PFAMHyperGResult",
+            publicationType = "HTMLReportRef"),
+          definition = function(object, publicationType, ...)
+          publicationType$addElement(value = object, ...)
+          )
 
 
 .hyperG.to.data.frame <- function(object, 

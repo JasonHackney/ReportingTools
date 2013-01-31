@@ -97,9 +97,15 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       #we jump down into the S4 method dispatch system to treat each class of objects differently
       
       htmlcode = objectToHTML(obj, .self, ... )
-      html = htmlParse(htmlcode)
-      getNodeSet(html, "//body/*")
 
+      #prepping for conversion from text HTML building to XML construction Once the conversion is complete objectToHTML methods will be returning XMLInternalNode objects
+      if(is.character(htmlcode))
+      {  
+        html = htmlParse(htmlcode)
+        getNodeSet(html, "//body/*")
+      } else {
+        htmlcode
+      }
     },
     finish = function()
     {

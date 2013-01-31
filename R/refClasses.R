@@ -1,0 +1,184 @@
+nullFun = function(...) TRUE
+
+#I'm envisioning each ReportHandlers set representing a distinct target (eg internal DOM, write to pipe, etc)
+#Currently args expects a named list of named lists, up to one for each function, eg list(finish = list(file = "myfile.html"))
+#we might want to make this an S4 class later?
+setClass("ReportHandlers",
+         representation = list(init = "function",
+           addElement = "function",
+           removeElement = "function",
+           finish = "function",
+           args = "ANY"),
+         prototype = list(init = nullFun,
+           addElement = nullFun,
+           removeElement = nullFun,
+           finish= nullFun,
+           args = NULL)
+         )
+
+baseReport = setRefClass("BaseReportRef",
+  fields = list(
+    .shortName = "character",
+    shortName = function(val)
+    {
+      if(missing(val))
+        .shortName
+      else
+        .self$.shortName <- val
+    },
+    .title = "character",
+    title = function(val)
+    {
+      if(missing(val))
+        .title
+      else
+        .self$.title <- val
+    },
+    .reportDirectory = "character",
+    reportDirectory = function(val)
+    {
+      if(missing(val))
+        .reportDirectory
+      else
+        .self$.reportDirectory <- val
+    },
+    .report = "list",
+    .reportDOM = "ANY",
+    .basePath = "character",
+    basePath = function(val)
+    {
+      if(missing(val))
+        .basePath
+      else
+        .self$.basePath <- val
+    },
+    .baseUrl = "character",
+    baseUrl = function(val)
+    {
+      if(missing(val))
+        .baseUrl
+      else
+        .self$.baseUrl <- val
+    },
+    .handlers = "list",
+    handlers = function(val)
+    {
+      if(missing(val))
+        .handlers
+      else
+        {
+        #stop("The addHandlers/removeHandlers methods must be used to manipulate event handlers.")
+          if(!is.list(val))
+            val = list(val)
+        .self$.handlers <- val
+        }
+      }),
+  methods = list(
+    addHandlers = function(handlers, init = nullFun, addElement = nullFun, removeElement = nullFun, finalize = nullFun)
+    {
+      if(missing(handlers) | is.null(handlers))
+      handlers = new("ReportHandlers", init = init, addElement = addElement, removeElement = removeElement, finalize = finalize)
+      .self$.handlers <- c(.handlers, handlers)
+    },
+    removeHandlers = function(pos = 1)
+    {
+      if (!(pos %in% seq(along = .handlers)))
+        stop(sprintf("There is no set of handlers at position %d  to remove.", pos))
+      .self$.handlers <- .handlers[-pos]
+    }
+    )
+  )
+htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
+  methods = list(
+    
+    prepare = function(obj, ...)
+    {
+      #This is where we can add customized display types and extensibility by creating an HTMLReportRef superclass and having custom preprocessing in the prepare method on that class 
+      #we jump down into the S4 method dispatch system to treat each class of objects differently
+      
+      htmlcode = objectToHTML(obj, .self, ... )
+      html = htmlParse(htmlcode)
+      getNodeSet(html, "//body/*")
+
+    },
+    finish = function()
+    {
+      sapply(.handlers, function(fs) fs@finish(.self, fs@args$finish))
+      #do we want to force a saveXML call here, or just assign one as a finalize event handler by default?
+      #For now we make people assign a handler, because sometimes we only want to send the content down a connection and not write a file.
+    },
+    addElement = function(name, value, ...)
+    {
+      if(missing(name))
+        name = paste("id", length(getNodeSet(.self$.reportDom,"//body/div")) + 1, sep="")
+      if(is.character(name))
+        nodes = getNodeSet(.self$.reportDOM, sprintf("//div[@id='%s']", name))
+      else if (is.numeric(name))
+        stop("positional insertion is not yet supported")
+      
+      if(length(nodes))
+        {
+          node = nodes[[1]]
+          #remove whatever was assigned to this name previously
+          removeChildren(node, kids = xmlChildren(node))
+        } else {
+          #create new div with the specified id and add it to the body of the HTML page
+          body = getNodeSet(.self$.reportDOM, "//body")[[1]]
+          node = newXMLNode("div", attrs= list(id=name), parent=body)
+        }
+
+      #turn value into html nodes to add to DOM
+      newcontent = .self$prepare(value, ...)
+      
+      if(is.list(newcontent))
+        addChildren(node, kids = newcontent)
+      else
+        addChildren(node, newcontent)
+      #call all currently assigned addElement handlers with the node for the div containing the new content
+      sapply(.self$.handlers, function(fs, node) fs@addElement(node, fs@args$addElement), node= node)
+      .self$.report[[name]] = node
+      TRUE
+
+
+    },
+    initialize = function(...)
+    {
+      args = list(...)
+      
+      handlers = args$handlers
+      if(is.null(handlers))
+        handlers = list(toFileHandlers)
+
+      #if we only have one handler sometimes it won't come in the form of a lis
+      if(!is.list(handlers))
+        handlers = list(handlers)
+      dom = startHTMLReport(...)
+      .self$.reportDOM = dom
+      sapply(handlers, function(h) h@init(dom, h@args$init))
+      .self$initFields(shortName = args$shortName, title = args$title, reportDirectory = args$reportDirectory, handlers = handlers, basePath = args$basePath, baseUrl = args$baseUrl)
+
+    }
+    )
+  )
+    
+htmlReportRef = function(shortName = "coolProject",
+  title = "My cool project", 
+  reportDirectory = ".",
+  basePath = ".",
+  baseUrl = "localhost",
+  
+  handlers = list(toFileHandlers))
+  {
+    htmlReport$new(title = title, shortName = shortName, reportDirectory = reportDirectory, handlers = handlers, basePath = basePath, baseUrl = baseUrl)
+  }
+
+setMethod(   '[[<-', c(x="HTMLReportRef"),  function(x, i, value)
+    {
+      x$addElement(i, value)
+      x
+    })
+
+setMethod("[[", c(x="HTMLReportRef"),  function(x, i, exact = TRUE) x$.report[[i, exact = exact]])
+ 
+setMethod("publish", signature = signature(object = "ANY", publicationType = "HTMLReportRef"), definition = function(object, publicationType, ...) publicationType$addElement(value = object, ...))
+

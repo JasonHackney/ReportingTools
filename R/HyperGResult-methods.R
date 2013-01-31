@@ -45,8 +45,8 @@ setMethod("publish",
           signature = signature(
             object = "GOHyperGResult",
             publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, ...)
-          publicationType$addElement(value = object, ...)
+          definition = function(object, publicationType,name, ...)
+          publicationType$addElement(name, value = object, ...)
           )
 
 
@@ -81,8 +81,8 @@ setMethod("publish",
           signature = signature(
             object = "PFAMHyperGResult",
             publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, ...)
-          publicationType$addElement(value = object, ...)
+          definition = function(object, publicationType, name,  ...)
+          publicationType$addElement(name, value = object, ...)
           )
 
 

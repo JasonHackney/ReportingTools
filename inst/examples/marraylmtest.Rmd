@@ -1,0 +1,28 @@
+For this vignette we will examine the ALL dataset.  First we load our ReportingTools  package and the data.  This dataset is from a clinical trial in acute lymphoblastic leukemia (ALL) and  is available from Bioconductor.  
+
+```{r message=FALSE, output="hide"}
+library(ReportingTools)
+library(ALL)
+library(hgu95av2.db)
+library(genefilter)
+library(GOstats)
+library(limma)
+library(GSEAlm)
+library(GSEABase)
+data(ALL)
+
+ALL <- ALL[, ALL$mol.biol %in% c('NEG','BCR/ABL') &
+    !is.na(ALL$sex)]
+ALL$mol.biol <- factor(ALL$mol.biol, 
+    levels = c('NEG', 'BCR/ABL'))
+ALL <- featureFilter(ALL)
+```
+First we have an eBayes fit:
+
+```{r results="asis"}
+model <- model.matrix(~mol.biol+sex, ALL)
+fit <- eBayes(lmFit(ALL, model))
+myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
+
+publish(fit, myrep, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
+```

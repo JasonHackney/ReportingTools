@@ -28,6 +28,15 @@ setMethod("publish",
    return(ret)
 }
 
+setMethod("publish",
+    signature = signature(
+        object = "GeneSetCollection",
+        publicationType = "HTMLReportRef"
+    ),
+    definition = function(object, publicationType, name,...)
+          publicationType$addElement(name, value=object, ...)
+          )
+
 
 setMethod("publish",
     signature = signature(

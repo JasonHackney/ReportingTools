@@ -523,31 +523,46 @@ Try changing the log-fold change or p-value cutoff.")
         colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
         
     }
-    
-    
     return(ret)
 }
 
 
-
-
-
-
-
-if(FALSE)
-  {
-setMethod("publish",
+setMethod("objectToHTML",
     signature = signature(
-        object = "PFAMHyperGResult",
-        publicationType = "ANY"
+        object = "GeneSetCollection"
     ),
-    definition = function(object, report, 
-        pvalueCutoff = 0.01,categorySize=10, ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .PFAMhyperG.to.data.frame(object, report, pvalueCutoff = pvalueCutoff, categorySize)
-        publish(df, publicationType, ...)
-    }
-)
-}
+          definition = function(object, htmlRep, ...)
+          objectToHTML(.GeneSetCollection.to.html2(object, htmlRep, ...))
+          )
 
+
+.GeneSetCollection.to.html2 <- function(object, htmlRep, annotation.db=NULL, 
+    setStats=NULL, setPValues=NULL, geneStats = NULL)
+{
+    pages.dirname <- paste0('GeneSetCollectionPages', htmlRep$shortName)  
+    page.directory <- file.path(htmlRep$basePath, 
+        htmlRep$reportDirectory, pages.dirname)
+    .safe.dir.create(page.directory)  
+    gs.reportDirectory <- paste(htmlRep$reportDirectory, pages.dirname, sep="/")
+    makeGeneListPagesGSC(object, reportDir=gs.reportDirectory, 
+        annotation.db, geneStats = geneStats, baseUrl=htmlRep$baseUrl, 
+        basePath=htmlRep$basePath)
+   
+    setLink <- paste('<a href="',pages.dirname,"/", names(object), 
+        ".html",'">', names(object), '</a>', sep="")
+    descriptions <- sapply(object, description)
+
+    ret <- data.frame("GeneSet" = setLink, "Description" = descriptions,
+        stringsAsFactors = FALSE)
+    colnames(ret) <- c("Gene Set", "Description")
+
+    if(!is.null(setStats)){
+        ret <- cbind(ret, setStats)
+        colnames(ret)[ncol(ret)] <- "Gene Set Statistic"
+    }
+    if(!is.null(setPValues)){
+        ret <- cbind(ret, setPValues)
+        colnames(ret)[ncol(ret)] <- "Gene Set P-value"
+    }
+    return(ret)
+}

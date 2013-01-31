@@ -115,6 +115,7 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
     },
     addElement = function(name, value, ...)
     {
+      
       if(missing(name))
         name = paste("id", length(getNodeSet(.self$.reportDOM,"//body/div")) + 1, sep="")
       if(is.character(name))
@@ -143,7 +144,7 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       #call all currently assigned addElement handlers with the node for the div containing the new content
       sapply(.self$.handlers, function(fs, node) fs@addElement(node, fs@args$addElement), node= node)
       .self$.report[[name]] = node
-      TRUE
+      invisible(NULL)
 
 
     },

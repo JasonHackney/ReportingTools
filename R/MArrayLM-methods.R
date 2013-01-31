@@ -15,13 +15,19 @@ setMethod("publish",
     }
 )
 
+#need to be careful here that n doesn't get partial matched into name
 setMethod("publish",
     signature = signature(
         object = "MArrayLM",
         publicationType = "HTMLReportRef"
     ),
-    definition = function(object, publicationType, ...)
-          publicationType$addElement(value=object, ...)
+    definition = function(object, publicationType,
+      eSet, factor, n = 1000, 
+        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
+        make.plots = TRUE, ..., name)
+          publicationType$addElement(name = name, value=object, eSet = eSet, factor = factor,
+            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, coef = coef, 
+            adjust.method = adjust.method, make.plots = make.plots, ...)
 )
 
 

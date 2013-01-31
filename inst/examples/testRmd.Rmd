@@ -1,0 +1,31 @@
+This is a title
+===============================================
+
+       
+Wow this is some text! that is pretty cool that there is a paragraph here where we can describe the things we are doing. We will wax eloquently about the problem we are trying to solve and the approaches we have taken to solve it. This turns our reports into articles (sort of)!
+
+```{r message=FALSE, output="hide"}
+library(ReportingTools)
+library(XML)
+library(lattice)
+```
+
+```{r results="asis"}
+myrep = htmlReportRef(reportDirectory = "./",shortName="report2", handlers = ReportingTools:::knitrHandlers)
+```
+
+So now we can put in a data frame. It has all the functionality of the tables in HTML files generated via ReportingTools directly, but is inserted in the midst of the text sections from our Rmd file!
+
+```{r results="asis"}
+mydf = data.frame(x = rnorm(10), y=rnorm(10))
+myrep[["mydf"]] = mydf
+```
+
+That is a pretty table. I'm so glad I was able to put it into my Rmd document "easily"!
+
+
+Now we will try to put in an image:
+
+```{r results = "asis"}
+myrep[["pic"]] = xyplot(y~x, data = mydf)
+```

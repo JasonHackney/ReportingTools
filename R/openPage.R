@@ -98,7 +98,7 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
                     package="ReportingTools"), 
                 system.file("extdata/csslib/reprise.table.css", 
                     package="ReportingTools"))
-            
+            css.files = system.file("extdata/csslib/reprise.table.css", package = "ReportingTools")
             cssDir <- (file.path(pageDir,"csslib"))
             .safe.dir.create(cssDir, recursive=TRUE)
             

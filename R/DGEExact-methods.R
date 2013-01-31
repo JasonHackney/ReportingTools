@@ -22,9 +22,9 @@ setMethod("publish",
         object = "DGEExact",
         publicationType = "HTMLReportRef"
     ),
-    def = function(object, publicationType, ...)
+    def = function(object, publicationType, name, ...)
           {
-            publicationType$addElement(value= object, ...)
+            publicationType$addElement(name,value= object, ...)
             
           }
           )

@@ -84,3 +84,4 @@ setGeneric("worksheetCount<-",
         standardGeneric("worksheetCount<-")
 )
 
+setGeneric("objectToHTML", function(object, ...) standardGeneric("objectToHTML"))

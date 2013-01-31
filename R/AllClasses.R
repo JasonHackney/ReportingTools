@@ -1,3 +1,21 @@
+nullFun = function(...) TRUE
+
+#I'm envisioning each ReportHandlers set representing a distinct target (eg internal DOM, write to pipe, etc)
+#Currently args expects a named list of named lists, up to one for each function, eg list(finish = list(file = "myfile.html"))
+#we might want to make this an S4 class later?
+setClass("ReportHandlers",
+         representation = list(init = "function",
+           addElement = "function",
+           removeElement = "function",
+           finish = "function",
+           args = "ANY"),
+         prototype = list(init = nullFun,
+           addElement = nullFun,
+           removeElement = nullFun,
+           finish= nullFun,
+           args = NULL)
+         )
+
 setClass("BaseReport",
     representation = representation(
         shortName           = "character",

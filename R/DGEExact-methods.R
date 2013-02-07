@@ -24,7 +24,7 @@ setMethod("publish",
     ),
     def = function(object, publicationType, name, ...)
           {
-            publicationType$addElement(name,value= object, ...)
+            publicationType$addElement(name = name,value= object, ...)
             
           }
           )

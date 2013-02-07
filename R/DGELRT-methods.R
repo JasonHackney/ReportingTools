@@ -34,6 +34,11 @@ setMethod("publish",
     }
 )
 
+setMethod("publish", signature = signature(object = "DGELRT", publicationType = "HTMLReportRef"),
+          definition = function(object, publicationType, name, ...) publicationType$addElement(name = name, object, ...)
+          )
+          
+
 .DGELRT.to.data.frame <- function(object, annotation.db = 'org.Hs.eg', 
     pvalueCutoff = 0.01, n = 1000, lfc = 0, adjust.method='BH', 
     sort.method = 'p.value', ...)

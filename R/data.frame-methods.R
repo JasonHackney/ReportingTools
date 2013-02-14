@@ -79,7 +79,7 @@ setMethod("publish",
 
 setMethod("publish",
           signature = signature(object = "data.frame", publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, name, ...) publicationType$addElement(name, object, ...)
+          definition = function(object, publicationType, ..., name) publicationType$addElement(name, object, ...)
           )
 
 setMethod("publish",

@@ -6,3 +6,4 @@ knit2html("pfamtest.Rmd")
 knit2html("rnaseqtest.Rmd")
 
 knit2html("knitrformattest.Rmd")
+knit2html("extensibility.Rmd")

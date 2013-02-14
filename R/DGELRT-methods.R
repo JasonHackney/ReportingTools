@@ -35,7 +35,7 @@ setMethod("publish",
 )
 
 setMethod("publish", signature = signature(object = "DGELRT", publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, name, ...) publicationType$addElement(name = name, object, ...)
+          definition = function(object, publicationType, ..., name) publicationType$addElement(name = name, object, ...)
           )
           
 

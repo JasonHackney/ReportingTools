@@ -1,3 +1,30 @@
+setMethod("objectToHTML",
+          signature = signature(
+            object = "ANY"),
+          definition = function(object, report, ..., .toDF, .addColumns)
+          {
+            browser()
+            if(!missing(.toDF) && is.function(.toDF))
+              df = .toDF(object, ...)
+            else
+              df = toReportDF(object, ...)
+
+            if(!missing(.addColumns) && !is.null(.addColumns))
+              {
+                if(!is.list(.addColumns))
+                  .addColumns = list(.addColumns)
+
+                for(f in .addColumns)
+                  df = f(df, report, object = object, ...)
+              } else {
+                df = addReportColumns(df, report, object = object, ...)
+              }
+            objectToHTML(df, .toDF=.toDF, .addColumns = .addColumns)
+
+          })
+
+
+
 
 setMethod("objectToHTML",
           signature = signature(
@@ -15,10 +42,7 @@ setMethod("objectToHTML",
 
 setMethod("objectToHTML",
     signature = signature(
-        object          = "data.frame"
-
-      
-    ),
+        object          = "data.frame"),
     definition = function(object, report, tableTitle="",
       filter.columns = sapply(object, is.numeric), ...){
         
@@ -82,21 +106,6 @@ setMethod("objectToHTML",
             objectToHTML(df)
    
     })
-
-
-setMethod("objectToHTML",
-    signature = signature(
-        object = "GOHyperGResult"
-      ),
-    definition = function(object, 
-        pvalueCutoff = 0.01, categorySize = 10, ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .GOhyperG.to.data.frame(object, pvalueCutoff = pvalueCutoff,
-            categorySize = categorySize)
-        objectToHTML(df)
-    }
-)
 
 setMethod("objectToHTML",
           signature = signature(
@@ -170,7 +179,8 @@ setMethod("objectToHTML",
   }
 
 
-
+if(FALSE)
+{
 setMethod("objectToHTML",
           signature = signature(
         object = "GOHyperGResult"
@@ -183,7 +193,7 @@ setMethod("objectToHTML",
     }
 )
 
-
+}
           
 
 setMethod("objectToHTML",
@@ -413,9 +423,9 @@ setMethod("objectToHTML", signature = signature(
       }
 
 setMethod("publish", signature = signature(
-                       object = "MArratLM",
+                       object = "MArrayLM",
                        publicationType="HTMLReportRef"),
-          definition = function(object, publicationType, ...) publicationType$addElement(value = object, ...)
+          definition = function(object, publicationType,n = 1000, ..., name) publicationType$addElement(value = object,  n = n,...,  name = name)
           )
 
 setMethod("objectToHTML",
@@ -424,7 +434,7 @@ setMethod("objectToHTML",
       ),
     definition = function(object, publicationType, eSet, factor, n = 1000, 
         pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
-        make.plots = TRUE, ...){
+        make.plots = TRUE, ..., .addColumns, .toDF){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
         df <- .marrayLM.to.html2(object, publicationType, eSet, factor,

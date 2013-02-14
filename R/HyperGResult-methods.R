@@ -45,8 +45,8 @@ setMethod("publish",
           signature = signature(
             object = "GOHyperGResult",
             publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, ..., name)
-          publicationType$addElement(name, value = object, ...)
+          definition = function(object, publicationType, .addColumns, .toDF,..., name)
+          publicationType$addElement(name, value = object, .addColumns = .addColumns, .toDF = .toDF,...)
           )
 
 

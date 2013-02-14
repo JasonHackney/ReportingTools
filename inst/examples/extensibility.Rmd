@@ -1,0 +1,77 @@
+<style>
+p {font-size:large}
+</style>
+For this vignette we will examine the ALL dataset.  First we load our ReportingTools  package and the data.  This dataset is from a clinical trial in acute lymphoblastic leukemia (ALL) and  is available from Bioconductor.  
+
+```{r message=FALSE, output="hide"}
+library(ReportingTools)
+library(ALL)
+library(hgu95av2.db)
+library(genefilter)
+library(GOstats)
+library(limma)
+library(GSEAlm)
+library(GSEABase)
+data(ALL)
+
+ALL <- ALL[, ALL$mol.biol %in% c('NEG','BCR/ABL') &
+    !is.na(ALL$sex)]
+ALL$mol.biol <- factor(ALL$mol.biol, 
+    levels = c('NEG', 'BCR/ABL'))
+ALL <- featureFilter(ALL)
+```
+First we create a eBayes fit (but don't publish it):
+
+```{r results="asis"}
+model <- model.matrix(~mol.biol+sex, ALL)
+fit <- eBayes(lmFit(ALL, model))
+myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
+
+#publish(fit, myrep, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
+```
+
+Next we publish some hyperGTest results:
+
+```{r results="asis"}
+tt <- topTable(fit, coef = 2, n = 100)
+selectedIDs <- unlist(mget(tt$ID, hgu95av2ENTREZID))
+universeIDs <- unlist(mget(featureNames(ALL), hgu95av2ENTREZID))
+goParams <- new("GOHyperGParams", 
+    geneIds = selectedIDs, 
+    universeGeneIds = universeIDs, 
+    annotation = annotation(ALL), 
+    ontology = "BP", 
+    pvalueCutoff = 0.01,
+    conditional = TRUE, 
+    testDirection = "over")
+goResults <- hyperGTest(goParams)
+
+publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
+```
+
+But I really like the number 5, so lets try publishing our GO results again...:
+
+```{r results="asis"}
+fiveCol = function(df, ...) cbind(df, fives=5)
+publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg", .addColumns = fiveCol)
+```
+
+But now all my links and images are broken/gone! I've been thinking about the optimal interface to specify that you want to modify the default report df instead of the "core" one, but for now we can do this:
+
+```{r results="asis"}
+publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg", .addColumns = list(addReportColumns, fiveCol))
+```
+
+But now I'm tired of this same old table, lets change it up!
+
+```{r results="asis"}
+sillyHTML = function(obj,...) newXMLNode("h2", paste("What is this text doing here?! I'm supposed to be publishing an object of class ", class(obj), "! This was probably not a good use of .toHTML customization.", sep=""))
+publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg", .toHTML = sillyHTML)
+```
+
+That was probably overkill, Maybe we want a table, but we don't agree with some things in the default toReportDF method ...
+
+```{r results="asis"}
+sillyDF = function(...) data.frame(x=rnorm(10), y = rnorm(10, 4))
+publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg", .toDF = sillyDF, .addColumns = fiveCol)
+```

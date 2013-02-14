@@ -3,7 +3,7 @@ setMethod("objectToHTML",
             object = "ANY"),
           definition = function(object, report, ..., .toDF, .addColumns)
           {
-            browser()
+            #cat("I'm in the ANY method for objectToHTML")
             if(!missing(.toDF) && is.function(.toDF))
               df = .toDF(object, ...)
             else
@@ -46,7 +46,7 @@ setMethod("objectToHTML",
     definition = function(object, report, tableTitle="",
       filter.columns = sapply(object, is.numeric), ...){
         
-        
+        origdf = object
         if(nrow(object) == 0)
             stop("No rows available in data.")
         
@@ -91,10 +91,13 @@ setMethod("objectToHTML",
        #     p = page(publicationType))
        # invisible(p)
         #addToReport(object, publicationType, tableTitle = tableTitle, col.specs)
-        .writeHTMLTable(object, tableTitle = tableTitle, col.specs)
+        html = .writeHTMLTable(object, tableTitle = tableTitle, col.specs)
+        list(html=html, object = origdf)
     }
 )
 
+if(FALSE)
+  {
 setMethod("objectToHTML", 
           signature = signature(object = "HyperGResultBase"),
           definition = function(object, report,  
@@ -106,7 +109,7 @@ setMethod("objectToHTML",
             objectToHTML(df)
    
     })
-
+}
 setMethod("objectToHTML",
           signature = signature(
             object = "trellis"

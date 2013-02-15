@@ -2,11 +2,25 @@ toFileHandlers = new("ReportHandlers",
   finish = function(rep, args)
   {
     if(is.null(args$file))
-      file = file.path(rep$reportDirectory, paste(rep$shortName, ".html", sep=""))
+      file = file.path(rep$basePath, rep$reportDirectory, 
+          paste(rep$shortName, ".html", sep=""))
     else
       file = args$file
+    rep$addElement(".RTsplash", .makeSplash())
     saveXML(rep$.reportDOM, file = file)
   })
+
+.makeSplash <- function(){
+    hwLink <- hwrite("hwriter", link = "http://www.embl.de/~gpau/hwriter/index.html")
+    hwVersion <- sessionInfo()$otherPkgs[["hwriter"]]$Version
+    rtLink <- hwrite("ReportingTools", 
+        link = "http://research-pub.gene.com/ReportingTools/")
+    rtVersion <- sessionInfo()$otherPkgs[["ReportingTools"]]$Version
+    splash <- paste("\n<br/><br/><font size=\"-2\">(Page generated on ", 
+                date(), " by ", rtLink, " ", rtVersion, " and ", 
+                hwLink, " ", hwVersion, ")</font>", sep = "")
+    splash
+}
 
 toConnectionHandlers = new("ReportHandlers",
   init = function(node, args)

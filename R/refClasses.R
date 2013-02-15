@@ -74,10 +74,12 @@ baseReport = setRefClass("BaseReportRef",
         }
       }),
   methods = list(
-    addHandlers = function(handlers, init = nullFun, addElement = nullFun, removeElement = nullFun, finalize = nullFun)
+    addHandlers = function(handlers, init = nullFun, addElement = nullFun, 
+        removeElement = nullFun, finalize = nullFun)
     {
       if(missing(handlers) | is.null(handlers))
-      handlers = new("ReportHandlers", init = init, addElement = addElement, removeElement = removeElement, finalize = finalize)
+      handlers = new("ReportHandlers", init = init, addElement = addElement, 
+        removeElement = removeElement, finalize = finalize)
       .self$.handlers <- c(.handlers, handlers)
     },
     removeHandlers = function(pos = 1)
@@ -113,14 +115,20 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
             .toDF = .self$.addColumns[[klass]]
           html = objectToHTML(obj, .self, ..., .toDF=.toDF, .addColumns = .addColumns )
           
-          #prepping for conversion from text HTML nubuilding to XML construction Once the conversion is complete objectToHTML methods will be returning XMLInternalNode objects
-
-          #this is a bit hacky but oh well!! We may be getting a list with elements "html" and "object"
-          if(is.list(html))
+          #prepping for conversion from text HTML nubuilding to XML construction Once the
+          #conversion is complete objectToHTML methods will be returning XMLInternalNode
+          #objects
+          
+          #this is a bit hacky but oh well!! We may be getting a list with elements "html"
+          #and "object"
+          if(is(html, "XMLNodeSet"))
+          {
+              htmlcode <- html
+          } else if(is.list(html))
             {
               htmlcode = html$html
               obj = html$object
-            }
+          }
           else
             {
               htmlcode = html
@@ -139,10 +147,13 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
     finish = function()
     {
       sapply(.handlers, function(fs) fs@finish(.self, fs@args$finish))
-      #do we want to force a saveXML call here, or just assign one as a finalize event handler by default?
-      #For now we make people assign a handler, because sometimes we only want to send the content down a connection and not write a file.
+      # do we want to force a saveXML call here, or just assign one as a finalize
+      # event handler by default? For now we make people assign a handler,
+      # because sometimes we only want to send the content down a connection and
+      # not write a file.
     },
-    addElement = function(name, value, .toHTML = NULL, .toDF = NULL, .addColumns = NULL, ... )
+    addElement = function(name, value, .toHTML = NULL, .toDF = NULL, 
+        .addColumns = NULL, ... )
     {
       
       if(missing(name))
@@ -164,15 +175,18 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
         }
 
       #turn value into html nodes to add to DOM
-      newcontent = .self$prepare(value, .toHTML = .toHTML, .toDF = .toDF, .addColumns = .addColumns,... )
+      newcontent = .self$prepare(value, .toHTML = .toHTML, .toDF = .toDF, 
+          .addColumns = .addColumns,... )
       obj = newcontent$object
       newcontent=newcontent$html
       if(is.list(newcontent))
         addChildren(node, kids = newcontent)
       else
         addChildren(node, newcontent)
-      #call all currently assigned addElement handlers with the node for the div containing the new content
-      sapply(.self$.handlers, function(fs, node) fs@addElement(node, fs@args$addElement), node= node)
+      # call all currently assigned addElement handlers with the node for the div
+      # containing the new content
+      sapply(.self$.handlers, function(fs, node) 
+        fs@addElement(node, fs@args$addElement), node= node)
       .self$.report[[name]] = node
       invisible(obj)
 
@@ -192,7 +206,9 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       dom = startHTMLReport(...)
       .self$.reportDOM = dom
       sapply(handlers, function(h) h@init(dom, h@args$init))
-      .self$initFields(shortName = args$shortName, title = args$title, reportDirectory = args$reportDirectory, handlers = handlers, basePath = args$basePath, baseUrl = args$baseUrl)
+      .self$initFields(shortName = args$shortName, title = args$title, 
+          reportDirectory = args$reportDirectory, handlers = handlers, 
+          basePath = args$basePath, baseUrl = args$baseUrl)
 
     }
     )
@@ -208,7 +224,10 @@ htmlReportRef = function(shortName = "coolProject",
   .toDF = list(),
   .addColumns= list())
   {
-    htmlReport$new(title = title, shortName = shortName, reportDirectory = reportDirectory, handlers = handlers, basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, .toDF = .toDF, .addColumns  = .addColumns)
+    htmlReport$new(title = title, shortName = shortName, 
+        reportDirectory = reportDirectory, handlers = handlers, 
+        basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 
+        .toDF = .toDF, .addColumns  = .addColumns)
   }
 
 setMethod(   '[[<-', c(x="HTMLReportRef"),  function(x, i, ...,value)
@@ -217,7 +236,19 @@ setMethod(   '[[<-', c(x="HTMLReportRef"),  function(x, i, ...,value)
       x
     })
 
-setMethod("[[", c(x="HTMLReportRef"),  function(x, i, exact = TRUE) x$.report[[i, exact = exact]])
+setMethod("[[", c(x="HTMLReportRef"),  function(x, i, exact = TRUE) 
+    x$.report[[i, exact = exact]])
  
-setMethod("publish", signature = signature(object = "ANY", publicationType = "HTMLReportRef"), definition = function(object, publicationType, .addColumns = NULL, .toDF = NULL, ...) publicationType$addElement(value = object, ..., .addColumns = .addColumns, .toDF = .toDF ))
+setMethod("publish", 
+    signature = signature(object = "ANY", publicationType = "HTMLReportRef"), 
+    definition = function(object, publicationType, .addColumns = NULL, 
+        .toDF = NULL, ...) 
+        publicationType$addElement(value = object, ..., 
+            .addColumns = .addColumns, .toDF = .toDF ))
 
+setMethod("finish",
+    signature = signature(publicationType = "HTMLReportRef"),
+    definition = function(publicationType, ...){
+        publicationType$finish(...)
+    }
+)

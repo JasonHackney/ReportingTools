@@ -1,13 +1,13 @@
 setMethod("objectToHTML",
           signature = signature(
             object = "ANY"),
-          definition = function(object, report, ..., .toDF, .addColumns)
+          definition = function(object, report, .addColumns, .toDF, ...)
           {
             #cat("I'm in the ANY method for objectToHTML")
             if(!missing(.toDF) && is.function(.toDF))
-              df = .toDF(object, ...)
+              df = .toDF(object, report, ...) #XXX adding report here for the quick fix, this should be taken back out once the methods are properly sorted
             else
-              df = toReportDF(object, ...)
+              df = toReportDF(object, report,...)
 
             if(!missing(.addColumns) && !is.null(.addColumns))
               {
@@ -19,7 +19,7 @@ setMethod("objectToHTML",
               } else {
                 df = addReportColumns(df, report, object = object, ...)
               }
-            objectToHTML(df, .toDF=.toDF, .addColumns = .addColumns)
+            objectToHTML(df, report = report, .toDF=NULL, .addColumns = NULL)
 
           })
 
@@ -43,10 +43,32 @@ setMethod("objectToHTML",
 setMethod("objectToHTML",
     signature = signature(
         object          = "data.frame"),
-    definition = function(object, report, tableTitle="",
+    definition = function(object, report, .addColumns,   tableTitle="",
       filter.columns = sapply(object, is.numeric), ...){
-        
-        origdf = object
+
+       if(!missing(.addColumns) && !is.null(.addColumns))
+              {
+                if(!is.list(.addColumns))
+                  .addColumns = list(.addColumns)
+
+                for(f in .addColumns)
+                  object = f(object, report, object = object, ...)
+              } else {
+                object = addReportColumns(object, report, object = object, ...)
+              }
+
+      if(!missing(.addColumns) && !is.null(.addColumns))
+        {
+          if(!is.list(.addColumns))
+            .addColumns = list(.addColumns)
+          
+          for(f in .addColumns)
+            object = f(object, report, object = object, ...)
+        } else {
+          df = addReportColumns(object, report, object = object, ...)
+        }
+
+            
         if(nrow(object) == 0)
             stop("No rows available in data.")
         
@@ -92,7 +114,7 @@ setMethod("objectToHTML",
        # invisible(p)
         #addToReport(object, publicationType, tableTitle = tableTitle, col.specs)
         html = .writeHTMLTable(object, tableTitle = tableTitle, col.specs)
-        list(html=html, object = origdf)
+        list(html=html, object = object)
     }
 )
 
@@ -198,8 +220,9 @@ setMethod("objectToHTML",
 
 }
           
-
-setMethod("objectToHTML",
+if(FALSE)
+{
+  setMethod("objectToHTML",
     signature = signature(
         object = "PFAMHyperGResult"
       ),
@@ -209,7 +232,7 @@ setMethod("objectToHTML",
         objectToHTML(df)
     }
 )
-
+}
 
 
 .PFAMhyperG.to.htmlDF2 <- function(object, report, selectedIDs,annotation.db, pvalueCutoff = 0.01, categorySize=10)
@@ -267,7 +290,8 @@ setMethod("objectToHTML",
 
 
 
-
+if(FALSE)
+  {
 
 setMethod("objectToHTML", signature = signature(
                             object = "DGEExact"),
@@ -277,7 +301,7 @@ setMethod("objectToHTML", signature = signature(
             objectToHTML(df)
           }
           )
-
+}
 
 
 .DGEExact.to.html2 <- function(object, htmlRep, countTable, conditions, 
@@ -425,12 +449,9 @@ setMethod("objectToHTML", signature = signature(
           ret
       }
 
-setMethod("publish", signature = signature(
-                       object = "MArrayLM",
-                       publicationType="HTMLReportRef"),
-          definition = function(object, publicationType,n = 1000, ..., name) publicationType$addElement(value = object,  n = n,...,  name = name)
-          )
 
+if(FALSE)
+  {
 setMethod("objectToHTML",
     signature = signature(
         object = "MArrayLM"
@@ -446,7 +467,7 @@ setMethod("objectToHTML",
         objectToHTML(df)
       }
           )
-
+}
 
 .marrayLM.to.html2 <- function(object, htmlRep, eSet, factor, n = 1000,
     pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
@@ -543,7 +564,8 @@ Try changing the log-fold change or p-value cutoff.")
     return(ret)
 }
 
-
+if(FALSE)
+{
 setMethod("objectToHTML",
     signature = signature(
         object = "GeneSetCollection"
@@ -551,7 +573,7 @@ setMethod("objectToHTML",
           definition = function(object, htmlRep, ...)
           objectToHTML(.GeneSetCollection.to.html2(object, htmlRep, ...))
           )
-
+}
 
 .GeneSetCollection.to.html2 <- function(object, htmlRep, annotation.db=NULL, 
     setStats=NULL, setPValues=NULL, geneStats = NULL)
@@ -584,13 +606,14 @@ setMethod("objectToHTML",
     return(ret)
 }
 
-
+if(FALSE)
+  {
 setMethod("objectToHTML",
           signature = signature(object = "DGELRT"),
           definition = function(object, rep, ...)
            objectToHTML(.DGELRT.to.html2(object, rep, ...))
           )
-
+}
 .DGELRT.to.html2 <- function(object, htmlRep, countTable, conditions, 
     annotation.db = 'org.Hs.eg', pvalueCutoff = 0.01, n = 1000, lfc = 0, 
     adjust.method = 'BH', sort.method = 'p.value', make.plots = TRUE, ...)

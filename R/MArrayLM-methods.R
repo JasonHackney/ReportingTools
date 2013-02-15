@@ -16,6 +16,13 @@ setMethod("publish",
 )
 
 #need to be careful here that n doesn't get partial matched into name
+#setMethod("publish", signature = signature(
+#                       object = "MArrayLM",
+#                       publicationType="HTMLReportRef"),
+#          definition = function(object, publicationType,n = 1000, ..., name) publicationType$addElement(value = object,  n = n,...,  name = name)
+#          )
+
+
 setMethod("publish",
     signature = signature(
         object = "MArrayLM",

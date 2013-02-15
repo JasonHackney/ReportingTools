@@ -16,6 +16,7 @@ ALL <- ALL[, ALL$mol.biol %in% c('NEG','BCR/ABL') &
 ALL$mol.biol <- factor(ALL$mol.biol, 
     levels = c('NEG', 'BCR/ABL'))
 ALL <- featureFilter(ALL)
+fiveCol = function(df, ...) cbind(df,fives=5)
 ```
 First we have an eBayes fit:
 
@@ -24,7 +25,7 @@ model <- model.matrix(~mol.biol+sex, ALL)
 fit <- eBayes(lmFit(ALL, model))
 myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
 
-publish(fit, myrep, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
+publish(fit, myrep, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .addColumns = fiveCol)
 ```
 
 Next we publish some hyperGTest results:
@@ -43,7 +44,7 @@ goParams <- new("GOHyperGParams",
     testDirection = "over")
 goResults <- hyperGTest(goParams)
 
-publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
+publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg", .addColumns = list(addReportColumns, fiveCol))
 ```
 
 After that we we test some PFAMHyperG results:
@@ -58,7 +59,7 @@ pfamParams <- new("PFAMHyperGParams",
     testDirection = "over")
 PFAMResults <- hyperGTest(pfamParams)
 
-publish(PFAMResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3)
+publish(PFAMResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3, .addColumns = fiveCol)
 ```
 
 Finally we publish a GeneSetCollection, first without set statistics:
@@ -79,7 +80,7 @@ set4<-GeneSet(geneIds=sample(geneEids,300, replace=FALSE), setName="set4",
 	shortDescription="This is set4")
 geneSets<-GeneSetCollection(c(set1,set2,set3,set4))
 
-publish(geneSets, myrep, annotation.db="org.Hs.eg", name="geneset")
+publish(geneSets, myrep, annotation.db="org.Hs.eg", name="geneset", .addColumns=fiveCol)
 ```
 
 And then with them:
@@ -98,5 +99,5 @@ GSNorm<-GSNormalize(lm$tstat[2,], mat)
 pVals<-gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
 bestPval<-apply(pVals,1, min)
 
-publish(geneSets, myrep, annotation.db="org.Hs.eg", setStats=GSNorm, setPValues=2*bestPval, name="gsea")
+publish(geneSets, myrep, annotation.db="org.Hs.eg", setStats=GSNorm, setPValues=2*bestPval, name="gsea", .addColumns = fiveCol)
 ```

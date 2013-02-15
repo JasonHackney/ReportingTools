@@ -1,5 +1,5 @@
 setGeneric("publish",
-    function(object, publicationType, .addColumns = NULL, .toDF=NULL, ... )
+    function(object, publicationType, ... )
         standardGeneric("publish")
 )
 
@@ -84,7 +84,7 @@ setGeneric("worksheetCount<-",
         standardGeneric("worksheetCount<-")
 )
 
-setGeneric("objectToHTML", function(object, ...) standardGeneric("objectToHTML"))
+setGeneric("objectToHTML", function(object, report, .addColumns, .toDF, ...) standardGeneric("objectToHTML"))
 
 setGeneric("toReportDF", function(object, ...) standardGeneric("toReportDF"))
 

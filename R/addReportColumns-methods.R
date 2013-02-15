@@ -1,5 +1,10 @@
 setMethod("addReportColumns",
           signature = signature(
+            object = "ANY"),
+          definition=function(df, htmlRep, ...) df
+          )
+setMethod("addReportColumns",
+          signature = signature(
             object = "GOHyperGResult"),
           definition = function(df, htmlRep, object, annotation.db, selectedIDs, pvalueCutoff = 0.01, categorySize = 10,...)
           {

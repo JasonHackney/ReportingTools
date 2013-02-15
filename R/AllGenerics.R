@@ -79,12 +79,14 @@ setGeneric("worksheetCount",
         standardGeneric("worksheetCount")
 )
 
+
 setGeneric("worksheetCount<-",
     function(object, value)
         standardGeneric("worksheetCount<-")
 )
 
-setGeneric("objectToHTML", function(object, report, .addColumns, .toDF, ...) standardGeneric("objectToHTML"))
+setGeneric("objectToHTML", function(object, report, .addColumns, .toDF,
+                                    ...) standardGeneric("objectToHTML"))
 
 setGeneric("toReportDF", function(object, ...) standardGeneric("toReportDF"))
 

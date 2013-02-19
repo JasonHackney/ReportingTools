@@ -136,27 +136,27 @@ setMethod("objectToHTML",
           signature = signature(
             object = "trellis"
             ),
-          definition = function(object, ...)
+          definition = function(object, report, ...)
           {
-            .doImage(object, ...)
+            .doImage(object, report, ...)
           })
 
 setMethod("objectToHTML",
           signature = signature(
             object = "ggplot"
             ),
-          definition = function(object, ...)
+          definition = function(object, report, ...)
           {
-            .doImage(object, ...)
+            .doImage(object, report, ...)
           })
 
 setMethod("objectToHTML",
           signature = signature(
             object = "ggbio"
             ),
-          definition = function(object, ...)
+          definition = function(object, report, ...)
           {
-            .doImage(object, ...)
+            .doImage(object, report, ...)
           })
 
 

@@ -9,10 +9,13 @@ setMethod("publish",
         
         if(! validConnection(publicationType))
             stop("Cannot write to closed connection.")
-        
-        figure.directory <- file.path(basePath(publicationType), 
-            reportDirectory(publicationType), 'figures')
+
+       figures.dirname <- paste('figures', name(htmlRep), sep='')  
+        figure.directory <- file.path(basePath(htmlRep), 
+            reportDirectory(htmlRep), figures.dirname)
         .safe.dir.create(figure.directory)
+
+
         if(is.null(filename)){
             randomPart <- round(runif(1)*100000)
             filename <- paste(name(publicationType), randomPart, sep='-')

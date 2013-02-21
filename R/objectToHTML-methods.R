@@ -160,19 +160,20 @@ setMethod("objectToHTML",
           })
 
 
-.doImage = function(object, report, figureTitle=NULL, filename=NULL, 
+.doImage = function(object, htmlRep, figureTitle=NULL, filename=NULL, 
             png.height = 480, png.width = 480, pdf.height = 7, pdf.width = 7, 
   br = TRUE, ...)
   {
-                                        #figure.directory <- file.path(basePath(publicationType), 
-            #                              reportDirectory(publicationType), 'figures')
-    figure.directory <- file.path(report$basePath, 
-                                  report$reportDirectory, 'figures')
-    .safe.dir.create(figure.directory)
+
+     figures.dirname <- paste0('figures', htmlRep$shortName)  
+     figure.directory <- file.path(htmlRep$basePath, 
+            htmlRep$reportDirectory, figures.dirname)
+     .safe.dir.create(figure.directory)
+        
     if(is.null(filename)){
       randomPart <- round(runif(1)*100000)
                                         #filename <- paste(name(publicationType), randomPart, sep='-')
-      filename <- paste(report$shortName, randomPart, sep='-')
+      filename <- paste(htmlRep$shortName, randomPart, sep='-')
     }
                                         #filename <- sub('.png', '', filename)
                                         #filename <- sub('.jpg', '', filename)
@@ -184,13 +185,15 @@ setMethod("objectToHTML",
                                         #pdf.url <- paste(baseUrl(publicationType), 
                                         #                 reportDirectory(publicationType), 'figures', 
                                         #                   paste(filename, 'pdf', sep='.'), sep="/")
-    pdf.url <- paste(report$baseUrl,
-                     report$reportDirectory, 'figures', 
+    pdf.url <- paste(htmlRep$baseUrl,
+                     htmlRep$reportDirectory, figures.dirname, 
                      paste(filename, 'pdf', sep='.'), sep="/")
     
     png.filename <- file.path(figure.directory, 
                               paste(filename, 'png', sep='.'))
-    png.url <- paste('figures', paste(filename, 'png', sep='.'), sep="/")
+    png.url <- paste(htmlRep$baseUrl,
+                     htmlRep$reportDirectory, figures.dirname, 
+                     paste(filename, 'png', sep='.'), sep="/")
             
     cairo_pdf(filename = pdf.filename, height = pdf.height, width = pdf.width)
     print(object)

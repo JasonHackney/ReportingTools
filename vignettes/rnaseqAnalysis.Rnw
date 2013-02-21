@@ -58,16 +58,25 @@ rep.theme <- reporting.theme()
 rep.theme$superpose.symbol$col <- c("blue", "red")
 rep.theme$superpose.symbol$fill <- c("blue", "red")
 lattice.options(default.theme = rep.theme)
-
+## Publish a report of the top 10 genes with p-values < 0.05 and log-fold change > 2
+## In this case, the plots contain the counts from mockRnaSeqData, which are not normalized.
+## The publish function does not normalize counts for the countTable argument to allow for
+## flexibility in plotting various units (e.g. RPKM instead of counts).
 deReport <- HTMLReport(shortName = 'RNAseq_analysis_with_edgeR',
     title = 'RNA-seq analysis of differential expression using edgeR',
     reportDirectory = "./reports/",
     baseUrl = "")
-## Publish a report of the top 10 genes with p-values < 0.05 and log-fold change > 2
 publish(edgeR.de, deReport, mockRnaSeqData, 
 	conditions, annotation.db = 'org.Mm.eg', 
 	pvalueCutoff = .05, lfc = 2, n = 10)
 finish(deReport)
+
+## If you would like to plot normalized counts, run the following commands instead:
+## mockRnaSeqData.norm <- d$pseudo.counts
+## publish(edgeR.de, deReport, mockRnaSeqData.norm, 
+##        conditions, annotation.db = 'org.Mm.eg', 
+## 	  pvalueCutoff = .05, lfc = 2, n = 10)
+## finish(deReport)
 @ 
 
 \begin{figure}

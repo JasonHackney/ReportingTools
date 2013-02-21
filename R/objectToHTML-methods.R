@@ -158,6 +158,14 @@ setMethod("objectToHTML",
           {
             .doImage(object, report, ...)
           })
+setMethod("objectToHTML",
+          signature = signature(
+            object = "recordedplot"
+            ),
+          definition = function(object, report, ...)
+          {
+            .doImage(object, report, ...)
+          })
 
 
 .doImage = function(object, htmlRep, figureTitle=NULL, filename=NULL, 

@@ -56,13 +56,14 @@
         \code{publish(object, htmlReport, eSet, factor, n = 1000,
         pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH',
         make.plots = TRUE, ...)}
-        An MArrayLM object is coerced to a data.frame using a method
-        similar to the topTable function from the limma package. The
-        resulting table includes some selected feature data, and the log
-        fold change and p-value from the linear model. A glyph showing
-        expression levels of each gene are also plotted, based on the
-        expression values from the ExpressionSet given in eSet, and the
-        levels set in factor.
+        An MArrayLM object is coerced to a data.frame using a method similar to
+        the topTable function from the limma package. The resulting table
+        includes some selected feature data, and the log fold change and
+        adjusted p-value from the linear model. The p-value adjustment method is
+        set using the ``adjust.method'' argument. A glyph showing expression
+        levels of each gene are also optionally plotted, based on the expression
+        values from the ExpressionSet given in eSet, and the levels set in
+        factor.
       
     
         DGEExact:\cr
@@ -72,11 +73,14 @@
         DGEExact objects are coerced to a data.frame using the topTags function
         from the edgeR package and filtered base on pvalueCutoff and lfc. The
         resulting table includes feature data, derived from the annotation
-        package defined in annotation.db. For this to work, the feature names in
-        the DGEExact object and the countTable have to be the primary identifier
-        from the annotation packge. In most cases, the primary identifier will
-        be Entrez Gene IDs. The counts stored in countTable should be in units
-        of counts per million provided by the cpm function in the edgeR package.
+        package defined in annotation.db, along with the fold change and
+        adjusted p-value. For this to work, the feature names in the DGEExact
+        object and the countTable have to be the primary identifier from the
+        annotation packge. In most cases, the primary identifier will be Entrez
+        Gene IDs. The counts stored in countTable should be in units of counts
+        per million provided by the cpm function in the edgeR package. The
+        p-value adjustment method can be set using the ``adjust.method''
+        argument.
 
         DGELRT:\cr
         \code{publish(object, htmlReport, countTable, conditions, 
@@ -85,11 +89,14 @@
         DGELRT objects are coerced to a data.frame using the topTags function
         from the edgeR package and filtered base on pvalueCutoff and lfc. The
         resulting table includes feature data, derived from the annotation
-        package defined in annotation.db. For this to work, the feature names in
-        the DGELRT object and the countTable have to be the primary identifier
-        from the annotation packge. In most cases, the primary identifier will
-        be Entrez Gene IDs. The counts stored in countTable should be in units
-        of counts per million provided by the cpm function in the edgeR package.
+        package defined in annotation.db, along with the fold change and
+        adjusted p-value. For this to work, the feature names in the DGELRT
+        object and the countTable have to be the primary identifier from the
+        annotation packge. In most cases, the primary identifier will be Entrez
+        Gene IDs. The counts stored in countTable should be in units of counts
+        per million provided by the cpm function in the edgeR package. The
+        p-value adjustment method can be set using the ``adjust.method''
+        argument.
       
         HyperGResultBase, GOHyperGResult, PFAMHyperGResult:\cr
         \code{publish(object, htmlReport, selectedIDs, annotation.db, 

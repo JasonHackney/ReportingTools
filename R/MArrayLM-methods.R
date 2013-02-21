@@ -3,9 +3,9 @@ setMethod("publish",
         object = "MArrayLM",
         publicationType = "HTMLReport"
     ),
-    definition = function(object, publicationType, eSet, factor, n = 1000, 
-        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
-        make.plots = TRUE, ...){
+    definition = function(object, publicationType, eSet = NULL, factor = NULL, 
+        n = 1000, pvalueCutoff = 0.01, lfc = 0, coef = NULL, 
+        adjust.method = 'BH', make.plots = !is.null(eSet), ...){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
         df <- .marrayLM.to.html(object, publicationType, eSet, factor,
@@ -58,8 +58,8 @@ setMethod("publish",
 
 
 
-.marrayLM.to.data.frame <- function(object, eSet, n = 1000, pvalueCutoff = 0.01,
-    lfc = 0, adjust.method='BH', coef = NULL, ...)
+.marrayLM.to.data.frame <- function(object, eSet = NULL, n = 1000, 
+    pvalueCutoff = 0.01, lfc = 0, adjust.method='BH', coef = NULL, ...)
 {
     dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
         coef = coef, adjust.method = adjust.method, ...)
@@ -72,30 +72,39 @@ setMethod("publish",
     padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
     padj <- padj[selection, coef]
     object <- object[selection, coef]
-    eSet <- eSet[selection, ]
     
-    
-    ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
-        error=function(e){ return(FALSE) })
+    ## If there's an eSet, try to get the featureData from the appropriate
+    ## annotation package. If there's no annotation package, get it from the
+    ## featureData of the eSet itself. If neither are available, try to get it
+    ## from the 'genes' slot in the MArrayLM object itself
+    fdata <- NULL
+    if(!is.null(eSet)){
+        eSet <- eSet[selection, ]
         
-    if(inherits(ann.map.available, "AnnDbBimap")){
-        fdata <- data.frame(
-            ProbeId = featureNames(eSet),
-            EntrezId = unlist(mget(featureNames(eSet), 
-                getAnnMap("ENTREZID", annotation(eSet)))),
-            Symbol = unlist(mget(featureNames(eSet), 
-                getAnnMap("SYMBOL", annotation(eSet)))),
-            GeneName = unlist(mget(featureNames(eSet), 
-                getAnnMap("GENENAME", annotation(eSet)))),
-            stringsAsFactors = FALSE
-        )
-    } else {
-        if(ncol(fData(eSet)) > 0){
-            fdata <- fData(eSet)
+        ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
+            error=function(e){ return(FALSE) })
+
+        if(inherits(ann.map.available, "AnnDbBimap")){
+            fdata <- data.frame(
+                ProbeId = featureNames(eSet),
+                EntrezId = unlist(mget(featureNames(eSet), 
+                    getAnnMap("ENTREZID", annotation(eSet)))),
+                Symbol = unlist(mget(featureNames(eSet), 
+                    getAnnMap("SYMBOL", annotation(eSet)))),
+                GeneName = unlist(mget(featureNames(eSet), 
+                    getAnnMap("GENENAME", annotation(eSet)))),
+                stringsAsFactors = FALSE
+            )
         } else {
-            fdata <- data.frame(ProbeId = featureNames(eSet), stringsAsFactors = FALSE)
+            if(ncol(fData(eSet)) > 0){
+                fdata <- fData(eSet)
+            }
         }
     }
+    if( is.null(fdata) ){
+        fdata <- object$genes
+    }
+    
     
     ret <- data.frame(
         fdata,
@@ -108,14 +117,14 @@ setMethod("publish",
     colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
     
     pv.cols <- (ncol(fdata)+ncol(object$coef)+1):ncol(ret)
-    colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+    colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
     
     return(ret)
 }
 
-.marrayLM.to.html <- function(object, htmlRep, eSet, factor, n = 1000,
-    pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
-    make.plots = TRUE, ...)
+.marrayLM.to.html <- function(object, htmlRep, eSet = NULL, factor = NULL, 
+    n = 1000, pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
+    make.plots = !is.null(eSet), ...)
 {
     
     dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
@@ -130,28 +139,37 @@ Try changing the log-fold change or p-value cutoff.")
     padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
     padj <- padj[selection, coef]
     object <- object[selection, coef]
-    eSet <- eSet[selection, ]
     
-    ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
-        error=function(e){ return(FALSE) })
+    ## If there's an eSet, try to get the featureData from the appropriate
+    ## annotation package. If there's no annotation package, get it from the
+    ## featureData of the eSet itself. If neither are available, try to get it
+    ## from the 'genes' slot in the MArrayLM object itself
+    fdata <- NULL
+    if(! is.null(eSet) ){
+        eSet <- eSet[selection, ]
+    
+        ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
+            error=function(e){ return(FALSE) })
         
-    if(inherits(ann.map.available, "AnnDbBimap")){
-        fdata <- data.frame(
-            ProbeId = featureNames(eSet),
-            EntrezId = unlist(mget(featureNames(eSet), 
-                getAnnMap("ENTREZID", annotation(eSet)))),
-            Symbol = unlist(mget(featureNames(eSet), 
-                getAnnMap("SYMBOL", annotation(eSet)))),
-            GeneName = unlist(mget(featureNames(eSet), 
-                getAnnMap("GENENAME", annotation(eSet)))),
-            stringsAsFactors = FALSE
-        )
-    } else {
-        if(ncol(fData(eSet)) > 0){
-            fdata <- fData(eSet)
+        if(inherits(ann.map.available, "AnnDbBimap")){
+            fdata <- data.frame(
+                ProbeId = featureNames(eSet),
+                EntrezId = unlist(mget(featureNames(eSet), 
+                    getAnnMap("ENTREZID", annotation(eSet)))),
+                Symbol = unlist(mget(featureNames(eSet), 
+                    getAnnMap("SYMBOL", annotation(eSet)))),
+                GeneName = unlist(mget(featureNames(eSet), 
+                    getAnnMap("GENENAME", annotation(eSet)))),
+                stringsAsFactors = FALSE
+            )
         } else {
-            fdata <- data.frame(featureNames(eSet), stringsAsFactors = FALSE)
+            if(ncol(fData(eSet)) > 0){
+                fdata <- fData(eSet)
+            }
         }
+    }
+    if( is.null(fdata) ){
+        fdata <- object$genes
     }
     
     if("EntrezId" %in% colnames(fdata)){
@@ -172,9 +190,13 @@ Try changing the log-fold change or p-value cutoff.")
         colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
 
         pv.cols <- (ncol(fdata)+1+length(fc.cols)):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
         
     } else {
+        if(is.null(eSet) || is.null(factor)){
+            stop("Can't make plots if either eSet or factor are not set.")
+        }
+        
         ret <- data.frame(
             fdata,
             Image = rep("", nrow(fdata)),
@@ -202,7 +224,7 @@ Try changing the log-fold change or p-value cutoff.")
         colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
         
         pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
         
     }
     

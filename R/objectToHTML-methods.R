@@ -383,7 +383,7 @@ setMethod("objectToHTML", signature = signature(
     }
     
     colnames(ret)[which(colnames(ret) == 'dat.lfc.logFC')] <- 'logFC'
-    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'p-Value'
+    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'Adjusted p-Value'
     
     return(ret)
 }
@@ -469,9 +469,9 @@ setMethod("objectToHTML",
           )
 }
 
-.marrayLM.to.html2 <- function(object, htmlRep, eSet, factor, n = 1000,
-    pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
-    make.plots = TRUE, ...)
+.marrayLM.to.html2 <- function(object, htmlRep, eSet = NULL, factor = NULL, 
+    n = 1000, pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
+    make.plots = !is.null(eSet), ...)
 {
     
     dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
@@ -486,28 +486,33 @@ Try changing the log-fold change or p-value cutoff.")
     padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
     padj <- padj[selection, coef]
     object <- object[selection, coef]
-    eSet <- eSet[selection, ]
     
-    ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
-        error=function(e){ return(FALSE) })
+    fdata <- NULL
+    if(!is.null(eSet)){
+        eSet <- eSet[selection, ]
+    
+        ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 
+            error=function(e){ return(FALSE) })
         
-    if(inherits(ann.map.available, "AnnDbBimap")){
-        fdata <- data.frame(
-            ProbeId = featureNames(eSet),
-            EntrezId = unlist(mget(featureNames(eSet), 
-                getAnnMap("ENTREZID", annotation(eSet)))),
-            Symbol = unlist(mget(featureNames(eSet), 
-                getAnnMap("SYMBOL", annotation(eSet)))),
-            GeneName = unlist(mget(featureNames(eSet), 
-                getAnnMap("GENENAME", annotation(eSet)))),
-            stringsAsFactors = FALSE
-        )
-    } else {
-        if(ncol(fData(eSet)) > 0){
-            fdata <- fData(eSet)
+        if(inherits(ann.map.available, "AnnDbBimap")){
+            fdata <- data.frame(
+                ProbeId = featureNames(eSet),
+                EntrezId = unlist(mget(featureNames(eSet), 
+                    getAnnMap("ENTREZID", annotation(eSet)))),
+                Symbol = unlist(mget(featureNames(eSet), 
+                    getAnnMap("SYMBOL", annotation(eSet)))),
+                GeneName = unlist(mget(featureNames(eSet), 
+                    getAnnMap("GENENAME", annotation(eSet)))),
+                stringsAsFactors = FALSE
+            )
         } else {
-            fdata <- data.frame(featureNames(eSet), stringsAsFactors = FALSE)
+            if(ncol(fData(eSet)) > 0){
+                fdata <- fData(eSet)
+            } 
         }
+    }
+    if(is.null(fdata)){
+        fdata <- object$genes
     }
     
     if("EntrezId" %in% colnames(fdata)){
@@ -528,7 +533,7 @@ Try changing the log-fold change or p-value cutoff.")
         colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
 
         pv.cols <- (ncol(fdata)+1+length(fc.cols)):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
         
     } else {
         ret <- data.frame(
@@ -558,7 +563,7 @@ Try changing the log-fold change or p-value cutoff.")
         colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
         
         pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'p-Value')
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
         
     }
     return(ret)
@@ -695,7 +700,7 @@ setMethod("objectToHTML",
     }
     
     colnames(ret)[which(colnames(ret) == 'dat.lfc.logFC')] <- 'logFC'
-    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'p-Value'
+    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'Adjusted p-Value'
     
     return(ret)
 }

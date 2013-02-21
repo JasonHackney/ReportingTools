@@ -95,7 +95,7 @@ setMethod("publish",
     )
 
     colnames(ret)[which(colnames(ret) == 'dat.lfc.logFC')] <- 'logFC'
-    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'p-Value'
+    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'Adjusted p-Value'
     
     return(ret)
 }
@@ -180,7 +180,7 @@ setMethod("publish",
     }
     
     colnames(ret)[which(colnames(ret) == 'dat.lfc.logFC')] <- 'logFC'
-    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'p-Value'
+    colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'Adjusted p-Value'
     
     return(ret)
 }

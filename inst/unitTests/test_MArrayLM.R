@@ -17,8 +17,8 @@ test_1dataframe <- function(){
 }
 
 test_2html <- function(){
-    htmlRep <- HTMLReport("testhtmlPage2", reportDirectory = 'testHTMLDirectory',
-        title = "Test Report 2")
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage", 
+        reportDirectory = 'testHTMLDirectory', title = "Test MArrayLM Report")
 
     html.df <- ReportingTools:::.marrayLM.to.html(fit, htmlRep, ALL, 
         factor=ALL$mol.biol, coef=2, n=100)
@@ -30,8 +30,8 @@ test_2html <- function(){
 }
 
 test_3fdata <- function(){
-    htmlRep <- HTMLReport("testhtmlPage2", reportDirectory = 'testHTMLDirectory',
-        title = "Test Report 2")
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage",
+        reportDirectory = 'testHTMLDirectory', title = "Test MArrayLM Report")
 
     fd <- data.frame(
         ProbeId = featureNames(ALL),
@@ -39,17 +39,32 @@ test_3fdata <- function(){
             ifnotfound=NA)),
         stringsAsFactors = FALSE
     )
+    
     ALL2 <- ALL
     annotation(ALL2) <- ""
     df <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL2, coef=2, n=100)
     checkTrue(all.equal(colnames(df), 
-        c("ProbeId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL p-Value")))
+        c("ID", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
     
     ALL3 <- ALL
     annotation(ALL3) <- ""
     fData(ALL3) <- fd
     df <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL3, coef=2, n=100)
     checkTrue(all.equal(colnames(df), 
-        c("ProbeId", "EntrezId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL p-Value")))
+        c("ProbeId", "EntrezId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
     
+}
+
+test_4publishNoFigures <- function(){
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage2", 
+        reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 2")
+    publish(fit, htmlRep, coef = 2, n = 100)
+    finish(htmlRep)
+}
+
+test_5publish <- function(){
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage3", 
+        reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 3")
+    publish(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2, n = 100)
+    finish(htmlRep)
 }

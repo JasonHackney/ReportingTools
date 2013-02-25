@@ -3,7 +3,8 @@ library(limma)
 library(hgu95av2.db)
 
 data(ALL)
-model <- model.matrix(~mol.biol, ALL)
+ALL <- ALL[, !is.na(ALL$sex)]
+model <- model.matrix(~mol.biol+sex, ALL)
 fit <- eBayes(lmFit(ALL, model))
 max.lfc <- max(fit$coef[,2])+1
 
@@ -67,4 +68,11 @@ test_5publish <- function(){
         reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 3")
     publish(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2, n = 100)
     finish(htmlRep)
+}
+
+test_6dataframe_2coefs <- function(){
+    df <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL, coef = 2:3, 
+        n = 100)
+    checkTrue(all.equal(colnames(df), c("ProbeId", "EntrezId", "Symbol", "GeneName",
+        "mol.biolBCR/ABL logFC", "mol.biolE2A/PBX1 logFC", "Adjusted p-Value")))
 }

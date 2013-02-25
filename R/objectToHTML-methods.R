@@ -490,13 +490,23 @@ setMethod("objectToHTML",
     if(is.null(coef))
         coef <- 1:ncol(object)
     
-    selection <- as.numeric(rownames(dat))
-    if(length(selection) == 0)
-        stop("No probes meet selection criteria. 
-Try changing the log-fold change or p-value cutoff.")
-    padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
-    padj <- padj[selection, coef]
-    object <- object[selection, coef]
+    if(length(coef) == 1){
+        selection <- as.numeric(rownames(dat))
+        if(length(selection) == 0)
+            stop("No probes meet selection criteria. 
+    Try changing the log-fold change or p-value cutoff.")
+        padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
+        padj <- padj[selection, coef]
+        object <- object[selection, coef]
+    } else {
+        selection <- rownames(dat)
+        if(length(selection) == 0)
+            stop("No probes meet selection criteria. 
+    Try changing the log-fold change or p-value cutoff.")
+        padj <- dat$adj.P.Val
+        object <- object[selection, coef]
+    }
+    
     
     fdata <- NULL
     if(!is.null(eSet)){
@@ -547,6 +557,10 @@ Try changing the log-fold change or p-value cutoff.")
         colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
         
     } else {
+        if(is.null(eSet) || is.null(factor)){
+            stop("Can't make plots if either eSet or factor are not set.")
+        }
+        
         ret <- data.frame(
             fdata,
             Image = rep("", nrow(fdata)),
@@ -573,8 +587,13 @@ Try changing the log-fold change or p-value cutoff.")
         fc.cols <- (ncol(fdata)+2):(ncol(fdata)+1+ncol(object$coef))
         colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
         
-        pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+        if(length(coef) == 1){
+            pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
+            colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+        } else {
+            pv.col <- ncol(ret)
+            colnames(ret)[pv.col] <- "Adjusted p-Value"
+        }
         
     }
     return(ret)

@@ -66,12 +66,22 @@ setMethod("publish",
     if(is.null(coef))
         coef <- 1:ncol(object)
     
-    selection <- as.numeric(rownames(dat))
-    if(length(selection) == 0)
-        stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
-    padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
-    padj <- padj[selection, coef]
-    object <- object[selection, coef]
+    ## If only one coefficient is selected, then topTable is called
+    ## otherwise topTableF is called, returning different values
+    if(length(coef) == 1){
+        selection <- as.numeric(rownames(dat))
+        if(length(selection) == 0)
+            stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
+        padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
+        padj <- padj[selection, coef]
+        object <- object[selection, coef]
+    } else {
+        selection <- rownames(dat)
+        if(length(selection) == 0)
+            stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
+        padj <- dat$adj.P.Val
+        object <- object[selection, coef]        
+    }
     
     ## If there's an eSet, try to get the featureData from the appropriate
     ## annotation package. If there's no annotation package, get it from the
@@ -115,9 +125,14 @@ setMethod("publish",
     
     fc.cols <- (ncol(fdata)+1):(ncol(fdata)+ncol(object$coef))
     colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
+    if(length(coef) == 1){
+        pv.cols <- (ncol(fdata)+ncol(object$coef)+1):ncol(ret)
+        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+    } else {
+        pv.col <- ncol(ret)
+        colnames(ret)[pv.col] <- "Adjusted p-Value"
+    }
     
-    pv.cols <- (ncol(fdata)+ncol(object$coef)+1):ncol(ret)
-    colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
     
     return(ret)
 }
@@ -132,13 +147,20 @@ setMethod("publish",
     if(is.null(coef))
         coef <- 1:ncol(object)
     
-    selection <- as.numeric(rownames(dat))
-    if(length(selection) == 0)
-        stop("No probes meet selection criteria. 
-Try changing the log-fold change or p-value cutoff.")
-    padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
-    padj <- padj[selection, coef]
-    object <- object[selection, coef]
+    if(length(coef) == 1){
+        selection <- as.numeric(rownames(dat))
+        if(length(selection) == 0)
+            stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
+        padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
+        padj <- padj[selection, coef]
+        object <- object[selection, coef]
+    } else {
+        selection <- rownames(dat)
+        if(length(selection) == 0)
+            stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
+        padj <- dat$adj.P.Val
+        object <- object[selection, coef]        
+    }
     
     ## If there's an eSet, try to get the featureData from the appropriate
     ## annotation package. If there's no annotation package, get it from the
@@ -223,8 +245,13 @@ Try changing the log-fold change or p-value cutoff.")
         fc.cols <- (ncol(fdata)+2):(ncol(fdata)+1+ncol(object$coef))
         colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
         
-        pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+        if(length(coef) == 1){
+            pv.cols <- (ncol(fdata)+2+length(fc.cols)):ncol(ret)
+            colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+        } else {
+            pv.col <- ncol(ret)
+            colnames(ret)[pv.col] <- "Adjusted p-Value"
+        }
         
     }
     

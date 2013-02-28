@@ -185,8 +185,8 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
         addChildren(node, newcontent)
       # call all currently assigned addElement handlers with the node for the div
       # containing the new content
-      sapply(.self$.handlers, function(fs, node) 
-        fs@addElement(node, fs@args$addElement), node= node)
+      sapply(.self$.handlers, function(fs, node, name) 
+        fs@addElement(node, name, fs@args$addElement), node= node, name=name)
       .self$.report[[name]] = node
       invisible(obj)
 

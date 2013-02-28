@@ -1,3 +1,9 @@
+#init expects node, args
+#addElement and removeElement expect node, name, args
+#finish expects report, args
+
+
+
 toFileHandlers = new("ReportHandlers",
   finish = function(rep, args)
   {
@@ -30,7 +36,7 @@ toConnectionHandlers = new("ReportHandlers",
     chars = gsub("</body>.*</html>", "", chars)
     cat(chars, file = args$connection)
   },
-  addElement = function(node, args)
+  addElement = function(node, name, args)
   {
     cat(as.character(node), file=args$connectio)
   },
@@ -47,8 +53,19 @@ knitrHandlers = new("ReportHandlers",
     grabScriptAndStyle(node)
 
   },
-  addElement = function(node, args)
+  addElement = function(node, name, args)
   {
     cat(saveXML(node))
   }
   )
+  
+ shinyHandlers = new("ReportHandlers",
+   addElement = function(node, name, args)
+   {
+     cat(saveXML(node))
+     cat(paste0("<script>\n",
+               "$('#",
+               name, " .dataTable').each(configureTable);\n",
+               "</script>\n"))
+   }
+   )

@@ -13,10 +13,7 @@ toFileHandlers = new("ReportHandlers",
     else
       file = args$file
     #not sure if the splash should be an actual report element...
-    #also, don't want to add more than one if we are working off an existing report
-    #I'll put this check in here for now
-    if(!(".RTsplash" %in% names(rep$.report)))
-      rep$addElement(".RTsplash", .makeSplash())
+    rep$addElement(".RTsplash", .makeSplash())
     saveXML(rep$.reportDOM, file = file)
   })
 
@@ -32,16 +29,19 @@ fileWIndexHandlers = new("ReportHandlers",
           paste(rep$shortName, ".html", sep=""))
     else
       file = args$file
-    elementids  = getNodeSet(rep$.reportDOM, "//div[@class='ReportingTools']/@id")
+    elementids  = xpathSApply(rep$.reportDOM, "//div[@class='ReportingTools']/@id")
     hnodes =  getNodeSet(rep$.reportDOM, "/html/body/h1|/html/body/h2|/html/body/h3")
-    tabcontents = newXMLNode("div", attrs = list(class="TableOfContents"),
-      kids = unlist(lapply(elementids, function(id)
-        {
-          list(
-            newXMLNode("a", id, attrs = list(href = paste0("#", id))),
-            newXMLNode("br"))
-        }))
-      )
+    tabcontents = Link(elementids, paste0("#", elementids))
+    browser()
+    
+ #   tabcontents = newXMLNode("div", attrs = list(class="TableOfContents"),
+ #     kids = unlist(lapply(elementids, function(id)
+ #       {
+ #         list(
+ #           newXMLNode("a", id, attrs = list(href = paste0("#", id))),
+ #           newXMLNode("br"))
+ #       }))
+ #     )
       
     if(length(hnodes))
       addSibling(hnodes[[1]], tabcontents, after=TRUE)
@@ -51,10 +51,7 @@ fileWIndexHandlers = new("ReportHandlers",
         addChildren(body, tabcontents, at=1)
       }
     #not sure if the splash should be an actual report element...
-    #also, don't want to add more than one if we are working off an existing report
-    #I'll put this check in here for now
-    if(!(".RTsplash" %in% names(rep$.report)))
-      rep$addElement(".RTsplash", .makeSplash())
+    rep$addElement(".RTsplash", .makeSplash())
     saveXML(rep$.reportDOM, file = file)
   })
 

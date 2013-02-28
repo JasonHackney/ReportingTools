@@ -91,3 +91,5 @@ setGeneric("objectToHTML", function(object, report, .addColumns, .toDF,
 setGeneric("toReportDF", function(object, ...) standardGeneric("toReportDF"))
 
 setGeneric("addReportColumns", function(df, htmlRep, object, ...) standardGeneric("addReportColumns"))
+
+setGeneric("Link", function(obj, target = NA) standardGeneric("Link"))

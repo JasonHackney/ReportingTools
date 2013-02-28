@@ -140,7 +140,8 @@ setMethod("objectToHTML",
           {
             .doImage(object, report, ...)
           })
-
+if(require(ggplot2))
+  {
 setMethod("objectToHTML",
           signature = signature(
             object = "ggplot"
@@ -149,8 +150,10 @@ setMethod("objectToHTML",
           {
             .doImage(object, report, ...)
           })
-
-setMethod("objectToHTML",
+}
+if(require(ggbio))
+  {
+    setMethod("objectToHTML",
           signature = signature(
             object = "ggbio"
             ),
@@ -158,6 +161,7 @@ setMethod("objectToHTML",
           {
             .doImage(object, report, ...)
           })
+  }
 setMethod("objectToHTML",
           signature = signature(
             object = "recordedplot"

@@ -32,7 +32,22 @@ baseReport = setRefClass("BaseReportRef",
       if(missing(val))
         .title
       else
-        .self$.title <- val
+        {
+          .self$.title <- val
+          #if we have an HTML document, change/add the title node
+          if(is(.reportDOM, "XMLInternalDocument"))
+            {
+              tnode = getNodeSet(.reportDOM, "/html/head/title")
+              if(length(tnode))
+                xmlValue(tnode[[1]]) = val
+              else
+                {
+                  head = getNodeSet(.reportDOM, "/html/head")[[1]]
+                  addChildren(head, newXMLNode("title", val))}
+            }
+          .title
+              
+        }
     },
     .reportDirectory = "character",
     reportDirectory = function(val)
@@ -40,7 +55,8 @@ baseReport = setRefClass("BaseReportRef",
       if(missing(val))
         .reportDirectory
       else
-        .self$.reportDirectory <- val
+        #.self$.reportDirectory <- val
+        .reportDirectory <<- val
     },
     .report = "list",
     .reportDOM = "ANY",
@@ -78,9 +94,11 @@ baseReport = setRefClass("BaseReportRef",
         removeElement = nullFun, finalize = nullFun)
     {
       if(missing(handlers) | is.null(handlers))
-      handlers = new("ReportHandlers", init = init, addElement = addElement, 
-        removeElement = removeElement, finalize = finalize)
-      .self$.handlers <- c(.handlers, handlers)
+        handlers2 = new("ReportHandlers", init = init, addElement = addElement, 
+          removeElement = removeElement, finalize = finalize)
+      else
+        handlers2 = handlers
+      .self$.handlers <- c(.handlers, handlers2)
     },
     removeHandlers = function(pos = 1)
     {
@@ -103,17 +121,21 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       #if the user has overridden  the html conversion for this class, we use that
       klass = class(obj)
       f = if(missing(.toHTML) || is.null(.toHTML)) .self$.toHTML[[klass]] else .toHTML
-      if(!is.null(f))
+      if(is.function(f))
         {
           ret = f(obj, ...)
         }
       else
         {
           if(missing(.toDF) || is.null(.toDF))
-            .toDF = .self$.toDF[[klass]]
+            .toDF2 = .self$.toDF[[klass]]
+          else
+            .toDF2 = .toDF
           if(missing(.addColumns) || is.null(.addColumns))
-            .toDF = .self$.addColumns[[klass]]
-          html = objectToHTML(obj, .self, ..., .toDF=.toDF, .addColumns = .addColumns )
+            .addColumns2 = .self$.addColumns[[klass]]
+          else
+            .addColumns2 = .addColumns
+          html = objectToHTML(obj, .self, ..., .toDF=.toDF2, .addColumns = .addColumns2 )
           
           #prepping for conversion from text HTML nubuilding to XML construction Once the
           #conversion is complete objectToHTML methods will be returning XMLInternalNode
@@ -171,7 +193,7 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
         } else {
           #create new div with the specified id and add it to the body of the HTML page
           body = getNodeSet(.self$.reportDOM, "//body")[[1]]
-          node = newXMLNode("div", attrs= list(id=name), parent=body)
+          node = newXMLNode("div", attrs= list(id=name, class = "ReportingTools"), parent=body)
         }
 
       #turn value into html nodes to add to DOM
@@ -196,18 +218,18 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
     {
       args = list(...)
       
-      handlers = args$handlers
+      handlers2 = args$handlers
       if(is.null(handlers))
-        handlers = list(toFileHandlers)
+        handlers2 = list(toFileHandlers)
 
-      #if we only have one handler sometimes it won't come in the form of a lis
-      if(!is.list(handlers))
-        handlers = list(handlers)
+      #if we only have one set of handler sometimes it won't come in the form of a list
+      if(!is.list(handlers2))
+        handlers2 = list(handlers2)
       dom = startHTMLReport(...)
       .self$.reportDOM = dom
-      sapply(handlers, function(h) h@init(dom, h@args$init))
-      .self$initFields(shortName = args$shortName, title = args$title, 
-          reportDirectory = args$reportDirectory, handlers = handlers, 
+      sapply(handlers2, function(h) h@init(dom, h@args$init))
+      .self$initFields(shortName = args$shortName, title = args$title,
+          reportDirectory = args$reportDirectory, handlers = handlers2, 
           basePath = args$basePath, baseUrl = args$baseUrl)
 
     }

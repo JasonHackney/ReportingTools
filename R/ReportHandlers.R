@@ -12,7 +12,49 @@ toFileHandlers = new("ReportHandlers",
           paste(rep$shortName, ".html", sep=""))
     else
       file = args$file
-    rep$addElement(".RTsplash", .makeSplash())
+    #not sure if the splash should be an actual report element...
+    #also, don't want to add more than one if we are working off an existing report
+    #I'll put this check in here for now
+    if(!(".RTsplash" %in% names(rep$.report)))
+      rep$addElement(".RTsplash", .makeSplash())
+    saveXML(rep$.reportDOM, file = file)
+  })
+
+fileWIndexHandlers = new("ReportHandlers",
+  addElement = function(node, name, args)
+  {
+    addChildren(node, newXMLNode("a", attrs=list(name=name)), at = 1)
+  },
+  finish = function(rep, args)
+  {
+    if(is.null(args$file))
+      file = file.path(rep$basePath, rep$reportDirectory, 
+          paste(rep$shortName, ".html", sep=""))
+    else
+      file = args$file
+    elementids  = getNodeSet(rep$.reportDOM, "//div[@class='ReportingTools']/@id")
+    hnodes =  getNodeSet(rep$.reportDOM, "/html/body/h1|/html/body/h2|/html/body/h3")
+    tabcontents = newXMLNode("div", attrs = list(class="TableOfContents"),
+      kids = unlist(lapply(elementids, function(id)
+        {
+          list(
+            newXMLNode("a", id, attrs = list(href = paste0("#", id))),
+            newXMLNode("br"))
+        }))
+      )
+      
+    if(length(hnodes))
+      addSibling(hnodes[[1]], tabcontents, after=TRUE)
+    else
+      {
+        body = getNodeSet(rep$.reportDOM, "/html/body")[[1]]
+        addChildren(body, tabcontents, at=1)
+      }
+    #not sure if the splash should be an actual report element...
+    #also, don't want to add more than one if we are working off an existing report
+    #I'll put this check in here for now
+    if(!(".RTsplash" %in% names(rep$.report)))
+      rep$addElement(".RTsplash", .makeSplash())
     saveXML(rep$.reportDOM, file = file)
   })
 

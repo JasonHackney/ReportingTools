@@ -32,17 +32,7 @@ fileWIndexHandlers = new("ReportHandlers",
     elementids  = xpathSApply(rep$.reportDOM, "//div[@class='ReportingTools']/@id")
     hnodes =  getNodeSet(rep$.reportDOM, "/html/body/h1|/html/body/h2|/html/body/h3")
     tabcontents = Link(elementids, paste0("#", elementids))
-    browser()
-    
- #   tabcontents = newXMLNode("div", attrs = list(class="TableOfContents"),
- #     kids = unlist(lapply(elementids, function(id)
- #       {
- #         list(
- #           newXMLNode("a", id, attrs = list(href = paste0("#", id))),
- #           newXMLNode("br"))
- #       }))
- #     )
-      
+          
     if(length(hnodes))
       addSibling(hnodes[[1]], tabcontents, after=TRUE)
     else

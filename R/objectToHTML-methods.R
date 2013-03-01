@@ -81,7 +81,9 @@ setMethod("objectToHTML",
         sort.class.map <- c(
             "numeric"   = "sort-num",
             "integer"   = "sort-num",
-            "Date"      = "sort-date"
+            "Date"      = "sort-date",
+            "character" = "sort-string",
+            "factor"    = "sort-string"
         )
         sort.classes <- sort.class.map[sapply(object, class)]
         sort.classes[is.na(sort.classes)] <- "sort-string"
@@ -91,7 +93,8 @@ setMethod("objectToHTML",
             "integer" = "filter-num",
             "logical" = "filter-cat",
             "factor"  = "filter-cat",
-            "Date"    = "filter-date")
+            "Date"    = "filter-date",
+            "character" = "filter-string")
         filter.classes <- filter.class.map[sapply(object, class)]
         filter.classes[is.na(filter.classes)] <- "filter-string"
         sel.filter.classes <- filter.classes[filter.columns]

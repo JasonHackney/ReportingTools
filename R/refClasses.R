@@ -175,7 +175,7 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       # not write a file.
     },
     addElement = function(name, value, .toHTML = NULL, .toDF = NULL, 
-        .addColumns = NULL, ... )
+        .addColumns = NULL, pos = NA, ... )
     {
       
       if(missing(name))
@@ -187,13 +187,25 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       
       if(length(nodes))
         {
+          if(!is.na(pos))
+            stop("Attempt to specify a position (pos) when replacing an existing element")
           node = nodes[[1]]
           #remove whatever was assigned to this name previously
           removeChildren(node, kids = xmlChildren(node))
+          
         } else {
           #create new div with the specified id and add it to the body of the HTML page
-          body = getNodeSet(.self$.reportDOM, "//body")[[1]]
-          node = newXMLNode("div", attrs= list(id=name, class = "ReportingTools"), parent=body)
+          node = newXMLNode("div", attrs= list(id=name, class = "ReportingTools"))
+          if(is.na(pos))
+            {
+              #No position means it gets added to the end of the document
+              body = getNodeSet(.self$.reportDOM, "//body")[[1]]
+              addChildren(body, node)
+              
+            } else {
+              #If we are given a position n, find the nth report element in the current report and insert our new element directly ahead of it.
+              addSibling(.self$.report[[pos]], after=FALSE, node)
+            }
         }
 
       #turn value into html nodes to add to DOM
@@ -209,7 +221,23 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
       # containing the new content
       sapply(.self$.handlers, function(fs, node, name) 
         fs@addElement(node, name, fs@args$addElement), node= node, name=name)
-      .self$.report[[name]] = node
+      if(is.na(pos))
+        .self$.report[[name]] = node
+      else
+        {
+          #insert our new element in the right place and shift everything else around.
+          oldlist = .self$.report
+          oldnames = names(oldlist)
+          before = which(seq(along=oldlist) < pos)
+          after = which(seq(along=oldlist) > pos)
+          newlist = vector("list", length(oldlist) + 1)
+          newlist[before] = oldlist[before]
+          newlist[[pos]] = node
+          newlist[after + 1] = oldlist[after]
+          names(newlist ) = c(oldnames[before], name, oldnames[after])
+          .self$.report = newlist
+
+        }
       invisible(obj)
 
 

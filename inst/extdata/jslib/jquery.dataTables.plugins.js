@@ -19,74 +19,62 @@
  * 
  * For details please refer to: http://www.datatables.net
  */
-jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-        "num-html-pre": function ( a ) {
-            var x = a.replace( /<.*?>/g, "" );
-            return parseFloat( x );
-        },
-         
-        "num-html-asc": function ( a, b ) {
-            return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-        },
-           
-        "num-html-desc": function ( a, b ) {
-            return ((a < b) ? 1 : ((a > b) ? -1 : 0));
-        }
-    } );
 
-jQuery.extend( jQuery.fn.dataTableExt.oSort, {
-    "scientific-pre": function ( a ) {
-        return parseFloat(a);
-    },
- 
-    "scientific-asc": function ( a, b ) {
-        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-    },
- 
-    "scientific-desc": function ( a, b ) {
-        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+
+jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+        "string-robust-pre": function ( a ) {
+            return a.replace( /<.*?>/g, "" ).toLowerCase();
+        },
+            
+        "string-robust-asc": function ( x, y ) {            
+            return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+        },
+		
+        "string-robust-desc": function ( x, y ) {
+            return ((x < y) ? 1 : ((x > y) ? -1 : 0));
+        },
+     } );
+
+
+var robustParseNum = function(x){
+    var fx = parseFloat(x);
+    if(!isNaN(fx)){
+        return fx;
     }
-} );
-             
-/* type detection of numbers in html string */
-jQuery.fn.dataTableExt.aTypes.unshift( function ( sData ) {
-        sData = typeof sData.replace == 'function' ?
-            sData.replace( /<.*?>/g, "" ) : sData;
-        sData = $.trim(sData);
-        
-        var sValidFirstChars = "0123456789-";
-        var sValidChars = "0123456789.";
-        var Char;
-        var bDecimal = false;
-        
-        /* Check for a valid first char (no period and allow negatives) */
-        Char = sData.charAt(0); 
-        if (sValidFirstChars.indexOf(Char) == -1) 
-            {
-                return null;
-            }
-        
-        
-        /* Check all the other characters are valid */
-        for ( var i=1 ; i < sData.length ; i++ ) 
-            {
-                Char = sData.charAt(i); 
-                if (sValidChars.indexOf(Char) == -1) 
-                    {
-                        return null;
-                    }
-                
-                /* Only allowed one decimal place... */
-                if ( Char == "." )
-                    {
-                        if ( bDecimal )
-                            {
-                                return null;
-                            }
-                        bDecimal = true;
-                    }
-            }                                        
-        return 'num-html';
-    } );       
+    x = x.replace( /<.*?>/g, "" );
+    fx = parseFloat(x);
+    if(!isNaN(fx)){
+        return fx;
+    }
+    return x;
+};
+
+var numStrSort = function(x, y) {
+    var fx = robustParseNum(x);
+    var fy = robustParseNum(y);
+    
+    if (isNaN(fx)) {
+        if (isNaN(fy)) {
+            x = x.replace( /<.*?>/g, "" );
+            y = y.replace( /<.*?>/g, "" );
+            return ("" + x).localeCompare("" + y);
+        }
+        return 1;
+    }
+    if (isNaN(fy)) {
+        return -1;
+    }
+    return ((fx < fy) ? -1 : ((fx > fy) ? 1 : 0));
+};
+
+$.extend($.fn.dataTableExt.oSort, {
+        "num-robust-asc" :  numStrSort,
+            "num-robust-desc" : function(x, y) {
+            return numStrSort(y, x);
+        }
+    });
+
+		
+
 
                              

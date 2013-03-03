@@ -79,14 +79,14 @@ setMethod("objectToHTML",
           IRanges:::normalizeSingleBracketSubscript(filter.columns,object)
         
         sort.class.map <- c(
-            "numeric"   = "sort-num",
-            "integer"   = "sort-num",
+            "numeric"   = "sort-num-robust",
+            "integer"   = "sort-num-robust",
             "Date"      = "sort-date",
-            "character" = "sort-string",
-            "factor"    = "sort-string"
+            "character" = "sort-string-robust",
+            "factor"    = "sort-string-robust"
         )
         sort.classes <- sort.class.map[sapply(object, class)]
-        sort.classes[is.na(sort.classes)] <- "sort-string"
+        sort.classes[is.na(sort.classes)] <- "sort-string-robust"
         
         filter.class.map <- c(
             "numeric" = "filter-num",
@@ -110,8 +110,7 @@ setMethod("objectToHTML",
         )
         
         numeric.columns <- which(unlist(lapply(object, class)=="numeric"))
-        object[, numeric.columns] <- signif(object[, numeric.columns], 3)        
-        
+       object[, numeric.columns] <- signif(object[, numeric.columns], 3)               
        # p <- .writeHTMLTable(object, tableTitle = tableTitle, col.specs, 
        #     p = page(publicationType))
        # invisible(p)

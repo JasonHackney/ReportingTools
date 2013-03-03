@@ -37,10 +37,10 @@ function configureTable(i, el) {
             "aaSorting":[[0,'asc']],
             "aoColumnDefs": [
                 { "bSortable": false, "aTargets": [ "sort-off" ] },
-                { "sType" : "scientific", "aTargets": [ "sort-num" ] },
-                { "sType" : "string", "aTargets": [ "sort-string" ] },
-                { "sType" : "html", "aTargets": [ "sort-html" ] },
-                { "sType" : "num-html", "aTargets": [ "sort-html-num" ] },
+                //  sort string, NA, html, scientific
+                { "sType" : "num-robust", "aTargets": [ "sort-num-robust" ] }, 
+                //  remove any links first, then sorts strings, NA
+                { "sType" : "string-robust", "aTargets": [ "sort-string-robust" ] },           
                 { "sType" : "date", "aTargets": [ "sort-date" ] }
             ]
         }).columnFilter({sPlaceHolder: "head:before",

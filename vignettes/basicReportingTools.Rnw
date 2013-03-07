@@ -157,7 +157,7 @@ plot(x, y)
 example <- recordPlot()
 htmlRep5 <- HTMLReport(shortName = "my_html_file5",
     reportDirectory = "./reports/")
-publish(example, htmlRep5, name = "basePlot")  ##This is not working for some reason?
+publish(example, htmlRep5, name = "basePlot")  ##This is not working for some reason?
 publish(my.df, htmlRep5, name="Table")
 finish(htmlRep5)
 
@@ -170,7 +170,7 @@ If you have a preferred table style, defined in css, it's easy to style your tab
 
 <<styledCss, eval=FALSE>>=
 css.file <- system.file('extdata/table.css', package='ReportingTools')
-htmlRep5<- HTMLReport(shortName = 'my_html_file5',
+htmlRep5 <- HTMLReport(shortName = 'my_html_file5',
     reportDirectory = "./reports/", link.css=css.file)
 publish(my.df, htmlRep4)
 finish(htmlRep5)

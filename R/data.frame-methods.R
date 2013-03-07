@@ -60,7 +60,7 @@ setMethod("publish",
         col.classes <- sort.classes
         col.classes[filter.columns] <-
           paste(sel.filter.classes, col.classes[filter.columns])
-        
+
         col.specs <- data.frame(
             column  = seq_along(object),
             label   = colnames(object),
@@ -115,13 +115,13 @@ setMethod("publish",
     ## add top-header-row to be styled in css
     ## (this row will be styled to have font-soze:0
     column.specs$class <- paste(column.specs$class,"top-header-row", sep = " ")
-
+    
     col.class <- data.frame(do.call(cbind,
-                                lapply(column.specs$class,
-                                       function(z) c(z, rep("table-text", nrow(df))))
-                                ), stringsAsFactors=FALSE)
+                                    lapply(column.specs$class,
+                                           function(z) c(z, rep("", nrow(df))))
+                                    ), stringsAsFactors=FALSE)
     names(col.class) <- column.specs$label
-
+    
     ## write the title html
     titleHtml <- hwrite(tableTitle, heading=2)
 
@@ -131,7 +131,7 @@ setMethod("publish",
 
     ## mainHtml is the table html for the page
     tableHtml <- hwrite(df, col.class=as.list(col.class), row.names=FALSE,
-                        table.class="dataTable pretty")
+                        table.class="dataTable table table-hover table-striped table-bordered")
 
     ## make the top row of the table html a header row
     ## (sub only replaces on first match)
@@ -147,19 +147,31 @@ setMethod("publish",
     topHtml <- sub("(.*?)<thead>.*","\\1", topTableHtml)
     topHeaderRow <- sub(".*<thead>(.*?)","\\1", topTableHtml)
 
-    ## add "nowrap" to the header row so that the text won"t wrap without
-    ## specifying a <br>
-    topHeaderRow <- gsub("<td", "<th nowrap=\"nowrap\"",topHeaderRow)
+    ## add some styling (padding, spacing, border) to the table
+    topHtml <- sub("table ", "table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"", topHtml)
+    
+    ## used to add "nowrap" to the header row so that the text won"t wrap without
+    ## specifying a <br> but that interferes with overall style...
+    topHeaderRow <- gsub("<td", "<th",topHeaderRow)
     topHeaderRow <- gsub("</td>", "</th>",topHeaderRow)
 
     ## make the bottom header row
     ## the bottom header row will contain the class needed for searching
     bottomHeaderRow <- gsub("top-header-row","bottom-header-row",topHeaderRow)
-        
-    ##  Because of the js library, filterRowHtml needs to go in 2 places.
+
+    ## make the class of the sort-string and sort-num different so that we can make the
+    ## text size 0 for these types of sorting in the top-heade-row (they should
+    ## remain the same in the bottom header row.
+    ## The size of the text is defined in the css (see class no-print)
+    topHeaderRow <- gsub("class=\"sort-string-robust top-header-row\">","class=\"sort-string-robust top-header-row no-print\">", topHeaderRow)
+    topHeaderRow <- gsub("class=\"sort-num-robust top-header-row\">","class=\"sort-num-robust top-header-row no-print\">", topHeaderRow)
+
+    
+    ## Because of the js library, filterRowHtml needs to go in 2 places.
     ## Once in the footer (actually required by code)
     ## and the other in the second row of the head of the table
-    ## the footer code will be styled with font-size:0
+    ## the footer code will be styled with font-size:0 as the top header row
+    ## just above
     headHtml <- paste(topHtml,"<thead>",topHeaderRow,bottomHeaderRow,"</thead>",sep="")
         
     ## paste together the final html to print
@@ -169,7 +181,8 @@ setMethod("publish",
 
 
     ## make final html for page    
-    html <-  paste("<div id=\"container\">",titleHtml,headHtml,bottomHtml,"<foot>",bottomHeaderRow,"</foot>","</div>",sep = "")
+    html <-  paste("<div class=\"container\" style=\"margin-top: 10px\"> ",
+                   titleHtml, headHtml, bottomHtml,"<foot>",bottomHeaderRow,"</foot>","</div>",sep = "")
 
     #write the html to a txt file
     #html to return will be <iframe src="stuff"></iframe>

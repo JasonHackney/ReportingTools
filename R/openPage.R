@@ -24,7 +24,7 @@ makePageStart = function ( title = "Title!", link.javascript = NULL,
     bodyStart = substr(bodyStart, 1, regexpr("</body>", bodyStart) - 
         1)
     paste(doctype, "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='", 
-        lang, "' lang='", lang, "'>", head, bodyStart, sep = "")
+        lang, "' lang='", lang, "'>", head, bodyStart,sep = "")
 }
 
 
@@ -75,7 +75,10 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
                 system.file("extdata/jslib/jquery.dataTables.plugins.js",
                     package="ReportingTools"),
                 system.file("extdata/jslib/jquery.dataTables.reprise.js",
-                    package="ReportingTools"))
+                    package="ReportingTools"),
+                system.file("extdata/jslib/bootstrap.js",
+                    package="ReportingTools")
+                                )
 
             jsDir <- file.path(pageDir,"jslib")
             if(!file.exists(jsDir))
@@ -94,11 +97,13 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
     if(is.null(link.css)){
         css.libloc <- Sys.getenv("REPORTINGTOOLSCSSLIB")
         if(css.libloc == ""){
-            css.files <- c(system.file("extdata/csslib/reset-min.css", 
-                    package="ReportingTools"), 
-                system.file("extdata/csslib/reprise.table.css", 
-                    package="ReportingTools"))
-            css.files = system.file("extdata/csslib/reprise.table.css", package = "ReportingTools")
+          css.files <- c(
+                         system.file("extdata/csslib/bootstrap.css",
+                                     package="ReportingTools"),
+                         system.file("extdata/csslib/reprise.table.bootstrap.css",
+                                     package="ReportingTools")
+                           )
+            
             cssDir <- (file.path(pageDir,"csslib"))
             .safe.dir.create(cssDir, recursive=TRUE)
             

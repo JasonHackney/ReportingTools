@@ -24,31 +24,34 @@ function getFilterClass(i, el)
 
 //split this out into a function so that shiny can call it when it needs it.
 function configureTable(i, el) {
-        var filterClasses = $(this).find("th").map(getFilterClass).get();
-        
-        $(this).dataTable({
-            "oLanguage": {
-                "sSearch": "Search all columns:"
-            },
-            "aLengthMenu": [[10, 50, 100, -1], [10, 50, 100, "All"]],
-            "iDisplayLength": 10,
-            "bStateSave": true,
-            "sPaginationType": "full_numbers",
-            "aaSorting":[[0,'asc']],
-            "aoColumnDefs": [
-                { "bSortable": false, "aTargets": [ "sort-off" ] },
-                //  sort string, NA, html, scientific
-                { "sType" : "num-robust", "aTargets": [ "sort-num-robust" ] }, 
-                //  remove any links first, then sorts strings, NA
-                { "sType" : "string-robust", "aTargets": [ "sort-string-robust" ] },           
-                { "sType" : "date", "aTargets": [ "sort-date" ] }
-            ]
-        }).columnFilter({sPlaceHolder: "head:before",
-                         aoColumns : filterClasses
-                        });
+    var filterClasses = $(this).find("th").map(getFilterClass).get();
+    
+    $(this).dataTable({
+            "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+                "sPaginationType": "bootstrap",
+                "oLanguage": {
+                "sLengthMenu": "_MENU_ records per page",
+                    "sSearch": "Search all columns:"
+                    },
+                
+                "aLengthMenu": [[10, 50, 100, -1], [10, 50, 100, "All"]],
+                    "iDisplayLength": 10,
+                    "bStateSave": true,
+                    "aaSorting":[[0,'asc']],
+                    "aoColumnDefs": [
+                                 { "bSortable": false, "aTargets": [ "sort-off" ] },
+                                 //  sort string, NA, html, scientific
+                                 { "sType" : "num-robust", "aTargets": [ "sort-num-robust" ] }, 
+                                 //  remove any links first, then sorts strings, NA
+                                 { "sType" : "string-robust", "aTargets": [ "sort-string-robust" ] },           
+                                 { "sType" : "date", "aTargets": [ "sort-date" ] }
+                                     ]
+                    }).columnFilter({sPlaceHolder: "head:before",
+                                aoColumns : filterClasses
+                                });
 } 
 
 $(document).ready(function() {
-    $(".dataTable").each(configureTable);
-});
+        $(".dataTable").each(configureTable);
+    });
 

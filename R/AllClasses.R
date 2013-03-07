@@ -76,8 +76,11 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
                     package="ReportingTools"),
                 system.file("extdata/jslib/jquery.dataTables.plugins.js",
                     package="ReportingTools"),
+                system.file("extdata/jslib/bootstrap.js",
+                    package="ReportingTools"),
                 system.file("extdata/jslib/jquery.dataTables.reprise.js",
-                    package="ReportingTools"))
+                    package="ReportingTools")                                  
+                                  )
 
             jsDir <- file.path(pageDir,"jslib")
             if(!file.exists(jsDir))
@@ -88,7 +91,8 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
           } else {
             javascript.files <- paste(js.libloc, c("jquery-1.8.0.min.js",
                 "jquery.dataTables-1.9.3.js","jquery.dataTables.columnFilter.js",
-                "jquery.dataTables.plugins.js","jquery.dataTables.reprise.js"), 
+                "jquery.dataTables.plugins.js","jquery.dataTables.reprise.js",
+                "bootstrap.js"), 
                 sep="/")
         }
         link.javascript <- javascript.files
@@ -96,15 +100,21 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
     if(is.null(link.css)){
         css.libloc <- Sys.getenv("REPORTINGTOOLSCSSLIB")
         if(css.libloc == ""){
-            css.files <- c(system.file("extdata/csslib/reset-min.css", 
-                    package="ReportingTools"), 
-                system.file("extdata/csslib/reprise.table.css", 
-                    package="ReportingTools"))
+#            css.files <- c(system.file("extdata/csslib/reset-min.css", 
+#                    package="ReportingTools"), 
+#                system.file("extdata/csslib/reprise.table.css", 
+#                    package="ReportingTools"),
+          css.files <- c(
+                         system.file("extdata/csslib/bootstrap.css",
+                                     package="ReportingTools"),
+                         system.file("extdata/csslib/reprise.table.bootstrap.css",
+                                     package="ReportingTools")
+                           )
             
             cssDir <- (file.path(pageDir,"csslib"))
             .safe.dir.create(cssDir, recursive=TRUE)
             
-            file.copy(css.files,cssDir, overwrite=overwrite.js)
+            file.copy(css.files, cssDir, overwrite=overwrite.js)
             css.files <- sub(".*extdata/","",css.files)
 
             css.png.package.dir <- c(system.file("extdata/csslib/images/", package="ReportingTools"))
@@ -114,7 +124,7 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
             cssPngsDir <- (file.path(pageDir,"csslib/images"))
             .safe.dir.create(cssPngsDir, recursive=TRUE)            
             file.copy(css.pngs,cssPngsDir)
-            
+           
           } else {
             css.files <- paste(css.libloc, 
                 c("reset-min.css", "reprise.table.css"), sep="/")

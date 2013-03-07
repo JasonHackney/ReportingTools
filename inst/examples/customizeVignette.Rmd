@@ -1,0 +1,57 @@
+<style>
+p {font-size:large}
+</style>
+
+In this vignette we discuss the customization options for publishing R objects via ReportingTools. Toy examples will be used for the sake of efficiency, but all methods discussed here are entirely general.
+
+We first load the package and create our report (using the provided knitr handlers).
+
+```{r message=FALSE, output="hide", results="asis"}
+library(ReportingTools)
+myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
+```
+
+When publishing an object, ReportingTools first checks for a specific objectToHTML method for the class, or a .toHTML function specified at either the report or publish-call level. If it finds such a function, the output of that function is directly inserted into the report. Only object classes which should be published in a non-tabular form, eg images, have specific methods for objectToHTML. All objects can have their publication form overridden by specifying a .toHTML function, however, as we will see later.
+
+If a function for directly generating HTML is not found, then an HTML table is built from the object via two distinct steps. The first step is converting the object into a basic data.frame. By default this is done via the toReportDF generic function, and can be overridden by specifying a .toDF function at either the report or publish-call level.
+
+Once the object is converted into a basic data.frame it is modified/embellished into a data.frame corresponding to the table which will actually appear in our report. This typically involves addition of link/image columns (or modification of the contents of existing columns into these forms), removal or renaming of columns, addition of entirely new columns, etc. By default this is done by the addReportColumns, and is overridden by specifying a .addColumns function at either the report or publish call level.
+
+The remainder of this vignette contains examples of these types of customization.
+
+In our first set of examples we will publish a matrix. We first publish it with no customization specified.
+
+```{r results="asis"}
+mymat = matrix(rnorm(20), nrow=5)
+publish(mymat, myrep) 
+```
+
+There is no class-specific objectToHTML method for matrices, so the matrix will be converted into a basic data.frame and then embellished and inserted (as HTML) into the report. Since no customization options were specified, toReportDF and addReportColumns are called in order to create the data.frame representing the final table to be inserted in our report. (The matrix class does not have specific methods for toReportDF and addReportColumns, so the default behaviors are invoked, which call as.data.frame and return the passed in data.frame unmodified, respectively)
+
+Now suppose we want to customize the conversion of our object inyto its basic data.frame form. We do this by specifying a .toDF function. In this example our custDF function deletes the second row of data and give the columns new names.
+
+```{r results="asis"}
+custDF = function(mat, ...)
+{
+df = as.data.frame( mat[-2,])
+names(df) = paste0("newname", 1:4)
+df
+} 
+publish(mymat, myrep, .toDF = custDF)
+```
+
+Custom .toDF methods should accept the object to be converted, the report being written to, any arguments specific to the method, and ...
+
+Method specific arguments and the <...> will be populated via extra arguments passed into publish. **Note: both .toDF and .addColumns get passed the extra arguments passed to publish via <...>, thus they cannot use the same argument name for different quantities and both must accept <...>**
+
+We will now specify .addColumns to further customize the resulting table by removing the third column and adding a column which indicates whether the sum of remaining values in the row is positive or negative:
+
+```{r results="asis"}
+custAddColumns = function(df, ...)
+  {
+    df = df[,-3]
+    df$positive = apply(df, 1, function(x) c("negative", "positive")[(sum(x) > 0) + 1])
+    df  
+  }
+publish(mymat, myrep, .toDF = custDF, .addColumns = custAddColumns)
+```

@@ -1,5 +1,14 @@
 setMethod("toReportDF",
           signature = signature(
+            object= "ANY"),
+          definition = function(object, report, ...)
+          as.data.frame(object, "data.frame")
+          )
+
+
+
+setMethod("toReportDF",
+          signature = signature(
             object = "GOHyperGResult"),
           definition = function(object, report, pvalueCutoff = 0.01, categorySize = 10, ...)
           {

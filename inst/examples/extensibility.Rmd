@@ -1,6 +1,7 @@
 <style>
 p {font-size:large}
 </style>
+
 For this vignette we will examine the ALL dataset.  First we load our ReportingTools  package and the data.  This dataset is from a clinical trial in acute lymphoblastic leukemia (ALL) and  is available from Bioconductor.  
 
 ```{r message=FALSE, output="hide"}

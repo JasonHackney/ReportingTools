@@ -130,9 +130,16 @@ test_6data.frames <- function(){
         RPKM = c(1, -2/100, 3/1000000, 9.03e-4, 0, NA,NA,NA,1, 1e-44))
     htmlRep2 <- htmlReportRef("testhtmlPage2", 
         reportDirectory = 'testHTMLDirectory', title = "Test Report")
+
     publish(df4, htmlRep2)
     publish(df5, htmlRep2)
     finish(htmlRep2)
+
+    htmlRep3 <- HTMLReport("testhtmlPage3", 
+        reportDirectory = 'testHTMLDirectory', title = "Test Report")
+    publish(df4, htmlRep3)
+    publish(df5, htmlRep3)
+    finish(htmlRep3)
 }
 
 test_zzzcloseHTMLConnection <- function(){

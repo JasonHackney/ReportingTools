@@ -110,7 +110,9 @@ setMethod("objectToHTML",
         )
         
         numeric.columns <- which(unlist(lapply(object, class)=="numeric"))
-       object[, numeric.columns] <- signif(object[, numeric.columns], 3)               
+        for(col in numeric.columns){
+            object[, col] <- signif(object[, col], 3)
+        }
        # p <- .writeHTMLTable(object, tableTitle = tableTitle, col.specs, 
        #     p = page(publicationType))
        # invisible(p)

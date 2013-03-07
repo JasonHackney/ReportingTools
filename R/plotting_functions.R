@@ -187,21 +187,29 @@ hyperGPlot<-function(nInGroup1,nInGroup2,nInBothGroups, ontologyNum, ontologyNam
 
 
 makeDESeqFigures<-function(countTable, conditions,symbols,expName, reportDir){
+	figures.dirname <- paste(reportDir,'figures', sep='')  
+    figure.directory <- file.path(figures.dirname)
+    .safe.dir.create(figure.directory)
 	miniFiles<-c()
 	pdfFiles<-c()
 	countTable <- log2(countTable + 1)
 	for(i in 1:length(symbols)){
 		gene<-as.character(symbols[i])
 		if (is.null(gene)==TRUE) {gene<-"NoSymbol"}
-        minplot <- miniplot(as.numeric(countTable[i, ])~conditions, groups=conditions)
         ylab<-"log2 Counts"
         bigplot <- stripplot(as.numeric(countTable[i, ]) ~ conditions,
             panel=panel.boxandstrip, groups=conditions, ylab=ylab, main=gene,scales=list(x=list(rot=45)))
-        minipng.filename <- paste(expName,"mini", gene ,"png", sep='.')
+       
+      	miniplot <- .remove.axis.and.padding(bigplot)
+       	minipng.filename <- paste(expName,"mini", gene ,"png", sep='.')
         minipng.file <- paste0(reportDir, "/figures/", minipng.filename)
         if (!file.exists(minipng.file)) {
         	png(minipng.file, height=40, width=200)
-        	print(minplot)  ##some issue with these minplots for some reason?
+        	grid.newpage()
+        	pushViewport(viewport(angle = 270, height = unit(220, 'points'), 
+            	width = unit(44, 'points'), name = "VP"))
+        	print(miniplot, newpage = FALSE)
+        	upViewport()
         	dev.off()
         }
         miniFiles[i]<-paste0("figures/", minipng.filename)

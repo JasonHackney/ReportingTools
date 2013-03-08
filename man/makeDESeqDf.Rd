@@ -3,7 +3,7 @@
 \title{Converts DESeq results into a data frame to be published}
 \usage{
     makeDESeqDf(object, countTable, pvalueCutoff, conditions, annotation.db,
-        expName, reportDir) 
+        expName, reportDir, ...) 
 }
 \arguments{
   \item{object}{Output from nbinomTest; see DESeq manual for details}
@@ -19,6 +19,8 @@
   \item{expName}{The name of the experiment}
 
   \item{reportDir}{Directory to which the report (and figures) will be written}
+  
+    \item{...}{Unused arguments passed in from the publish method}
 }
 \value{
   ret, A data frame with the following values: Entrez Id, Symbol, Gene Name, Image, Log2 Fold Change, P-value and Adjusted p-value.

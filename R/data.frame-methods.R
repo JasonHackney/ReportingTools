@@ -105,7 +105,6 @@ setMethod("publish",
     ## order columns based on column.specs
     df <- df[, column.specs$column, drop=FALSE]
     colnames(df) <- column.specs$label    
-
     ## add class called "table-header" to column.specs
     ## to allow all the columns to be styled by css
     if ( any(is.na(column.specs$class)) ) {
@@ -162,13 +161,13 @@ setMethod("publish",
     ## the bottom header row will contain the class needed for searching
     bottomHeaderRow <- gsub("top-header-row","bottom-header-row",topHeaderRow)
 
+    ##make the text size 0 by default for the top header row
+    topHeaderRow <- gsub("top-header-row","top-header-row no-print", topHeaderRow)
+    
     ## make the class of the sort-string and sort-num different so that we can make the
     ## text size 0 for these types of sorting in the top-heade-row (they should
     ## remain the same in the bottom header row.
-    ## The size of the text is defined in the css (see class no-print)
-    topHeaderRow <- gsub("class=\"sort-string-robust top-header-row\">","class=\"sort-string-robust top-header-row no-print\">", topHeaderRow)
-    topHeaderRow <- gsub("class=\"sort-num-robust top-header-row\">","class=\"sort-num-robust top-header-row no-print\">", topHeaderRow)
-
+    topHeaderRow <- gsub("(filter-num.*?top-header-row) no-print","\\1",topHeaderRow)
     
     ## Because of the js library, filterRowHtml needs to go in 2 places.
     ## Once in the footer (actually required by code)

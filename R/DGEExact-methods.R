@@ -49,50 +49,68 @@ setMethod("publish",
 
 .DGEExact.to.data.frame <- function(object, annotation.db = 'org.Hs.eg', 
     pvalueCutoff = 0.01, n = 1000, lfc = 0, adjust.method='BH', 
-    sort.method = 'p.value', ...)
+    sort.method = 'p.value', make.plots = FALSE, ...)
 {
-    dat <- topTags(object, n = n, adjust.method = adjust.method, sort.by = sort.method)
+    dat <- topTags(object, n = n, adjust.method = adjust.method, 
+        sort.by = sort.method)
 
-    ## Check valid Entrez ids are passed in
-    check.eg.ids(rownames(dat), annotation.db)
-    
-    selection <- as.numeric(rownames(dat$table))
+    if(is.null(object$genes)){
+        selection <- as.numeric(rownames(dat$table))
+    } else {
+        selection <- rownames(dat$table)
+    }
     
     ##The following gives you all pvalues
     padj <- p.adjust(object$table$PValue, method = adjust.method)
     padj <- padj[match(selection, rownames(object$table))]
     dat <- data.frame(dat$table, padj)
-
+    
     dat.adj <- dat[dat$padj < pvalueCutoff,]
     dat.lfc <- dat.adj[abs(dat.adj$logFC) > abs(lfc), ]
-
+    
     if(length(rownames(dat.lfc)) == 0)
         stop("No genes meet the selection criteria. Try changing the log-fold change or p-value cutoff.")
-
+    
+    
     ann.map.available <- tryCatch(getAnnMap("SYMBOL", annotation.db), 
         error=function(e){ return(FALSE) })
 
     if (inherits(ann.map.available, "AnnDbBimap")){
-      fdata <- data.frame(
-        EntrezId = unlist(rownames(dat.lfc)),
-        Symbol = unlist(mget(rownames(dat.lfc), 
-            getAnnMap("SYMBOL", annotation.db), ifnotfound = NA)),
-        GeneName = unlist(mget(rownames(dat.lfc), 
-            getAnnMap("GENENAME", annotation.db), ifnotfound = NA)),
-        stringsAsFactors = FALSE
-      )
+        ## Check valid Entrez ids are passed in
+        check.eg.ids(rownames(dat), annotation.db)
+        fdata <- data.frame(
+            EntrezId = unlist(rownames(dat.lfc)),
+            Symbol = unlist(mget(rownames(dat.lfc), 
+                getAnnMap("SYMBOL", annotation.db), ifnotfound = NA)),
+            GeneName = unlist(mget(rownames(dat.lfc), 
+                getAnnMap("GENENAME", annotation.db), ifnotfound = NA)),
+            stringsAsFactors = FALSE
+        )
     } else {
-      IDs <- rownames(dat.lfc)
-      fdata <- data.frame(IDs, stringsAsFactors = FALSE)
+        if(!is.null(object$genes)){
+            fdata <- object$genes[selection, ]
+        } else {
+            IDs <- rownames(dat.lfc)
+            fdata <- data.frame(IDs, stringsAsFactors = FALSE)
+        }
     }
-            
-    ret <- data.frame(
-        fdata,
-        Image = rep("", nrow(fdata)),
-        dat.lfc$logFC,
-        dat.lfc$padj,
-        stringsAsFactors = FALSE
-    )
+    
+    if(make.plots){
+        ret <- data.frame(
+            fdata,
+            Image = rep("", nrow(fdata)),
+            dat.lfc$logFC,
+            dat.lfc$padj,
+            stringsAsFactors = FALSE
+        )
+    } else {
+        ret <- data.frame(
+            fdata,
+            dat.lfc$logFC,
+            dat.lfc$padj,
+            stringsAsFactors = FALSE        
+        )
+    }
 
     colnames(ret)[which(colnames(ret) == 'dat.lfc.logFC')] <- 'logFC'
     colnames(ret)[which(colnames(ret) == 'dat.lfc.padj')] <- 'Adjusted p-Value'

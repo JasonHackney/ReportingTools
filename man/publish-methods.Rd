@@ -42,7 +42,7 @@
   Data types can be output in several formats. Exactly what is done to coerce a
   data type into the given output format is described below.
 
-  \item{HTMLReport\cr}{
+  \item{HTMLReport or HTMLReportRef\cr}{
         
         data.frame:\cr
         \code{publish(object, htmlReport, tableTitle = NULL, ...)}
@@ -77,9 +77,11 @@
         adjusted p-value. For this to work, the feature names in the DGEExact
         object and the countTable have to be the primary identifier from the
         annotation packge. In most cases, the primary identifier will be Entrez
-        Gene IDs. The counts stored in countTable should be in units of counts
-        per million provided by the cpm function in the edgeR package. The
-        p-value adjustment method can be set using the ``adjust.method''
+        Gene IDs. If no valid annotation package name is provided in
+        annotation.db, then feature data will come from the ``genes'' slot in
+        the DGEExact object. The counts stored in countTable should be in units
+        of counts per million provided by the cpm function in the edgeR package.
+        The p-value adjustment method can be set using the ``adjust.method''
         argument.
 
         DGELRT:\cr
@@ -93,40 +95,39 @@
         adjusted p-value. For this to work, the feature names in the DGELRT
         object and the countTable have to be the primary identifier from the
         annotation packge. In most cases, the primary identifier will be Entrez
-        Gene IDs. The counts stored in countTable should be in units of counts
-        per million provided by the cpm function in the edgeR package. The
-        p-value adjustment method can be set using the ``adjust.method''
+        Gene IDs. If no valid annotation package name is provided in
+        annotation.db, then feature data will come from the ``genes'' slot in
+        the DGEExact object. The counts stored in countTable should be in units
+        of counts per million provided by the cpm function in the edgeR package.
+        The p-value adjustment method can be set using the ``adjust.method''
         argument.
       
         HyperGResultBase, GOHyperGResult, PFAMHyperGResult:\cr
         \code{publish(object, htmlReport, selectedIDs, annotation.db, 
         pvalueCutoff = 0.01,categorySize=10, makePlot=FALSE,...)}
-        A HyperGResult object is coerced to a data.frame using a method
-        similar to the summary function from the Category package. The
-        resulting table includes for each classification the id, name,
-        odds ratio of enrichment and p-value from the
-        hypergeometric test. A glyph showing the level of overlap of
-        each classification with the selected genes is also plotted. The
-        number of genes found in this classification is listed in
-        the table and links to another page with a table of the
-        corresponding genes, symbols and names.  An additional page
-        listing the overlap genes is also linked to the main output. 
-        For a GOHyperGResult object, a plot depicting the relationship
-        between the significant ontologies and their parents is also
-        plotted if makePlot is TRUE.  The selectedIDs are the Entrez
-        ids of the genes of interest (i.e. from the gene universe); 
-        annotation.db is the species of the ids.
+        A HyperGResult object is coerced to a data.frame using a method similar
+        to the summary function from the Category package. The resulting table
+        includes for each classification the id, name, odds ratio of enrichment
+        and p-value from the hypergeometric test. A glyph showing the level of
+        overlap of each classification with the selected genes is also plotted.
+        The number of genes found in this classification is listed in the table
+        and links to another page with a table of the corresponding genes,
+        symbols and names.  An additional page listing the overlap genes is also
+        linked to the main output. For a GOHyperGResult object, a plot depicting
+        the relationship between the significant ontologies and their parents is
+        also plotted if makePlot is TRUE.  The selectedIDs are the Entrez ids of
+        the genes of interest (i.e. from the gene universe); annotation.db is
+        the species of the ids.
       
         GeneSetCollection:\cr
         \code{publish(object, htmlReport, annotation.db, 
         setStats=NULL, setPValues=NULL,...)}
-        A GeneSetCollection object is coerced to a data.frame. The
-        resulting table of set names includes links to additional pages
-        containing the ids, names and symbols of each gene in the
-        corresponding set. If GSEA statistics and/or p-values are
-        provided, then they are also included in the gene set table.
-        The genes within the GeneSetCollection must be Entrez ids and
-        annotation.db is the species of the ids.
+        A GeneSetCollection object is coerced to a data.frame. The resulting
+        table of set names includes links to additional pages containing the
+        ids, names and symbols of each gene in the corresponding set. If GSEA
+        statistics and/or p-values are provided, then they are also included in
+        the gene set table. The genes within the GeneSetCollection must be
+        Entrez ids and annotation.db is the species of the ids.
     
         trellis:\cr
         \code{publish(object, publicationType, figureTitle = NULL, 

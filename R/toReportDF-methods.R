@@ -45,13 +45,13 @@ setMethod("toReportDF",
         object = "MArrayLM"
       ),
     definition = function(object, publicationType, eSet, factor, n = 1000, 
-        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
+        pvalueCutoff = 0.01, lfc = 0, adjust.method = 'BH', coef = NULL, 
         make.plots = TRUE, ..., .addColumns, .toDF){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
-        .marrayLM.to.html2(object, publicationType, eSet, factor,
-            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, coef = coef, 
-            adjust.method = adjust.method, make.plots = make.plots, ...)
+        .marrayLM.to.data.frame(object, eSet, n = n, 
+            pvalueCutoff = pvalueCutoff, lfc = lfc, adjust.method = adjust.method, 
+            coef = coef, make.plots = make.plots, ...)
       }
           )
 

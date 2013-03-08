@@ -16,7 +16,7 @@ setClass("ReportHandlers",
            args = NULL)
          )
 
-baseReport = setRefClass("BaseReportRef",
+baseReport <- setRefClass("BaseReportRef",
   fields = list(
     .shortName = "character",
     shortName = function(val)
@@ -109,7 +109,7 @@ baseReport = setRefClass("BaseReportRef",
     )
   )
 
-htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
+htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
   fields = list(
     .toHTML = "list",
     .toDF = "list",
@@ -264,7 +264,7 @@ htmlReport = setRefClass("HTMLReportRef", contains = "BaseReportRef",
     )
   )
     
-htmlReportRef = function(shortName = "coolProject",
+htmlReportRef <- function(shortName = "coolProject",
   title = "My cool project", 
   reportDirectory = ".",
   basePath = ".",

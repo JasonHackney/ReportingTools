@@ -59,7 +59,8 @@ setMethod("publish",
 
 
 .marrayLM.to.data.frame <- function(object, eSet = NULL, n = 1000, 
-    pvalueCutoff = 0.01, lfc = 0, adjust.method='BH', coef = NULL, ...)
+    pvalueCutoff = 0.01, lfc = 0, adjust.method='BH', coef = NULL,
+    make.plots = FALSE, ...)
 {
     dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
         coef = coef, adjust.method = adjust.method, ...)
@@ -115,24 +116,42 @@ setMethod("publish",
         fdata <- object$genes
     }
     
-    
-    ret <- data.frame(
-        fdata,
-        object$coef,
-        padj,
-        stringsAsFactors = FALSE
-    )
-    
-    fc.cols <- (ncol(fdata)+1):(ncol(fdata)+ncol(object$coef))
-    colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
-    if(length(coef) == 1){
-        pv.cols <- (ncol(fdata)+ncol(object$coef)+1):ncol(ret)
-        colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+    if(make.plots){
+        ret <- data.frame(
+            fdata,
+            Image = rep(NA, nrow(fdata)),
+            object$coef,
+            padj,
+            stringsAsFactors = FALSE
+        )
+        fc.cols <- (ncol(fdata)+2):(ncol(fdata)+1+ncol(object$coef))
+        colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
+        if(length(coef) == 1){
+            pv.cols <- (ncol(fdata)+ncol(object$coef)+2):ncol(ret)
+            colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+        } else {
+            pv.col <- ncol(ret)
+            colnames(ret)[pv.col] <- "Adjusted p-Value"
+        }
+        
     } else {
-        pv.col <- ncol(ret)
-        colnames(ret)[pv.col] <- "Adjusted p-Value"
+        ret <- data.frame(
+            fdata,
+            object$coef,
+            padj,
+            stringsAsFactors = FALSE
+        )
+        fc.cols <- (ncol(fdata)+1):(ncol(fdata)+ncol(object$coef))
+        colnames(ret)[fc.cols] <- paste(colnames(object), 'logFC')
+        if(length(coef) == 1){
+            pv.cols <- (ncol(fdata)+ncol(object$coef)+1):ncol(ret)
+            colnames(ret)[pv.cols] <- paste(colnames(object), 'Adjusted p-Value')
+        } else {
+            pv.col <- ncol(ret)
+            colnames(ret)[pv.col] <- "Adjusted p-Value"
+        }
+        
     }
-    
     
     return(ret)
 }

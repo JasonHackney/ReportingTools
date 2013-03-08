@@ -76,3 +76,19 @@ test_6dataframe_2coefs <- function(){
     checkTrue(all.equal(colnames(df), c("ProbeId", "EntrezId", "Symbol", "GeneName",
         "mol.biolBCR/ABL logFC", "mol.biolE2A/PBX1 logFC", "Adjusted p-Value")))
 }
+
+test_7toReportDF <- function(){
+    htmlRep <- htmlReportRef("testMArrayLMhtmlPage4",
+        reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 4")
+
+    df <- toReportDF(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2,
+        n = 100, make.plots = FALSE)
+}
+
+test_9htmlReportRef <- function(){
+    htmlRep <- htmlReportRef("testMArrayLMhtmlPage4",
+        reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 4")
+    publish(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2, n = 100,
+        make.plots = TRUE)
+    finish(htmlRep)    
+}

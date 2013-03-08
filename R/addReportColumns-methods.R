@@ -3,6 +3,7 @@ setMethod("addReportColumns",
             object = "ANY"),
           definition=function(df, htmlRep, ...) df
           )
+
 setMethod("addReportColumns",
           signature = signature(
             object = "GOHyperGResult"),
@@ -69,3 +70,42 @@ setMethod("addReportColumns",
 
 
           })
+
+setMethod("addReportColumns",
+    signature = signature(
+    object = "MArrayLM"),
+    definition = function(df, htmlRep, object, eSet, factor, make.plots = TRUE, ...){
+        if("EntrezId" %in% colnames(df)){
+            df <- entrezGene.link(df)
+        }
+        if(make.plots == TRUE){
+            figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
+            figure.directory <- file.path(htmlRep$basePath, 
+                htmlRep$reportDirectory, figure.dirname)
+            .safe.dir.create(figure.directory)
+            
+            df <- eSetPlot(df, eSet, factor, figure.directory, figure.dirname)
+            df
+        }
+        df
+    }
+)
+
+entrezGene.link <- function(df, ...)
+{
+    df$EntrezId <- hwrite(df$EntrezId, 
+        link = paste0("http://www.ncbi.nlm.nih.gov/gene/", df$EntrezId),
+        table = FALSE)
+    df
+}
+
+eSetPlot <- function(df, eSet, factor, figure.directory, figure.dirname, ...)
+{
+    .make.gene.plots(df, eSet, factor, figure.directory)
+    mini.image <- file.path(figure.dirname, 
+        paste("mini", rownames(df), "png", sep="."))
+    pdf.image <- file.path(figure.dirname, 
+        paste("boxplot", rownames(df), "pdf", sep="."))
+    df$Image <- hwriteImage(mini.image, link=pdf.image, table=FALSE)
+    df
+}

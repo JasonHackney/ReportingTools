@@ -19,7 +19,7 @@ setMethod("objectToHTML",
               } else {
                 df = addReportColumns(df, report, object = object, ...)
               }
-            objectToHTML(df, report = report, .toDF=NULL, .addColumns = NULL)
+            objectToHTML(df, report = report, .toDF = NULL, .addColumns = NULL)
 
           })
 
@@ -53,21 +53,9 @@ setMethod("objectToHTML",
 
                 for(f in .addColumns)
                   object = f(object, report, object = object, ...)
-              } else {
-                object = addReportColumns(object, report, object = object, ...)
-              }
-
-      if(!missing(.addColumns) && !is.null(.addColumns))
-        {
-          if(!is.list(.addColumns))
-            .addColumns = list(.addColumns)
-          
-          for(f in .addColumns)
-            object = f(object, report, object = object, ...)
-        } else {
-          df = addReportColumns(object, report, object = object, ...)
-        }
-
+              } #else {
+                #object = addReportColumns(object, report, object = object, ...)
+              #}
             
         if(nrow(object) == 0)
             stop("No rows available in data.")

@@ -22,11 +22,12 @@
 }
 
 .make.gene.plots <- function(df, expression.dat, factor, figure.directory,
-    ylab.type = "Expression Value"){
+    ylab.type = "Expression Value", scales = list(), ...){
 
     if(inherits(expression.dat, "eSet")){
         expression.dat <- exprs(expression.dat)
     }
+    scales <- c(scales, list(x = list(rot = 45)))
     
     for(probe in rownames(df)){
         if("Symbol" %in% colnames(df)){
@@ -36,7 +37,7 @@
         }
         bigplot <- stripplot(expression.dat[ probe, ] ~ factor,
             panel=panel.boxandstrip, groups=factor, ylab=ylab,
-            scales = list(x=list(rot=45)))
+            scales = scales, ...)
         
         miniplot <- .remove.axis.and.padding(bigplot)
         minipng.filename <- paste("mini", probe ,"png", sep='.')

@@ -31,15 +31,6 @@ setMethod("toReportDF",
       df <- .PFAMhyperG.to.htmlDF2(object, report,selectedIDs,annotation.db,pvalueCutoff = pvalueCutoff,categorySize )
     })
 
-setMethod("toReportDF", signature = signature(
-                            object = "DGEExact"),
-          definition = function(object, rep, ...)
-          {
-            .DGEExact.to.html2(object, rep, ...)
-          }
-          )
-
-
 setMethod("toReportDF",
     signature = signature(
         object = "MArrayLM"
@@ -50,11 +41,25 @@ setMethod("toReportDF",
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
         .marrayLM.to.data.frame(object, eSet, n = n, 
-            pvalueCutoff = pvalueCutoff, lfc = lfc, adjust.method = adjust.method, 
-            coef = coef, make.plots = make.plots, ...)
+            pvalueCutoff = pvalueCutoff, lfc = lfc, 
+            adjust.method = adjust.method,  coef = coef, 
+            make.plots = make.plots, ...)
       }
           )
 
+setMethod("toReportDF", signature = signature(
+                            object = "DGEExact"),
+          definition = function(object, rep, ...)
+          {
+            .DGEExact.to.data.frame(object, ...)
+          }
+          )
+
+setMethod("toReportDF",
+          signature = signature(object = "DGELRT"),
+          definition = function(object, rep, ...)
+           .DGELRT.to.data.frame(object, ...)
+          )
 
 setMethod("toReportDF",
     signature = signature(
@@ -64,12 +69,6 @@ setMethod("toReportDF",
           .GeneSetCollection.to.html2(object, htmlRep, ...)
           )
 
-
-setMethod("toReportDF",
-          signature = signature(object = "DGELRT"),
-          definition = function(object, rep, ...)
-           .DGELRT.to.html2(object, rep, ...)
-          )
 
 setMethod("toReportDF",
           signature = signature(object="data.frame"),

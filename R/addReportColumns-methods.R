@@ -91,6 +91,56 @@ setMethod("addReportColumns",
     }
 )
 
+setMethod("addReportColumns",
+    signature = signature(
+    object = "DGEExact"),
+    definition = function(df, htmlRep, object, countTable, conditions, 
+        make.plots = TRUE, ...){
+        
+        if("EntrezId" %in% colnames(df)){
+            df <- entrezGene.link(df)
+        }
+        if(make.plots == TRUE){
+            figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
+            figure.directory <- file.path(htmlRep$basePath, 
+                htmlRep$reportDirectory, figure.dirname)
+            .safe.dir.create(figure.directory)
+            
+            df <- eSetPlot(df, countTable+1, conditions, figure.directory,
+                figure.dirname, scales = list(y = list(log = 10)),
+                ylab.type = "Normalized Counts")
+            df
+        }
+        df
+        
+    }
+)
+
+setMethod("addReportColumns",
+    signature = signature(
+    object = "DGELRT"),
+    definition = function(df, htmlRep, object, countTable, conditions, 
+        make.plots = TRUE, ...){
+        
+        if("EntrezId" %in% colnames(df)){
+            df <- entrezGene.link(df)
+        }
+        if(make.plots == TRUE){
+            figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
+            figure.directory <- file.path(htmlRep$basePath, 
+                htmlRep$reportDirectory, figure.dirname)
+            .safe.dir.create(figure.directory)
+            
+            df <- eSetPlot(df, countTable+1, conditions, figure.directory,
+                figure.dirname, scales = list(y = list(log = 10)), 
+                ylab.type = "Normalized Counts")
+            df
+        }
+        df
+        
+    }
+)
+
 entrezGene.link <- function(df, ...)
 {
     df$EntrezId <- hwrite(df$EntrezId, 
@@ -101,7 +151,7 @@ entrezGene.link <- function(df, ...)
 
 eSetPlot <- function(df, eSet, factor, figure.directory, figure.dirname, ...)
 {
-    .make.gene.plots(df, eSet, factor, figure.directory)
+    .make.gene.plots(df, eSet, factor, figure.directory, ...)
     mini.image <- file.path(figure.dirname, 
         paste("mini", rownames(df), "png", sep="."))
     pdf.image <- file.path(figure.dirname, 

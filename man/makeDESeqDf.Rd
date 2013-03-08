@@ -2,10 +2,11 @@
 \alias{makeDESeqDf}
 \title{Converts DESeq results into a data frame to be published}
 \usage{
-  makeDESeqDf(res,countTable,pvalueCutoff,conditions,annotation.db, expName,reportDir)
+    makeDESeqDf(object, countTable, pvalueCutoff, conditions, annotation.db,
+        expName, reportDir) 
 }
 \arguments{
-  \item{res}{Output from nbinomTest; see DESeq manual for details}
+  \item{object}{Output from nbinomTest; see DESeq manual for details}
 
   \item{countTable}{A table of the raw counts, where rows indicate genes and columns are samples}
 

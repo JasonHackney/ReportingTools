@@ -35,7 +35,7 @@ setMethod("objectToHTML",
             ret = tryCatch(htmlParse(object), error=function(e) NULL)
             if(is.null(ret))
               #stuff our text into a <p> node
-              newXMLNode(p, object)
+              newXMLNode("p", object)
             else
               getNodeSet(ret, "//body/*")
           })

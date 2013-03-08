@@ -32,7 +32,7 @@ setMethod("Link", signature = signature(obj = "HTMLReportRef"),
           {
             if(is.na(target))
               target = file.path(obj$basePath, obj$reportDirectory, paste0(obj$shortName, ".html" ))
-            Link(ojb$title, target)
+            Link(obj$title, target)
 
           })
          

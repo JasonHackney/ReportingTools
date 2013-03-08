@@ -24,9 +24,23 @@
 .make.gene.plots <- function(df, expression.dat, factor, figure.directory,
     ylab.type = "Expression Value", scales = list(), ...){
 
-    if(inherits(expression.dat, "eSet")){
+    if(is(expression.dat, "CountDataSet")){
+        ## Get the normalized counts, but add a pseudocount to all of the
+        ## entries, because we're going to plot on a log-scale
+        
+        expression.dat <- counts(expression.dat, normalized=TRUE)+1
+        
+    } else if(inherits(expression.dat, "eSet")){
+    
         expression.dat <- exprs(expression.dat)
+        
+    } else if(is(expression.dat, "DGEList")){
+        ## If we get a DGEList, get the normalized cpm value. Again, we add a
+        ## pseudocount to avoid problems with zero count data
+        
+        expression.dat <- cpm(expression.dat$counts) + 1
     }
+    
     scales <- c(scales, list(x = list(rot = 45)))
     
     for(probe in rownames(df)){

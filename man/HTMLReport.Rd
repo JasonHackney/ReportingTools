@@ -10,7 +10,7 @@ Special care should be taken if non-default javacsript or css files are used, as
 detailed below.
 }
 \usage{
-HTMLReport(shortName, title = NULL, reportDirectory = ".", baseUrl = "localhost", basePath = "", page = NULL, link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
+HTMLReport(shortName, title = NULL, reportDirectory = ".", baseUrl = "localhost", basePath = NULL, page = NULL, link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
 }
 \arguments{
   \item{shortName}{

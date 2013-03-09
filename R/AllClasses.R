@@ -38,7 +38,7 @@ setClass("HTMLReport", contains = "BaseReport",
 )
 
 HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
-    baseUrl = "localhost", basePath = ".", page = NULL,
+    baseUrl = "localhost", basePath = NULL, page = NULL,
     link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
 {
     shortName <- sub(".html$", "", shortName)
@@ -49,21 +49,25 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
         reportDirectory <- path.expand(reportDirectory)
     }
     
-    if(basePath == "" | is.na(basePath))
-        basePath <- "."
-
+    
     ## Not sure what to do here when basePath is set, but reportDirectory needs
     ## to be rewritten... Probably should just throw an execption    
-    if(substr(reportDirectory, 1, 1) == "/" && 
-        (basePath=="" || is.na(basePath) || basePath == ".")){
-            basePath <- "/"
+    if(substr(reportDirectory, 1, 1) == "/"){
+        if(is.null(basePath) || basePath == ""){
+            basePath = "/"
+        }
+    } else {
+        if(is.null(basePath)) basePath = "."
     }
+    
     
     if(substr(basePath,1,1) == "~"){
         basePath <- path.expand(basePath)
     }
     
     pageDir <- file.path(basePath, reportDirectory)
+    pageDir <- gsub("//+", "/", pageDir)
+
     
     if(is.null(link.javascript)){
         js.libloc <- Sys.getenv("REPORTINGTOOLSJSLIB")
@@ -83,8 +87,10 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
                                   )
 
             jsDir <- file.path(pageDir,"jslib")
+            jsDir <- gsub("//+", "/", jsDir)
+
             if(!file.exists(jsDir))
-                dir.create(jsDir, recursive=TRUE)
+                .safe.dir.create(jsDir, recursive=TRUE)
             
             file.copy(javascript.files, jsDir, overwrite=overwrite.js)
             javascript.files <- sub(".*extdata/","",javascript.files)
@@ -112,6 +118,7 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
                            )
             
             cssDir <- (file.path(pageDir,"csslib"))
+            cssDir <- gsub("//+", "/", cssDir)
             .safe.dir.create(cssDir, recursive=TRUE)
             
             file.copy(css.files, cssDir, overwrite=overwrite.js)

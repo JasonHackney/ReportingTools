@@ -267,13 +267,32 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
 htmlReportRef <- function(shortName = "coolProject",
   title = "My cool project", 
   reportDirectory = ".",
-  basePath = ".",
+  basePath = NULL,
   baseUrl = "localhost",
   handlers = list(toFileHandlers),
   .toHTML = list(),
   .toDF = list(),
   .addColumns= list())
   {
+    
+    shortName <- sub(".html$", "", shortName)
+    if(is.null(title))
+        title <- shortName
+
+    if(substr(reportDirectory,1,1) == "~"){
+        reportDirectory <- path.expand(reportDirectory)
+    }
+    
+    ## Not sure what to do here when basePath is set, but reportDirectory needs
+    ## to be rewritten... Probably should just throw an execption    
+    if(substr(reportDirectory, 1, 1) == "/"){
+        if(is.null(basePath) || basePath == ""){
+            basePath = "/"
+        }
+    } else {
+        if(is.null(basePath)) basePath = "."
+    }
+    
     htmlReport$new(title = title, shortName = shortName, 
         reportDirectory = reportDirectory, handlers = handlers, 
         basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 

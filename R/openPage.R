@@ -42,26 +42,9 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
     shortName <- sub(".html$", "", shortName)
     if(is.null(title))
         title <- shortName
-
-    if(substr(reportDirectory,1,1) == "~"){
-        reportDirectory <- path.expand(reportDirectory)
-    }
-    
-    if(basePath == "" | is.na(basePath))
-        basePath <- "."
-
-    ## Not sure what to do here when basePath is set, but reportDirectory needs
-    ## to be rewritten... Probably should just throw an execption    
-    if(substr(reportDirectory, 1, 1) == "/" && 
-        (basePath=="" || is.na(basePath) || basePath == ".")){
-            basePath <- "/"
-    }
-    
-    if(substr(basePath,1,1) == "~"){
-        basePath <- path.expand(basePath)
-    }
-    
+        
     pageDir <- file.path(basePath, reportDirectory)
+    pageDir <- gsub("//+", "/", pageDir)
     
     if(is.null(link.javascript)){
         js.libloc <- Sys.getenv("REPORTINGTOOLSJSLIB")
@@ -81,8 +64,10 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
                                 )
 
             jsDir <- file.path(pageDir,"jslib")
+            jsDir <- gsub("//+", "/", jsDir)
+
             if(!file.exists(jsDir))
-                dir.create(jsDir, recursive=TRUE)
+                .safe.dir.create(jsDir, recursive=TRUE)
             
             file.copy(javascript.files, jsDir, overwrite=overwrite.js)
             javascript.files <- sub(".*extdata/","",javascript.files)
@@ -105,6 +90,7 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
                            )
             
             cssDir <- (file.path(pageDir,"csslib"))
+            cssDir <- gsub("//+", "/", cssDir)
             .safe.dir.create(cssDir, recursive=TRUE)
             
             file.copy(css.files,cssDir, overwrite=overwrite.js)

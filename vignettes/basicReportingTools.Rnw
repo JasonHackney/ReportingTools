@@ -105,10 +105,10 @@ library(hwriter)
 ###THIS IS NOT CURRENTLY WORKING!!
 htmlRep3 <- htmlReportRef(shortName = "my_html_file3",title="Adding an image",
     reportDirectory = "./reports")
-hwrite("Bar chart of results", p=page(htmlRep3), heading=2)
-himg<-hwriteImage("barplot.png", link="barplot.png")
-hwrite(himg, page(htmlRep3), br=TRUE)
-hwrite("Results Table", p=page(htmlRep3), heading=2)
+publish( hwrite("Bar chart of results", heading=2), htmlRep3 )
+himg <- hwriteImage("barplot.png", link="barplot.png")
+publish(hwrite(himg, br=TRUE), htmlRep3)
+publish(hwrite("Results Table", heading=2), htmlRep3)
 publish(my.df, htmlRep3)
 finish(htmlRep3)
 @

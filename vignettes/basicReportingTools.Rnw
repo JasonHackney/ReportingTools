@@ -101,7 +101,6 @@ barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID",
 	ylab="RPKM", main="Bar plot of RPKMs", col="blue")
 dev.off()
 
-
 library(hwriter)
 ###THIS IS NOT CURRENTLY WORKING!!
 htmlRep3 <- htmlReportRef(shortName = "my_html_file3",title="Adding an image",

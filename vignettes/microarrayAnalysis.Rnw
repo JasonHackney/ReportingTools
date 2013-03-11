@@ -53,10 +53,8 @@ ALL <- featureFilter(ALL)
 Next we use \tt limma \rm to find statistical evidence of differential genes.
 
 <<limma linear model, eval=FALSE>>=
-library(limma)
-model <- model.matrix(~mol.biol+sex, ALL)
-fit <- eBayes(lmFit(ALL, model))
-@
+pVals<-gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
+bestPval<-apply(pVals,1, min)@
 
 With the \tt limma \rm output we can make our differential analysis report.  To publish \tt MArrayLM \rm objects, we supply the \tt eSet \rm and \tt factor \rm used in our analysis.  
 

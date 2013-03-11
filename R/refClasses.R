@@ -265,7 +265,7 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
   )
     
 htmlReportRef <- function(shortName = "coolProject",
-  title = "My cool project", 
+  title = shortName, 
   reportDirectory = ".",
   basePath = NULL,
   baseUrl = "localhost",

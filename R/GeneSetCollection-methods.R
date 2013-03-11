@@ -33,8 +33,10 @@ setMethod("publish",
         object = "GeneSetCollection",
         publicationType = "HTMLReportRef"
     ),
-    definition = function(object, publicationType, ..., name)
-          publicationType$addElement(name, value=object, ...)
+    definition = function(object, publicationType,annotation.db=NULL, 
+        setStats=NULL, setPValues=NULL, geneStats=NULL, ..., name)
+          publicationType$addElement(name, value=object, annotation.db=annotation.db, 
+        setStats=setStats, setPValues=setPValues, geneStats=geneStats,...)
           )
 
 

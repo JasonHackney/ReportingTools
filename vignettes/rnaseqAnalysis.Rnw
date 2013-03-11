@@ -63,7 +63,6 @@ lattice.options(default.theme = rep.theme)
 ## The publish function does not normalize counts for the countTable argument to allow for
 ## flexibility in plotting various units (e.g. RPKM instead of counts).
 
-**THIS HAS TO BE UPDATED**
 deReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR',
     title = 'RNA-seq analysis of differential expression using edgeR',
     reportDirectory = "./reports",
@@ -101,7 +100,6 @@ d <- estimateGLMTagwiseDisp(d, design)
 fit<-glmFit(d,design)
 edgeR.lrt<-glmLRT(fit, coef=2)
 
-**THIS HAS TO BE UPDATED**
 deReport2 <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR_2',
     title = 'RNA-seq analysis of differential expression using edgeR (LRT)',
     reportDirectory = "./reports",

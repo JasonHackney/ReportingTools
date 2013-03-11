@@ -49,7 +49,7 @@ d <- estimateCommonDisp(d)
 edgeR.de <- exactTest(d)
 @
 
-Now the results can be written to a report using the \tt edgeR \rm object. Currently, only \tt DGEExact \rm objects returned from the \tt exactTest \rm function in the \tt edgeR \rm package are supported.
+Now the results can be written to a report using the \tt DGEExact \rm object. 
 
 <<edgeR_report, eval=FALSE>>=
 library(lattice)
@@ -62,13 +62,15 @@ lattice.options(default.theme = rep.theme)
 ## In this case, the plots contain the counts from mockRnaSeqData, which are not normalized.
 ## The publish function does not normalize counts for the countTable argument to allow for
 ## flexibility in plotting various units (e.g. RPKM instead of counts).
-deReport <- HTMLReport(shortName = 'RNAseq_analysis_with_edgeR',
+
+**THIS HAS TO BE UPDATED**
+deReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR',
     title = 'RNA-seq analysis of differential expression using edgeR',
-    reportDirectory = "./reports/",
+    reportDirectory = "./reports",
     baseUrl = "")
-publish(edgeR.de, deReport, mockRnaSeqData, 
-	conditions, annotation.db = 'org.Mm.eg', 
-	pvalueCutoff = .05, lfc = 2, n = 10)
+publish(edgeR.de, deReport, countTable=mockRnaSeqData,
+	conditions=conditions, annotation.db = 'org.Mm.eg', 
+	pvalueCutoff = .05, lfc = 2, n = 10, name="edgeR")
 finish(deReport)
 
 ## If you would like to plot normalized counts, run the following commands instead:
@@ -86,11 +88,36 @@ finish(deReport)
 \end{figure}
 
 
-\section{Differential expression analysis with \tt DESeq \rm}
-In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq \rm software.
-We begin by loading our library and data set.  The \tt mockRnaSeqData \rm contains random RNA-seq output for random mouse genes.
 
-Next, we run \tt DESeq \rm to find differentially expressed genes.
+We can also ouput results of the LRT test. 
+
+<<edgeR_report, eval=FALSE>>=
+d <- DGEList(counts = mockRnaSeqData, group = conditions)
+d <- calcNormFactors(d)
+design<-model.matrix(~conditions)
+d <- estimateGLMCommonDisp(d, design)
+d <- estimateGLMTrendedDisp(d, design)
+d <- estimateGLMTagwiseDisp(d, design)
+fit<-glmFit(d,design)
+edgeR.lrt<-glmLRT(fit, coef=2)
+
+**THIS HAS TO BE UPDATED**
+deReport2 <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR_2',
+    title = 'RNA-seq analysis of differential expression using edgeR (LRT)',
+    reportDirectory = "./reports",
+    baseUrl = "")
+publish(edgeR.lrt, deReport2, countTable=mockRnaSeqData,
+	conditions=conditions, annotation.db = 'org.Mm.eg', 
+	pvalueCutoff = .05, lfc = 2, n = 10, name="edgeRlrt")
+finish(deReport2)
+@ 
+
+
+\section{Differential expression analysis with \tt DESeq \rm}
+In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq \rm package.
+
+
+First, we run \tt DESeq \rm to find differentially expressed genes.
 <<run_DESeq, eval=FALSE>>=
 library(DESeq)
 cds<-newCountDataSet(mockRnaSeqData, conditions)
@@ -99,12 +126,12 @@ cds<-estimateDispersions(cds)
 res<-nbinomTest(cds,"control", "case" )
 @
 
-Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that makeDESeqDf command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the makeDESeqDf with any function you like for more flexability.
+Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that makeDESeqDf command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexability.  See the basic vignette for more details and examples.
+
 <<DESeq_report, eval=FALSE>>=
 desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq_2',
     title = 'RNA-seq analysis of differential expression using DESeq',
-    reportDirectory = "reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDf)
 finish(desReport)
 @ 
@@ -135,11 +162,10 @@ goResults <- hyperGTest(goParams)
 With these results, we then make the GO report.  Here we set \tt makePlot=TRUE \rm to get a large image of the relationship between our significant ontologies.
 
 <<make the GO report, eval=FALSE>>=
-goReport <- HTMLReport(shortName = 'go_analysis_rnaseq',
+goReport <- htmlReportRef(shortName = 'go_analysis_rnaseq',
 	title = "GO analysis of mockRnaSeqData",
-	reportDirectory = "./reports",
-	baseUrl = "")
-publish(goResults, goReport, selectedIDs, annotation.db="org.Mm.eg", 
+	reportDirectory = "./reports")
+publish(goResults, goReport, selectedIDs=selectedIDs, annotation.db="org.Mm.eg", 
 	pvalueCutoff= 0.05, makePlot=TRUE)
 finish(goReport)
 @
@@ -169,11 +195,10 @@ PFAMResults <- hyperGTest(params)
 
 Then we make the PFAM report.
 <<make the PFAM report, eval=FALSE>>=
-PFAMReport <- HTMLReport(shortName = 'pfam_analysis_rnaseq',
+PFAMReport <- htmlReportRef(shortName = 'pfam_analysis_rnaseq',
 	title = "PFAM analysis of mockRnaSeqData",
-	reportDirectory = "./reports",
-	baseUrl = "")
-publish(PFAMResults, PFAMReport, selectedIDs, annotation.db="org.Mm.eg",categorySize=5)
+	reportDirectory = "./reports")
+publish(PFAMResults, PFAMReport, selectedIDs=selectedIDs, annotation.db="org.Mm.eg",categorySize=5)
 finish(PFAMReport)
 @
 
@@ -185,12 +210,12 @@ finish(PFAMReport)
 
 
 \section{Putting it all together}
+THIS HAS TO BE UPDATED
 Here, we make an index page that puts all three analyses together for easy navigation.
 <<make the index page, eval=FALSE>>=
-indexPage <- HTMLReport(shortName = "indexRNASeq",
+indexPage <- htmlReportRef(shortName = "indexRNASeq",
     title = "Analysis of mockRnaSeqData",
-    reportDirectory = "./reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(c(deReport,goReport, PFAMReport), indexPage)
 finish(indexPage)
 @

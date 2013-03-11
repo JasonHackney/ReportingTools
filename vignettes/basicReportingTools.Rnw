@@ -42,21 +42,21 @@ my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
 my.df
 @
 
-Next, we'll create the \verb@CSVFile@ object to which we'll publish our results.
+Next, we'll create the \verb@CSVFile@ object to which we'll publish our results.  We output the results to a new directory called \tt reports \rm.  Note that \tt ReportingTools \rm will create this directory for you if it does not exist already.
 
 <<makeCSVFile, eval=FALSE>>=
 library(ReportingTools)
 
 csvFile <- CSVFile(shortName = "my_csv_file", 
-    reportDirectory = "./reports/")
+    reportDirectory = "./reports")
 publish(my.df, csvFile)
 @
 
 Obviously, this isn't much less work than just calling \verb@write.csv@ on the \verb@data.frame@ itself, but this is really just a toy example. We can also publish the \tt data.frame \rm as an HTML report.
 
 <<basicHTMLReport, eval=FALSE>>=
-htmlRep <- HTMLReport(shortName = "my_html_file",
-    reportDirectory = "./reports/")
+htmlRep <- htmlReportRef(shortName = "my_html_file",
+    reportDirectory = "./reports")
 publish(my.df, htmlRep)
 finish(htmlRep)
 @
@@ -68,15 +68,15 @@ finish(htmlRep)
 \end{figure}
 
 
-It's necessary to call \tt finish \rm on the \tt HTMLReport\rm, to allow the contents to be written to the file. \\
+It's necessary to call \tt finish \rm on the \tt HTMLReport\rm, to allow the contents to be written to the file.   \\
 
 It's also possible to publish the same object in two separate formats at once. 
 
 <<reportingTwoTypes, eval=FALSE>>=
 csvFile2 <- CSVFile(shortName = "my_csv_file2", 
-    reportDirectory = "./reports/")
-htmlRep2 <- HTMLReport(shortName = 'my_html_file2',
-    reportDirectory = "./reports/")
+    reportDirectory = "./reports")
+htmlRep2 <- htmlReportRef(shortName = 'my_html_file2',title="Publishing a data frame and csv file together",
+    reportDirectory = "./reports")
 publish(my.df, list(csvFile2, htmlRep2))
 finish(htmlRep2)
 @
@@ -92,7 +92,7 @@ The same few lines of code could be used to publish, for example, the results of
 
 \section{Adding plots or text to a report}
 
-To add additional text or plots to a report, simply open the report with \tt HTMLReport \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
+To add additional text or existing plots to a report, simply open the report with \tt htmlReportRef \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
 
 
 <<AddTextPlot, eval=FALSE>>=
@@ -101,9 +101,11 @@ barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID",
 	ylab="RPKM", main="Bar plot of RPKMs", col="blue")
 dev.off()
 
+
 library(hwriter)
-htmlRep3 <- HTMLReport(shortName = "my_html_file3",
-    reportDirectory = "./reports/")
+###THIS IS NOT CURRENTLY WORKING!!
+htmlRep3 <- htmlReportRef(shortName = "my_html_file3",title="Adding an image",
+    reportDirectory = "./reports")
 hwrite("Bar chart of results", p=page(htmlRep3), heading=2)
 himg<-hwriteImage("barplot.png", link="barplot.png")
 hwrite(himg, page(htmlRep3), br=TRUE)
@@ -119,8 +121,22 @@ finish(htmlRep3)
 \end{figure}
 
 
+We can also publish images directly to sites.
+<<AddImage, eval=FALSE>>=
+
+plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
+	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
+scatterPlot <- recordPlot()
+htmlRep4 <- htmlReportRef(shortName = "my_html_file4", title="Adding a plot directly to the page",
+    reportDirectory = "./reports")
+publish(scatterPlot, htmlRep4, name = "basePlot")  ##This is not working for some reason?
+publish(my.df, htmlRep4, name="Table")
+finish(htmlRep4)
+@
+
+
 \section{Adding plots or links to a report table}
-To add additional plots or links to a report table, we create a new data frame with the path to the plots and our links of interest.  We then \tt publish \rm this data frame.  
+To add additional plots or links to a report table, we can create a new data frame with the path to the plots and our links of interest.  We then \tt publish \rm this data frame.  
 
 Below we make a set of simple plots and then add the images along with new links to the ncbi gene database to our data frame.
 
@@ -136,10 +152,10 @@ my.df$Image<-hwriteImage(imagename, link=imagename, table=FALSE)
 my.df$Link <- hwrite(as.character(my.df$EGID), link=paste("http://www.ncbi.nlm.nih.gov/gene/",
                as.character(my.df$EGID), sep=''), table=FALSE)
 
-htmlRep4 <- HTMLReport(shortName = "my_html_file4",
-    reportDirectory = "./reports/")
-publish(my.df, htmlRep4)
-finish(htmlRep4)
+htmlRep5 <- htmlReportRef(shortName = "my_html_file5", title="Adding images and links to data frame directly",
+    reportDirectory = "./reports")
+publish(my.df, htmlRep5)
+finish(htmlRep5)
 @
 
 \begin{figure}
@@ -149,20 +165,59 @@ finish(htmlRep4)
 \end{figure}
 
 
-We can also publish images directly to out sites.
-<<AddImage, eval=FALSE>>=
-x <- c(1,3,5)
-y <- c(2,3,4)
-plot(x, y)
-example <- recordPlot()
-htmlRep5 <- HTMLReport(shortName = "my_html_file5",
-    reportDirectory = "./reports/")
-publish(example, htmlRep5, name = "basePlot")  ##This is not working for some reason?
-publish(my.df, htmlRep5, name="Table")
-finish(htmlRep5)
+We can also change our data frame to edit, add and remove columns with functions.  We then include these functions in our publish call as a list with \tt .addColumns \rm and \tt .toHTML \rm.
 
+<<AddPlotLinkFunctions, eval=FALSE>>=
+##this function adds 5 to each value of my.df$RPKMs 
+add5<-function(object,...){
+	object$plus5<-object$RPKM+5
+	
+	return (object)
+}
+##this function replaces the scatter plot images with new plots
+makeNewImages<-function(object,...){
+	imagename<-c()
+	for (i in 1:nrow(object)){
+		imagename[i]<-paste0("plotNew",i,".png")
+		png(filename=paste0("reports/",imagename[i]))
+		plot(object$RPKM[i], ylab="RPKM", xlab=object$EGID[i],main="New RPKM Plot", col="red", pch=15)
+		dev.off()
+	}
+	object$Image<-hwriteImage(imagename, link=imagename, table=FALSE)
+	return(object)
+}
+##This function removes the link column 
+removeLink<-function(object, ...){
+	object<-subset(object,select=-Link)
+	return(object)
+}
+##This function links the EGID column to the entrez database 
+addEGIDLink<-function(object, ...){
+	object$EGID<-hwrite(as.character(object$EGID), link=paste0("http://www.ncbi.nlm.nih.gov/gene/",
+               as.character(object$EGID)), table=FALSE)
+	return(object)
+}
+htmlRep6 <- htmlReportRef(shortName = "my_html_file6", title="Manipulating the data frame directly",
+    reportDirectory = "./reports")
+publish(my.df, htmlRep6, .addColumns=list(add5, makeNewImages, removeLink, addEGIDLink))
+finish(htmlRep6)
 @
 
+
+\section{Multiple Tables to the same page}
+It is also possible to publish multiple tables to the same html page.  We can change the order of the tables via \tt pos \rm.
+
+<<multipleTables, eval=FALSE>>=
+df2=data.frame(x=1:5, y=11:15)
+df3=data.frame(x=c("a", "b", "c"), y=1:3)
+
+htmlRep7 <- htmlReportRef(shortName = "my_html_file7", title="Many tables, one page",
+    reportDirectory = "./reports")
+publish(my.df, htmlRep7, .addColumns=list(add5, makeNewImages, removeLink, addEGIDLink), name="Df1")
+publish(df2, htmlRep7, name="Df2")
+publish(df3, htmlRep7, name="Df3", pos=2)
+finish(htmlRep7)
+@
 
 \section{Styled Tables}
 
@@ -170,10 +225,10 @@ If you have a preferred table style, defined in css, it's easy to style your tab
 
 <<styledCss, eval=FALSE>>=
 css.file <- system.file('extdata/table.css', package='ReportingTools')
-htmlRep5 <- HTMLReport(shortName = 'my_html_file5',
-    reportDirectory = "./reports/", link.css=css.file)
-publish(my.df, htmlRep4)
-finish(htmlRep5)
+htmlRep8 <- htmlReportRef(shortName = 'my_html_file8',
+    reportDirectory = "./reports", link.css=css.file)
+publish(my.df, htmlRep8)
+finish(htmlRep8)
 @
 
 
@@ -183,14 +238,38 @@ finish(htmlRep5)
 \caption{Resulting page created by calling \tt publish \rm for \tt my.df \rm with specific styling.}
 \end{figure}
 
-\section{More advanced reporting}
+\section{Knitr}
+\tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd \rm
 
-For publishing experimental results, including how to publish a \verb@limma@-based linear model and an \verb@edgeR@ RNA-seq analysis, please see the relevant vignette.  Example output is shown below.
+
+\section{Shiny}
+\tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd \rm
+
+\section{Publishing other types of data and more advanced features}
+To publish data that is not a data frame, there is a need to create and use a /tt .toDF /rm function.  For example, suppose we have a matrix we would like to publish.  /tt ReportingTools /rm will convert the basic matrix to a data.frame and then publish it.  
+
+<<publishMatrix, eval=FALSE>>=
+set.seed(123)
+my.mat = matrix(rnorm(20), nrow=5)
+makeDF = function(object, ...){
+	df = as.data.frame(object[-2,])
+	names(df) = paste0("New ", 1:4)
+	return(df)
+} 
+htmlRep9 <- htmlReportRef(shortName = 'my_html_file9', title="Publishing objects that are not data frames"
+    reportDirectory = "./reports")
+publish(my.mat, htmlRep9, .toDF=makeDF)
+finish(htmlRep9)
+@
+
+
+For publishing experimental results, including how to publish a \verb@limma@-based linear model and an \verb@edgeR@ RNA-seq analysis, please see the relevant vignette.  There are built-in \tt ReportingTools \rm methods to publish non-data frame objects typically encountered in microarray and RNA-seq analyses.  Example output is shown below.
 
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{microarray1.png}
 \caption{Resulting page created for analysis of a microarray study with \tt limma@\rm.}
 \end{figure}
+
 
 \end{document}

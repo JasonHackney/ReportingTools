@@ -4,6 +4,7 @@
 \alias{finish-methods}
 \alias{finish,DataPackage-method}
 \alias{finish,HTMLReport-method}
+\alias{finish,HTMLReportRef-method}
 \title{ Finalizing reports after publishing results}
 \description{
 This is a method for finalizing a report after results have been published. The exact nature of finalizing depends on the report type, as detailed below.
@@ -17,6 +18,12 @@ Calling \code{finish} on a DataPackage object rewrites the DESCRIPTION file, mak
 
 \item{\code{signature(publicationType = "HTMLReport")}}{
 Calling \code{finish} on an HTMLReport calls the \code{hwrite} function \code{closePage}, which closes the body and html tags on the page and closes the connection to the file.
+}
+\item{\code{signature(publicationType = "HTMLReportRef")}}{
+Calling \code{finish} on an HTMLReportRef calls all the finish handler
+for all \code{ReportHandler}s attached to the report. These handlers
+perform various actions depending on the desired behavior 
+of the report.
 }
 }}
 \keyword{methods}

@@ -65,13 +65,17 @@ setMethod("publish",
         annotation.db, geneStats = geneStats, baseUrl=baseUrl(htmlRep), 
         basePath=basePath(htmlRep))
    
-    setLink <- paste('<a href="',pages.dirname,"/", names(object), 
+    setLink <- paste('<a href="',pages.dirname,"/", gsub(":", "", names(object)), 
         ".html",'">', names(object), '</a>', sep="")
     descriptions <- sapply(object, description)
-
     ret <- data.frame("GeneSet" = setLink, "Description" = descriptions,
         stringsAsFactors = FALSE)
     colnames(ret) <- c("Gene Set", "Description")
+    
+    if (descriptions[1]==""){
+    	ret <- data.frame("GeneSet" = setLink, stringsAsFactors = FALSE)
+    	colnames(ret) <- c("Gene Set")
+    }
 
     if(!is.null(setStats)){
         ret <- cbind(ret, setStats)

@@ -56,6 +56,7 @@ makeGeneListPagesGSC <- function(geneSets, reportDir, annotation.db,
     numSets <- length(geneSets)
     for (i in 1:numSets){
         setName <- names(geneSets)[i]
+        setName<-gsub(":", "", setName)
         description <- description(geneSets[[i]])
         entrez <- unlist(geneIds(geneSets[[i]]))
         setTable <- data.frame(GeneName=entrez)

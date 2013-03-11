@@ -126,7 +126,7 @@ cds<-estimateDispersions(cds)
 res<-nbinomTest(cds,"control", "case" )
 @
 
-Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that makeDESeqDf command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexability.  See the basic vignette for more details and examples.
+Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that makeDESeqDf command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
 
 <<DESeq_report, eval=FALSE>>=
 desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq_2',

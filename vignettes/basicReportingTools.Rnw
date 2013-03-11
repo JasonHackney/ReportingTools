@@ -263,6 +263,7 @@ finish(htmlRep9)
 @
 
 
+
 For publishing experimental results, including how to publish a \verb@limma@-based linear model and an \verb@edgeR@ RNA-seq analysis, please see the relevant vignette.  There are built-in \tt ReportingTools \rm methods to publish non-data frame objects typically encountered in microarray and RNA-seq analyses.  Example output is shown below.
 
 \begin{figure}

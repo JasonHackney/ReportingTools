@@ -39,6 +39,11 @@
         ## pseudocount to avoid problems with zero count data
         
         expression.dat <- cpm(expression.dat$counts) + 1
+    } else if(is(expression.dat, "data.frame")){
+        ## If it's a data.frame, try to coerce it to a matrix,
+        ## but this might not work.
+        
+        expression.dat <- as.matrix(expression.dat)
     }
     
     scales <- c(scales, list(x = list(rot = 45)))

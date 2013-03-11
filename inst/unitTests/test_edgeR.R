@@ -74,9 +74,12 @@ test_3addReportColumns <- function(){
     rep.df <- toReportDF(edgeR.de, htmlRep, countTable = d$counts, 
         conditions = conditions, annotation.db='org.Mm.eg', 
         pvalueCutoff=1, lfc=0, n=100, make.plots = TRUE)
-    
+
     rep.df <- addReportColumns(rep.df, htmlRep, object = edgeR.de,
         countTable = NULL, conditions = NULL, make.plots = FALSE)
+    
+    rep.df <- addReportColumns(rep.df, htmlRep, object = edgeR.de,
+        countTable = mockRnaSeqData, conditions = conditions, make.plots = TRUE)
  
 }
 

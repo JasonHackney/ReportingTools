@@ -282,11 +282,13 @@ finish(gseaReport2)
 We now make an index page to put all the output together.
 **TO BE UPDATED**
 <<make the index page, eval=FALSE>>=
-indexPage <- HTMLReport(shortName = "index",
+indexPage <- htmlReportRef(shortName = "index",
     title = "Analysis of ALL Gene Expression",
     reportDirectory = "./reports",
     baseUrl = "")
-publish(c(deReport, goReport, PFAMReport, gseaReport), indexPage)
+publish(Link(c(deReport, goReport)), indexPage)
+publish(Link(PFAMReport),indexPage)
+publish(Link("GSEA report has a new title", "gsea_analysis.html"), indexPage)
 finish(indexPage)
 @
 \begin{figure}

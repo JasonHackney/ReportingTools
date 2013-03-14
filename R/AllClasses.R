@@ -8,11 +8,13 @@ setClass("ReportHandlers",
            addElement = "function",
            removeElement = "function",
            finish = "function",
+           location = "ANY",
            args = "ANY"),
          prototype = list(init = nullFun,
            addElement = nullFun,
            removeElement = nullFun,
            finish= nullFun,
+           location = NULL,
            args = NULL)
          )
 
@@ -272,7 +274,7 @@ htmlReportRef <- function(shortName = "coolProject",
   reportDirectory = ".",
   basePath = NULL,
   baseUrl = "localhost",
-  handlers = list(fileHandlers),
+  handlers = list(fileHandlers(makeReportPath(basePath, reportDirectory, shortName))),
   .toHTML = list(),
   .toDF = list(),
   .addColumns= list(),
@@ -303,7 +305,7 @@ htmlReportRef <- function(shortName = "coolProject",
     htmlReport$new(title = title, shortName = shortName, 
         reportDirectory = reportDirectory, handlers = handlers, 
         basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 
-        .toDF = .toDF, .addColumns  = .addColumns)
+        .toDF = .toDF, .addColumns  = .addColumns, link.css= link.css, link.javascript = link.javascript, ovewrite.js = overwrite.js)
   }
 
 

@@ -1,0 +1,12 @@
+library(ReportingTools)
+myrep1 = htmlReportRef(shortName = "reportForIndex1", title = "My first report")
+publish("Here is some stuff!!!", myrep1)
+finish(myrep1)
+myrep2 = htmlReportRef(shortName = "reportForIndex2", title="My Second report")
+publish("More stuff here!", myrep2)
+finish(myrep2)
+ind = htmlReportRef(shortName = "index")
+thing = Link(c(myrep1, myrep2))
+
+publish(thing, ind)
+finish(ind)

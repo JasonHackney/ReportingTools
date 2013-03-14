@@ -4,7 +4,7 @@
 
 
 
-toFileHandlers = new("ReportHandlers",
+fileHandlers = new("ReportHandlers",
   finish = function(rep, args)
   {
     if(is.null(args$file))
@@ -57,7 +57,7 @@ fileWIndexHandlers = new("ReportHandlers",
     splash
 }
 
-toConnectionHandlers = new("ReportHandlers",
+connectionHandlers = new("ReportHandlers",
   init = function(node, args)
   {
     #ugly and horrible :*(

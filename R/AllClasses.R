@@ -16,31 +16,271 @@ setClass("ReportHandlers",
            args = NULL)
          )
 
-setClass("BaseReport",
-    representation = representation(
-        shortName           = "character",
-        title               = "character",
-        reportDirectory    = "character"
-    ),
-    prototype = list(
-        shortName           = "coolProject",
-        title               = "My cool project",
-        reportDirectory    = "."
-    )
-)
 
-setClass("HTMLReport", contains = "BaseReport",
-    representation = representation(
-        baseUrl = "character",
-        basePath = "character",
-        page    = "connection"
-    )
-)
 
-HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
-    baseUrl = "localhost", basePath = NULL, page = NULL,
-    link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
-{
+baseReport <- setRefClass("BaseReportRef",
+  fields = list(
+    .shortName = "character",
+    shortName = function(val)
+    {
+      if(missing(val))
+        .shortName
+      else
+        .self$.shortName <- val
+    },
+    .title = "character",
+    title = function(val)
+    {
+      if(missing(val))
+        .title
+      else
+        {
+          .self$.title <- val
+          #if we have an HTML document, change/add the title node
+          if(is(.reportDOM, "XMLInternalDocument"))
+            {
+              tnode = getNodeSet(.reportDOM, "/html/head/title")
+              if(length(tnode))
+                xmlValue(tnode[[1]]) = val
+              else
+                {
+                  head = getNodeSet(.reportDOM, "/html/head")[[1]]
+                  addChildren(head, newXMLNode("title", val))}
+            }
+          .title
+              
+        }
+    },
+    .reportDirectory = "character",
+    reportDirectory = function(val)
+    {
+      if(missing(val))
+        .reportDirectory
+      else
+        #.self$.reportDirectory <- val
+        .reportDirectory <<- val
+    },
+    .report = "list",
+    .reportDOM = "ANY",
+    .basePath = "character",
+    basePath = function(val)
+    {
+      if(missing(val))
+        .basePath
+      else
+        .self$.basePath <- val
+    },
+    .baseUrl = "character",
+    baseUrl = function(val)
+    {
+      if(missing(val))
+        .baseUrl
+      else
+        .self$.baseUrl <- val
+    },
+    .handlers = "list",
+    handlers = function(val)
+    {
+      if(missing(val))
+        .handlers
+      else
+        {
+        #stop("The addHandlers/removeHandlers methods must be used to manipulate event handlers.")
+          if(!is.list(val))
+            val = list(val)
+        .self$.handlers <- val
+        }
+      }),
+  methods = list(
+    addHandlers = function(handlers, init = nullFun, addElement = nullFun, 
+        removeElement = nullFun, finalize = nullFun)
+    {
+      if(missing(handlers) | is.null(handlers))
+        handlers2 = new("ReportHandlers", init = init, addElement = addElement, 
+          removeElement = removeElement, finalize = finalize)
+      else
+        handlers2 = handlers
+      .self$.handlers <- c(.handlers, handlers2)
+    },
+    removeHandlers = function(pos = 1)
+    {
+      if (!(pos %in% seq(along = .handlers)))
+        stop(sprintf("There is no set of handlers at position %d  to remove.", pos))
+      .self$.handlers <- .handlers[-pos]
+    }
+    )
+  )
+
+htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
+  fields = list(
+    .toHTML = "list",
+    .toDF = "list",
+    .addColumns = "list"),
+  methods = list(
+    
+    prepare = function(obj,.toHTML = NULL, .toDF = NULL, .addColumns = NULL, ... )
+    {
+      #if the user has overridden  the html conversion for this class, we use that
+      klass = class(obj)
+      f = if(missing(.toHTML) || is.null(.toHTML)) .self$.toHTML[[klass]] else .toHTML
+      if(is.function(f))
+        {
+          ret = f(obj, ...)
+        }
+      else
+        {
+          if(missing(.toDF) || is.null(.toDF))
+            .toDF2 = .self$.toDF[[klass]]
+          else
+            .toDF2 = .toDF
+          if(missing(.addColumns) || is.null(.addColumns))
+            .addColumns2 = .self$.addColumns[[klass]]
+          else
+            .addColumns2 = .addColumns
+          html = objectToHTML(obj, .self, ..., .toDF=.toDF2, .addColumns = .addColumns2 )
+          
+          #prepping for conversion from text HTML nubuilding to XML construction Once the
+          #conversion is complete objectToHTML methods will be returning XMLInternalNode
+          #objects
+          
+          #this is a bit hacky but oh well!! We may be getting a list with elements "html"
+          #and "object"
+          if(is(html, "XMLNodeSet"))
+          {
+              htmlcode <- html
+          } else if(is.list(html))
+            {
+              htmlcode = html$html
+              obj = html$object
+          }
+          else
+            {
+              htmlcode = html
+              obj = NULL
+            }
+          if(is.character(htmlcode))
+            {  
+              htmlcode = htmlParse(htmlcode)
+              ret = getNodeSet(htmlcode, "//body/*")
+            } else {
+              ret = htmlcode
+            }
+        }
+      list(html = ret, object = obj)
+    },
+    finish = function()
+    {
+      sapply(.handlers, function(fs) fs@finish(.self, fs@args$finish))
+      # do we want to force a saveXML call here, or just assign one as a finalize
+      # event handler by default? For now we make people assign a handler,
+      # because sometimes we only want to send the content down a connection and
+      # not write a file.
+    },
+    addElement = function(name, value, .toHTML = NULL, .toDF = NULL, 
+        .addColumns = NULL, pos = NA, ... )
+    {
+      
+      if(missing(name))
+        name = paste("id", length(getNodeSet(.self$.reportDOM,"//body/div")) + 1, sep="")
+      if(is.character(name))
+        nodes = getNodeSet(.self$.reportDOM, sprintf("//div[@id='%s']", name))
+      else if (is.numeric(name))
+        stop("positional insertion is not yet supported")
+      
+      if(length(nodes))
+        {
+          if(!is.na(pos))
+            stop("Attempt to specify a position (pos) when replacing an existing element")
+          node = nodes[[1]]
+          #remove whatever was assigned to this name previously
+          removeChildren(node, kids = xmlChildren(node))
+          
+        } else {
+          #create new div with the specified id and add it to the body of the HTML page
+          node = newXMLNode("div", attrs= list(id=name, class = "ReportingTools"))
+          if(is.na(pos))
+            {
+              #No position means it gets added to the end of the document
+              body = getNodeSet(.self$.reportDOM, "//body")[[1]]
+              addChildren(body, node)
+              
+            } else {
+              #If we are given a position n, find the nth report element in the current report and insert our new element directly ahead of it.
+              addSibling(.self$.report[[pos]], after=FALSE, node)
+            }
+        }
+
+      #turn value into html nodes to add to DOM
+      newcontent = .self$prepare(value, .toHTML = .toHTML, .toDF = .toDF, 
+          .addColumns = .addColumns,... )
+      obj = newcontent$object
+      newcontent=newcontent$html
+      if(is.list(newcontent))
+        addChildren(node, kids = newcontent)
+      else
+        addChildren(node, newcontent)
+      # call all currently assigned addElement handlers with the node for the div
+      # containing the new content
+      sapply(.self$.handlers, function(fs, node, name) 
+        fs@addElement(node, name, fs@args$addElement), node= node, name=name)
+      if(is.na(pos))
+        .self$.report[[name]] = node
+      else
+        {
+          #insert our new element in the right place and shift everything else around.
+          oldlist = .self$.report
+          oldnames = names(oldlist)
+          before = which(seq(along=oldlist) < pos)
+          after = which(seq(along=oldlist) > pos)
+          newlist = vector("list", length(oldlist) + 1)
+          newlist[before] = oldlist[before]
+          newlist[[pos]] = node
+          newlist[after + 1] = oldlist[after]
+          names(newlist ) = c(oldnames[before], name, oldnames[after])
+          .self$.report = newlist
+
+        }
+      invisible(obj)
+
+
+    },
+    initialize = function(...)
+    {
+      args = list(...)
+      
+      handlers2 = args$handlers
+      if(is.null(handlers))
+        handlers2 = list(toFileHandlers)
+
+      #if we only have one set of handler sometimes it won't come in the form of a list
+      if(!is.list(handlers2))
+        handlers2 = list(handlers2)
+      dom = startHTMLReport(...)
+      .self$.reportDOM = dom
+      sapply(handlers2, function(h) h@init(dom, h@args$init))
+      .self$initFields(shortName = args$shortName, title = args$title,
+          reportDirectory = args$reportDirectory, handlers = handlers2, 
+          basePath = args$basePath, baseUrl = args$baseUrl)
+
+    }
+    )
+  )
+    
+htmlReportRef <- function(shortName = "coolProject",
+  title = shortName, 
+  reportDirectory = ".",
+  basePath = NULL,
+  baseUrl = "localhost",
+  handlers = list(fileHandlers),
+  .toHTML = list(),
+  .toDF = list(),
+  .addColumns= list(),
+  link.css = NULL,
+  link.javascript=NULL,
+  overwrite.js = TRUE
+  )
+  {
+    
     shortName <- sub(".html$", "", shortName)
     if(is.null(title))
         title <- shortName
@@ -48,7 +288,6 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
     if(substr(reportDirectory,1,1) == "~"){
         reportDirectory <- path.expand(reportDirectory)
     }
-    
     
     ## Not sure what to do here when basePath is set, but reportDirectory needs
     ## to be rewritten... Probably should just throw an execption    
@@ -60,170 +299,13 @@ HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
         if(is.null(basePath)) basePath = "."
     }
     
-    
-    if(substr(basePath,1,1) == "~"){
-        basePath <- path.expand(basePath)
-    }
-    
-    pageDir <- file.path(basePath, reportDirectory)
-    pageDir <- gsub("//+", "/", pageDir)
+    htmlReport$new(title = title, shortName = shortName, 
+        reportDirectory = reportDirectory, handlers = handlers, 
+        basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 
+        .toDF = .toDF, .addColumns  = .addColumns)
+  }
 
-    
-    if(is.null(link.javascript)){
-        js.libloc <- Sys.getenv("REPORTINGTOOLSJSLIB")
-        if(js.libloc == ""){
-            javascript.files <- c(system.file("extdata/jslib/jquery-1.8.0.min.js",
-                package="ReportingTools"), 
-                system.file("extdata/jslib/jquery.dataTables-1.9.3.js",
-                    package="ReportingTools"),
-                system.file("extdata/jslib/jquery.dataTables.columnFilter.js",
-                    package="ReportingTools"),
-                system.file("extdata/jslib/jquery.dataTables.plugins.js",
-                    package="ReportingTools"),
-                system.file("extdata/jslib/bootstrap.js",
-                    package="ReportingTools"),
-                system.file("extdata/jslib/jquery.dataTables.reprise.js",
-                    package="ReportingTools")                                  
-                                  )
 
-            jsDir <- file.path(pageDir,"jslib")
-            jsDir <- gsub("//+", "/", jsDir)
 
-            if(!file.exists(jsDir))
-                .safe.dir.create(jsDir, recursive=TRUE)
-            
-            file.copy(javascript.files, jsDir, overwrite=overwrite.js)
-            javascript.files <- sub(".*extdata/","",javascript.files)
-          } else {
-            javascript.files <- paste(js.libloc, c("jquery-1.8.0.min.js",
-                "jquery.dataTables-1.9.3.js","jquery.dataTables.columnFilter.js",
-                "jquery.dataTables.plugins.js","jquery.dataTables.reprise.js",
-                "bootstrap.js"), 
-                sep="/")
-        }
-        link.javascript <- javascript.files
-    }
-    if(is.null(link.css)){
-        css.libloc <- Sys.getenv("REPORTINGTOOLSCSSLIB")
-        if(css.libloc == ""){
-#            css.files <- c(system.file("extdata/csslib/reset-min.css", 
-#                    package="ReportingTools"), 
-#                system.file("extdata/csslib/reprise.table.css", 
-#                    package="ReportingTools"),
-          css.files <- c(
-                         system.file("extdata/csslib/bootstrap.css",
-                                     package="ReportingTools"),
-                         system.file("extdata/csslib/reprise.table.bootstrap.css",
-                                     package="ReportingTools")
-                           )
-            
-            cssDir <- (file.path(pageDir,"csslib"))
-            cssDir <- gsub("//+", "/", cssDir)
-            .safe.dir.create(cssDir, recursive=TRUE)
-            
-            file.copy(css.files, cssDir, overwrite=overwrite.js)
-            css.files <- sub(".*extdata/","",css.files)
 
-            css.png.package.dir <- c(system.file("extdata/csslib/images/", package="ReportingTools"))
-            css.pngs <- list.files(path=css.png.package.dir)
-            css.pngs <-  paste(css.png.package.dir,css.pngs, sep="")
-
-            cssPngsDir <- (file.path(pageDir,"csslib/images"))
-            .safe.dir.create(cssPngsDir, recursive=TRUE)            
-            file.copy(css.pngs,cssPngsDir)
-           
-          } else {
-            css.files <- paste(css.libloc, 
-                c("reset-min.css", "reprise.table.css"), sep="/")
-        }
-        link.css <- css.files
-    }
-    
-    if(is.null(page)){
-        pageDir <- file.path(basePath, reportDirectory)
-        page <- openPage(paste(shortName, "html", sep="."), 
-            dirname = pageDir, title = title, link.css = link.css,
-            link.javascript = link.javascript)
-    }
-    hwrite(title, page = page, heading=2, br=TRUE)
-    htmlRep <- new("HTMLReport", shortName = shortName,
-        title = title, reportDirectory = reportDirectory, 
-        baseUrl = baseUrl, basePath = basePath, page = page)
-}
-
-setClass("CSVFile", contains = "BaseReport")
-
-CSVFile <- function(shortName, title = "", reportDirectory = ".")
-{
-    csvRep <- new("CSVFile", shortName = shortName, 
-        reportDirectory = reportDirectory, title = title)
-    return(csvRep)
-}
-
-setClass("DataPackage", contains = "BaseReport",
-    representation = representation(
-        version         = "character",
-        dependencies    = "character",
-        author          = "character",
-        maintainer      = "character",
-        license         = "character",
-        description     = "character",
-        package.Rd      = "character"
-    ),
-    prototype = list(
-        version         = "0.0.1",
-        dependencies    = "Biobase",
-        author          = "nobody <nobody@nothing.net>",
-        maintainer      = "nobody",
-        license         = "No license specified",
-        description     = "No description necessary",
-        package.Rd      = ""
-    )
-)
-
-DataPackage <- function(shortName, title = "", reportDirectory = ".",
-    version = "0.0.1", dependencies = c("Biobase"), license = "",
-    description = "", author = "nobody", 
-    maintainer = "nobody <nobody@nothing.net>")
-{
-    dependencies <- unique(dependencies)
-    dataPkg <- new("DataPackage", shortName = shortName, 
-        reportDirectory = reportDirectory, title = title,
-        version = version, dependencies = dependencies, license = license,
-        description = description, author = author, maintainer = maintainer)
-    ## Need to do some basic setup of the data package:
-    ## Make directories, create the DESCRIPTION and NAMESPACE,
-    ## add some documentation into the package.Rd file
-    .safe.dir.create(reportDirectory)
-    pkg.dir <- path(dataPkg)
-    .safe.dir.create(pkg.dir)
-    
-    man.dir <- file.path(pkg.dir, "man")
-    .safe.dir.create(man.dir)
-
-    vignettes.dir <- file.path(pkg.dir, "vignettes")
-    .safe.dir.create(vignettes.dir)
-    
-    data.dir <- file.path(pkg.dir, "data")
-    .safe.dir.create(data.dir)
-    
-    ## I should move this to a finish method, just to make sure that
-    ## any changes to the package are put into the description.
-    ## Or add this to all accessor methods. Oy!
-    description.str <- paste("Package: ", shortName, "\nVersion: ", version, 
-        "\nTitle: ", title, "\nAuthor: ", author, "\nMaintainer: ", maintainer,
-        "\nDepends: ", dependencies, "\nLicense: ", license, "\nType: Package",
-        "\nLazyLoad: yes\nDescription: ", description, sep="")
-    description.fn <- file.path(pkg.dir, "DESCRIPTION")
-    
-    namespace.str <- paste("#Export all variables that do not start with a period.", 
-        "exportPattern(\"^[^\\\\.]+\")", sep = "\n")
-    out <- file(file.path(pkg.dir, "NAMESPACE"), "wt") 
-    writeLines(namespace.str, out)
-    close(out)
-    ## Also need to make a namespace file here.
-    
-    cat(description.str, file=description.fn)
-    
-    return(dataPkg)
-}
+### See AllOldClasses.R for old S4 based Report classes.

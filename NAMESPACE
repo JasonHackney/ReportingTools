@@ -23,7 +23,7 @@ import(PFAM.db)
 importFrom(hwriter, openPage, hwrite, closePage, hwriteImage, hmakeTag)
 importFrom(XML, htmlParse, getNodeSet, saveXML, xmlRoot, addChildren, newXMLNode, removeChildren, xmlChildren, xmlValue, xmlAttrs, 'xmlValue<-', addSibling, xpathSApply)
 
-export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme.alternate, reporting.theme, makeDESeqDf, htmlReportRef, readReport, toFileHandlers, toConnectionHandlers, knitrHandlers, shinyHandlers, fileWIndexHandlers)
+export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme.alternate, reporting.theme, makeDESeqDf, htmlReportRef, readReport, fileHandlers, connectionHandlers, knitrHandlers, shinyHandlers, fileWIndexHandlers)
 exportMethods(publish, name, title, 'title<-', reportDirectory,
               'reportDirectory<-', filename, path, url, page, 'page<-', finish,
     show, basePath, baseUrl, dependencies, "dependencies<-", addReportColumns, objectToHTML, toReportDF, Link)

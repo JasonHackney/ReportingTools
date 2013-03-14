@@ -451,7 +451,7 @@ setMethod("objectToHTML", signature = signature(
 	}
         if(makePlot)
           #If we have the plot we need to mash it all together into HTML here because of how the dispatch is currently set up. We may want to change this in the future...
-          paste("<div>",retplot, objectToHTML(ret), "</div>", sep="\n") 
+          paste("<div>",plotret, objectToHTML(ret), "</div>", sep="\n") 
         else
           ret
       }

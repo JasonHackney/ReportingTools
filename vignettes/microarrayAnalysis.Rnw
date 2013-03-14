@@ -53,8 +53,9 @@ ALL <- featureFilter(ALL)
 Next we use \tt limma \rm to find statistical evidence of differential genes.
 
 <<limma linear model, eval=FALSE>>=
-pVals<-gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
-bestPval<-apply(pVals,1, min)
+library(limma)
+model <- model.matrix(~mol.biol+sex, ALL)
+fit <- eBayes(lmFit(ALL, model))
 @
 
 With the \tt limma \rm output we can make our differential analysis report.  To publish \tt MArrayLM \rm objects, we supply the \tt eSet \rm and \tt factor \rm used in our analysis.  
@@ -80,6 +81,16 @@ The resulting output is displayed on an .html page and includes several statisti
 \caption{Resulting page created by \tt publish \rm for \tt fit \rm.}
 \end{figure}
 
+If we want to change our images, we can do so with .addColumns (see the basic vignette for more examples of how to use this feature).
+
+#####UPDATE THIS
+<<making the DE report, eval=FALSE>>=
+deReport <- htmlReportRef(shortName = 'de_analysis',
+     title = 'Analysis of AD brain differential expression (images stratified by IL6R vairant)',
+     reportDirectory = reportDir)
+publish(fit, deReport, eSet=eset, factor=pData(eset)$TS, coef=2, n=50, .addColumns=makeNewImages)
+finish(deReport)
+@
 
 
 \section{GO analysis using GOstats}

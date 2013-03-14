@@ -102,10 +102,10 @@ barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID",
 dev.off()
 
 library(hwriter)
-###THIS IS NOT CURRENTLY WORKING!!
-htmlRep3 <- htmlReportRef(shortName = "my_html_file3",title="Adding an image",
+htmlRep3 <- htmlReportRef(shortName = "my_html_file3", title="Adding an image",
     reportDirectory = "./reports")
-publish( hwrite("Bar chart of results", heading=2), htmlRep3 )
+    publish(hwrite("This is a link to Bioconductor", link=), htmlRep3) ###ADD LINK
+publish(hwrite("Bar chart of results", heading=2), htmlRep3)
 himg <- hwriteImage("barplot.png", link="barplot.png")
 publish(hwrite(himg, br=TRUE), htmlRep3)
 publish(hwrite("Results Table", heading=2), htmlRep3)
@@ -122,13 +122,18 @@ finish(htmlRep3)
 
 We can also publish images directly to sites.
 <<AddImage, eval=FALSE>>=
-
+###THIS IS NOT WORKING#####
 plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
 	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
 scatterPlot <- recordPlot()
+barPlot<-barchart(my.df$RPKM)  ##lattice plots behave slightly differently
+	
 htmlRep4 <- htmlReportRef(shortName = "my_html_file4", title="Adding a plot directly to the page",
     reportDirectory = "./reports")
-publish(scatterPlot, htmlRep4, name = "basePlot")  ##This is not working for some reason?
+
+publish(scatterPlot, htmlRep4, name = "scatterPlot")  ##This is not working for some reason?
+publish("This is a bar plot", htmlRep4)
+publish(barPlot, htmlRep4, name = "barPlot")  ##This is not working for some reason?
 publish(my.df, htmlRep4, name="Table")
 finish(htmlRep4)
 @
@@ -241,18 +246,15 @@ finish(htmlRep8)
 \tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd \rm
 
 
-\section{Shiny}
-\tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd \rm
-
 \section{Publishing other types of data and more advanced features}
 To publish data that is not a data frame, there is a need to create and use a /tt .toDF /rm function.  For example, suppose we have a matrix we would like to publish.  /tt ReportingTools /rm will convert the basic matrix to a data.frame and then publish it.  
 
 <<publishMatrix, eval=FALSE>>=
 set.seed(123)
-my.mat = matrix(rnorm(20), nrow=5)
-makeDF = function(object, ...){
-	df = as.data.frame(object[-2,])
-	names(df) = paste0("New ", 1:4)
+my.mat <- matrix(rnorm(20), nrow=5)
+makeDF <- function(object, ...){
+	df <- as.data.frame(object[-2,])
+	names(df) <- paste0("New ", 1:4)
 	return(df)
 } 
 htmlRep9 <- htmlReportRef(shortName = 'my_html_file9', title="Publishing objects that are not data frames",
@@ -273,3 +275,21 @@ For publishing experimental results, including how to publish a \verb@limma@-bas
 
 
 \end{document}
+
+
+
+gscReport <- HTMLReport(
+    shortName="gsc_example",
+    title="GSEABase Vignette GeneSetCollection",
+    reportDirectory=tempdir(), baseUrl="")
+publish(gsc[idx], gscReport, annotation.db="org.Hs.eg")
+finish(gscReport)
+browseURL(path(gscReport))
+
+
+gscReport <- htmlReportRef(shortName="gsc_example",title="GSEABase Vignette GeneSetCollection", reportDirectory=tempdir(), baseUrl="")
+publish(gsc[idx], gscReport, annotation.db="org.Hs.eg")
+rr<-finish(gscReport)
+
+browseURL(rr)
+

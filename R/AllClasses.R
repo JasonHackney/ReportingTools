@@ -121,7 +121,8 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
     prepare = function(obj,.toHTML = NULL, .toDF = NULL, .addColumns = NULL, ... )
     {
       #if the user has overridden  the html conversion for this class, we use that
-      klass = class(obj)
+      #we grab the first class if there are more than one (ie with XMLInternalNode)
+      klass = class(obj)[1]
       f = if(missing(.toHTML) || is.null(.toHTML)) .self$.toHTML[[klass]] else .toHTML
       if(is.function(f))
         {

@@ -23,7 +23,12 @@ setMethod("objectToHTML",
 
           })
 
-
+setMethod("objectToHTML", signature(
+  object = "XMLInternalNode"),
+          definition = function(object, report, ...)
+          {
+            object
+          })
 
 
 setMethod("objectToHTML",

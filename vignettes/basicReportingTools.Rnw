@@ -275,21 +275,3 @@ For publishing experimental results, including how to publish a \verb@limma@-bas
 
 
 \end{document}
-
-
-
-gscReport <- HTMLReport(
-    shortName="gsc_example",
-    title="GSEABase Vignette GeneSetCollection",
-    reportDirectory=tempdir(), baseUrl="")
-publish(gsc[idx], gscReport, annotation.db="org.Hs.eg")
-finish(gscReport)
-browseURL(path(gscReport))
-
-
-gscReport <- htmlReportRef(shortName="gsc_example",title="GSEABase Vignette GeneSetCollection", reportDirectory=tempdir(), baseUrl="")
-publish(gsc[idx], gscReport, annotation.db="org.Hs.eg")
-rr<-finish(gscReport)
-
-browseURL(rr)
-

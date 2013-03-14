@@ -618,14 +618,23 @@ setMethod("objectToHTML",
         annotation.db, geneStats = geneStats, baseUrl=htmlRep$baseUrl, 
         basePath=htmlRep$basePath)
    
-    setLink <- paste('<a href="',pages.dirname,"/", names(object), 
+   	names2<-names(object)
+   	names2<-gsub(":","", names2)
+   	names2<-gsub(" ","", names2)
+   	names2<-gsub(";","", names2)
+   
+   	setLink <- paste('<a href="',pages.dirname,"/", names2, 
         ".html",'">', names(object), '</a>', sep="")
-    descriptions <- sapply(object, description)
+   	descriptions <- sapply(object, description)
 
-    ret <- data.frame("GeneSet" = setLink, "Description" = descriptions,
+   	ret <- data.frame("GeneSet" = setLink, "Description" = descriptions,
         stringsAsFactors = FALSE)
     colnames(ret) <- c("Gene Set", "Description")
-
+    
+	if (descriptions[1]==""){
+    	ret <- data.frame("GeneSet" = setLink, stringsAsFactors = FALSE)
+    	colnames(ret) <- c("Gene Set")
+    }
     if(!is.null(setStats)){
         ret <- cbind(ret, setStats)
         colnames(ret)[ncol(ret)] <- "Gene Set Statistic"

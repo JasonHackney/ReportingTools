@@ -81,15 +81,28 @@ The resulting output is displayed on an .html page and includes several statisti
 \caption{Resulting page created by \tt publish \rm for \tt fit \rm.}
 \end{figure}
 
-If we want to change our images, we can do so with .addColumns (see the basic vignette for more examples of how to use this feature).
+If we want to change our images, we can do so with \tt .addColumns \rm (see the basic vignette for more examples of how to use this feature).  In this example, we make lattice plots of the expression of each gene in our table stratified by \tt mol.biol \rm and \tt sex \rm.
 
-#####UPDATE THIS
-<<making the DE report, eval=FALSE>>=
-deReport <- htmlReportRef(shortName = 'de_analysis',
-     title = 'Analysis of AD brain differential expression (images stratified by IL6R vairant)',
-     reportDirectory = reportDir)
-publish(fit, deReport, eSet=eset, factor=pData(eset)$TS, coef=2, n=50, .addColumns=makeNewImages)
-finish(deReport)
+<<making the DE report with new images, eval=FALSE>>=
+makeNewImages<-function(df,...){
+	imagename<-c()
+	for (i in 1:nrow(df)){
+		probeId<-df$ProbeId[i]
+		y_at<-pretty(exprs(ALL)[probeId,])
+		y_labels<-formatC(y_at, digits=1, format='f')
+		imagename[i]<-paste0("plot", probeId, ".png")
+		png(filename=paste0("./reports/figuresde_analysis/", imagename[i]))
+		print(stripplot(exprs(ALL)[probeId,]~ALL$mol.biol|ALL$sex))
+		dev.off()
+	}
+	df$Image<-hwriteImage(paste0("figuresde_analysis/", imagename), link=paste0("figuresde_analysis/", imagename), table=FALSE, width=100)
+	return(df)
+}
+deReport2<-htmlReportRef(shortName='de_analysis2',
+	title = 'Analysis of BCR/ABL translocation differential expression with new plots',
+    reportDirectory = "./reports")
+publish(fit, deReport2, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .addColumns=makeNewImages)
+finish(deReport2)
 @
 
 
@@ -286,7 +299,7 @@ indexPage <- htmlReportRef(shortName = "index",
     title = "Analysis of ALL Gene Expression",
     reportDirectory = "./reports",
     baseUrl = "")
-publish(Link(c(deReport, goReport)), indexPage)
+publish(Link(list(deReport, goReport)), indexPage)
 publish(Link(PFAMReport),indexPage)
 publish(Link("GSEA report has a new title", "gsea_analysis.html"), indexPage)
 finish(indexPage)

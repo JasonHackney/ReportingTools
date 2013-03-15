@@ -128,7 +128,7 @@ test_6data.frames <- function(){
     df5 <- data.frame(probeId = c (NA, "A_23_P100022", "A_23_P100056",
             "A_23_P100074","A_23_P100103", "A_23_P100127",NA,"A","C","R"),
         RPKM = c(1, -2/100, 3/1000000, 9.03e-4, 0, NA,NA,NA,1, 1e-44))
-    htmlRep2 <- htmlReportRef("testhtmlPage2", 
+    htmlRep2 <- HTMLReport("testhtmlPage2", 
         reportDirectory = 'testHTMLDirectory', title = "Test Report")
 
     publish(df4, htmlRep2)

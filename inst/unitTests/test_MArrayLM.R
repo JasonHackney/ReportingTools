@@ -78,15 +78,15 @@ test_6dataframe_2coefs <- function(){
 }
 
 test_7toReportDF <- function(){
-    htmlRep <- htmlReportRef("testMArrayLMhtmlPage4",
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage4",
         reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 4")
 
     df <- toReportDF(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2,
         n = 100, make.plots = FALSE)
 }
 
-test_9htmlReportRef <- function(){
-    htmlRep <- htmlReportRef("testMArrayLMhtmlPage4",
+test_9HTMLReport <- function(){
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage4",
         reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 4")
     publish(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2, n = 100,
         make.plots = TRUE)

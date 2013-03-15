@@ -51,7 +51,7 @@ test_2html <- function(){
 }
 
 test_3toReportDF <- function(){
-    htmlRep <- htmlReportRef("testhtmlPage4", 
+    htmlRep <- HTMLReport("testhtmlPage4", 
         reportDirectory = 'testHTMLDirectory', title = "Test Report 4")
     
     rep.df <- toReportDF(edgeR.de, htmlRep, countTable = d$counts, 
@@ -68,7 +68,7 @@ test_3toReportDF <- function(){
 
 
 test_3addReportColumns <- function(){
-    htmlRep <- htmlReportRef("testhtmlPage4", 
+    htmlRep <- HTMLReport("testhtmlPage4", 
         reportDirectory = 'testHTMLDirectory', title = "Test Report 4")
     
     rep.df <- toReportDF(edgeR.de, htmlRep, countTable = d$counts, 
@@ -85,7 +85,7 @@ test_3addReportColumns <- function(){
 
 
 test_4publishHTMLReportRef <- function(){
-    htmlRep <- htmlReportRef("testhtmlPage4", 
+    htmlRep <- HTMLReport("testhtmlPage4", 
         reportDirectory = 'testHTMLDirectory', title = "Test Report 4")
     publish(edgeR.de, htmlRep, countTable = d$counts, conditions = conditions,
         annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100, 

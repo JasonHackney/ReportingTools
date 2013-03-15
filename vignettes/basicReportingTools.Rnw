@@ -81,18 +81,12 @@ publish(my.df, list(csvFile2, htmlRep2))
 finish(htmlRep2)
 @
 
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{html2.png}
-\caption{Resulting page created by calling \tt publish \rm for \tt my.df \rm to \tt htmlRep2\rm.}
-\end{figure}
-
 The same few lines of code could be used to publish, for example, the results of a \verb@limma@ differential expression analysis, or the results of a Gene Ontology analysis, all without worrying about coercing the objects to a tabular format ourselves.  For more information, see the microarray and RNA-seq vignettes.
 
 
 \section{Adding plots or text to a report}
 
-To add additional text or existing plots to a report, simply open the report with \tt HTMLReport \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
+To add links, additional text or existing plots to a report, simply open the report with \tt HTMLReport \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
 
 
 <<AddTextPlot, eval=FALSE>>=
@@ -102,9 +96,10 @@ barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID",
 dev.off()
 
 library(hwriter)
-htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding an image",
+htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding a link, text and image",
     reportDirectory = "./reports")
-    publish(hwrite("This is a link to Bioconductor", link=), htmlRep3) ###ADD LINK
+###ADD LINK
+publish(hwrite("This is a link to Bioconductor", link = "www.bioconductor.org"), htmlRep3) 
 publish(hwrite("Bar chart of results", heading=2), htmlRep3)
 himg <- hwriteImage("barplot.png", link="barplot.png")
 publish(hwrite(himg, br=TRUE), htmlRep3)
@@ -116,11 +111,11 @@ finish(htmlRep3)
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{html3.png}
-\caption{Resulting page created after adding additional figures and text.}
+\caption{Resulting page created after adding additional links, figures and text.}
 \end{figure}
 
 
-We can also publish images and text directly to sites.
+We can also publish images and text directly to sites without \tt hwriter \rm.
 <<AddImage, eval=FALSE>>=
 plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
 	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
@@ -161,12 +156,6 @@ publish(my.df, htmlRep5)
 finish(htmlRep5)
 @
 
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{html4.png}
-\caption{Resulting page created after adding figures and links to table.}
-\end{figure}
-
 
 We can also change our data frame to edit, add and remove columns with functions.  We then include these functions in our publish call as a list with \tt .addColumns \rm and \tt .toHTML \rm.
 
@@ -205,6 +194,11 @@ publish(my.df, htmlRep6, .addColumns=list(add5, makeNewImages, removeLink, addEG
 finish(htmlRep6)
 @
 
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html6.png}
+\caption{Resulting page created after adding figures and links to table with \tt .addColumns \rm.}
+\end{figure}
 
 \section{Multiple Tables to the same page}
 It is also possible to publish multiple tables to the same html page.  We can change the order of the tables via \tt pos \rm.
@@ -221,25 +215,6 @@ publish(df3, htmlRep7, name="Df3", pos=2)
 finish(htmlRep7)
 @
 
-\section{Styled Tables}
-
-If you have a preferred table style, defined in css, it's easy to style your tables consistently using the \tt link.css \rm parameter when creating an \tt HTMLReport\rm.  Below we use a simpler table format.
-
-<<styledCss, eval=FALSE>>=
-css.file <- system.file('extdata/table.css', package='ReportingTools')
-htmlRep8 <- HTMLReport(shortName = 'my_html_file8',
-    reportDirectory = "./reports", link.css=css.file)
-publish(my.df, htmlRep8)
-finish(htmlRep8)
-@
-
-
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{html5.png}
-\caption{Resulting page created by calling \tt publish \rm for \tt my.df \rm with specific styling.}
-\end{figure}
-
 \section{Knitr}
 \tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd \rm
 
@@ -255,12 +230,17 @@ makeDF <- function(object, ...){
 	names(df) <- paste0("New ", 1:4)
 	return(df)
 } 
-htmlRep9 <- HTMLReport(shortName = 'my_html_file9', title="Publishing objects that are not data frames",
+htmlRep8 <- HTMLReport(shortName = 'my_html_file8', title="Publishing objects that are not data frames",
     reportDirectory = "./reports")
-publish(my.mat, htmlRep9, .toDF=makeDF)
-finish(htmlRep9)
+publish(my.mat, htmlRep8, .toDF=makeDF)
+finish(htmlRep8)
 @
 
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html8.png}
+\caption{Resulting page created after transforming a matrix to a data frame with \tt .toDF \rm .}
+\end{figure}
 
 
 For publishing experimental results, including how to publish a \verb@limma@-based linear model and an \verb@edgeR@ RNA-seq analysis, please see the relevant vignette.  There are built-in \tt ReportingTools \rm methods to publish non-data frame objects typically encountered in microarray and RNA-seq analyses.  Example output is shown below.

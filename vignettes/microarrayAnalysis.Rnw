@@ -286,12 +286,6 @@ gseaReport2 <- HTMLReport(shortName = "gsea_analysis2",
 	reportDirectory = "./reports")
 publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .addColumns=runGSEA)
 finish(gseaReport2)
-
-gseaReport2 <- HTMLReport(shortName = "gsea_analysis2",
-	title = "GSEA analysis", 
-	reportDirectory = "./reports")
-publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .addColumns=runGSEA)
-finish(gseaReport2)
 @
 
 
@@ -302,8 +296,8 @@ We now make an index page to put all the output together.
 indexPage <- HTMLReport(shortName = "index",
     title = "Analysis of ALL Gene Expression",
     reportDirectory = "./reports")
-publish(Link(list(deReport, goReport)), indexPage)
-publish(Link(PFAMReport),indexPage)
+publish(Link(list(deReport, goReport), report=indexPage), indexPage)
+publish(Link(PFAMReport, report=indexPage),indexPage)
 publish(Link("GSEA report has a new title", "gsea_analysis.html"), indexPage)
 finish(indexPage)
 @

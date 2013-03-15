@@ -50,7 +50,7 @@ An HTMLReportRef object representing the Reportl.
 }
 
 \seealso{
-\code{\linkS4Class{HTMLReportRef}}
+\code{\linkS4class{HTMLReportRef}}
 }
 \keyword{ ~kwd1 }
 \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

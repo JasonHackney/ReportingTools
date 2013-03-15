@@ -120,14 +120,13 @@ finish(htmlRep3)
 \end{figure}
 
 
-We can also publish images directly to sites.
+We can also publish images and text directly to sites.
 <<AddImage, eval=FALSE>>=
-###THIS IS NOT WORKING#####
 plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
 	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
 scatterPlot <- recordPlot()
 library(lattice)
-barPlot<-barchart(my.df$RPKM)  ##lattice plots behave slightly differently
+barPlot<-barchart(my.df$RPKM~my.df$EGID)  ##lattice plots behave slightly differently
 	
 htmlRep4 <- htmlReportRef(shortName = "my_html_file4", title="Adding a plot directly to the page",
     reportDirectory = "./reports")

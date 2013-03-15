@@ -63,7 +63,7 @@ lattice.options(default.theme = rep.theme)
 ## The publish function does not normalize counts for the countTable argument to allow for
 ## flexibility in plotting various units (e.g. RPKM instead of counts).
 
-deReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR',
+deReport <- HTMLReport(shortName = 'RNAseq_analysis_with_edgeR',
     title = 'RNA-seq analysis of differential expression using edgeR',
     reportDirectory = "./reports")
 publish(edgeR.de, deReport, countTable=mockRnaSeqData,
@@ -99,7 +99,7 @@ d <- estimateGLMTagwiseDisp(d, design)
 fit<-glmFit(d,design)
 edgeR.lrt<-glmLRT(fit, coef=2)
 
-deReport2 <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR_2',
+deReport2 <- HTMLReport(shortName = 'RNAseq_analysis_with_edgeR_2',
     title = 'RNA-seq analysis of differential expression using edgeR (LRT)',
     reportDirectory = "./reports")
 publish(edgeR.lrt, deReport2, countTable=mockRnaSeqData,
@@ -127,7 +127,7 @@ res<-nbinomTest(cds,"control", "case" )
 Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that \tt makeDESeqDF \rm command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
 
 <<DESeq_report, eval=FALSE>>=
-desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq',
+desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq_2',
     title = 'RNA-seq analysis of differential expression using DESeq',
     reportDirectory = "./reports")
 publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDF)
@@ -158,7 +158,7 @@ goResults <- hyperGTest(goParams)
 With these results, we then make the GO report.  Here we set \tt makePlot=TRUE \rm to get a large image of the relationship between our significant ontologies.
 
 <<make the GO report, eval=FALSE>>=
-goReport <- htmlReportRef(shortName = 'go_analysis_rnaseq',
+goReport <- HTMLReport(shortName = 'go_analysis_rnaseq',
 	title = "GO analysis of mockRnaSeqData",
 	reportDirectory = "./reports")
 publish(goResults, goReport, selectedIDs=selectedIDs, annotation.db="org.Mm.eg", 
@@ -191,7 +191,7 @@ PFAMResults <- hyperGTest(params)
 
 Then we make the PFAM report.
 <<make the PFAM report, eval=FALSE>>=
-PFAMReport <- htmlReportRef(shortName = 'pfam_analysis_rnaseq',
+PFAMReport <- HTMLReport(shortName = 'pfam_analysis_rnaseq',
 	title = "PFAM analysis of mockRnaSeqData",
 	reportDirectory = "./reports")
 publish(PFAMResults, PFAMReport, selectedIDs=selectedIDs, annotation.db="org.Mm.eg",categorySize=5)
@@ -209,7 +209,7 @@ finish(PFAMReport)
 **THIS HAS TO BE UPDATED**
 Here, we make an index page that puts all three analyses together for easy navigation.
 <<make the index page, eval=FALSE>>=
-indexPage <- htmlReportRef(shortName = "indexRNASeq",
+indexPage <- HTMLReport(shortName = "indexRNASeq",
     title = "Analysis of mockRnaSeqData",
     reportDirectory = "./reports")
 publish(list(deReport,goReport, PFAMReport), indexPage)

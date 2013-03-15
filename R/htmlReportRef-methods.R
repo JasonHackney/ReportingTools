@@ -20,3 +20,8 @@ setMethod("finish",
         publicationType$finish(...)
     }
 )
+
+setMethod("path", "HTMLReportRef", function(obj)
+          {
+            sapply(obj$handlers, path)
+          })

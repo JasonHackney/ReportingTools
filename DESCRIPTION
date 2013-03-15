@@ -6,7 +6,7 @@ Maintainer: Jason A. Hackney <hackney.jason@gene.com>, Gabriel Becker <gmbecker@
 Depends: methods
 Imports:
         Biobase,hwriter,Category,GOstats,limma,lattice,AnnotationDbi,edgeR,
-        annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6), grid, XML
+        annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6), grid, XML, R.utils
 Suggests: RUnit, ggplot2, ggbio
 Type: Package
 LazyLoad: yes

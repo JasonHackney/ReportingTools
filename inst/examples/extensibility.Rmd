@@ -26,7 +26,7 @@ First we create a eBayes fit (but don't publish it):
 ```{r results="asis"}
 model <- model.matrix(~mol.biol+sex, ALL)
 fit <- eBayes(lmFit(ALL, model))
-myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
+myrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
 
 #publish(fit, myrep, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
 ```

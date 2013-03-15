@@ -65,7 +65,7 @@ library(lattice)
 rep.theme <- reporting.theme()
 lattice.options(default.theme = rep.theme)
 
-deReport <- htmlReportRef(shortName = 'de_analysis',
+deReport <- HTMLReport(shortName = 'de_analysis',
     title = 'Analysis of BCR/ABL translocation differential expression',
     reportDirectory = "./reports")
 publish(fit, deReport, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
@@ -98,7 +98,7 @@ makeNewImages<-function(df,...){
 	df$Image<-hwriteImage(paste0("figuresde_analysis/", imagename), link=paste0("figuresde_analysis/", imagename), table=FALSE, width=100)
 	return(df)
 }
-deReport2<-htmlReportRef(shortName='de_analysis2',
+deReport2<-HTMLReport(shortName='de_analysis2',
 	title = 'Analysis of BCR/ABL translocation differential expression with new plots',
     reportDirectory = "./reports")
 publish(fit, deReport2, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .addColumns=makeNewImages)
@@ -128,7 +128,7 @@ goResults <- hyperGTest(goParams)
 With these results, we can then make the GO report.  We must supply \tt publish \rm with the genes of interest and the species annotation for this dataset.  The default p-value cutoff is 0.01 and the minimum category size is 10 genes.
 
 <<make the GO report, eval=FALSE>>=
-goReport <- htmlReportRef(shortName = 'go_analysis',
+goReport <- HTMLReport(shortName = 'go_analysis',
     title = 'GO analysis of BCR/ABL translocation',
     reportDirectory = "./reports")
 publish(goResults, goReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
@@ -161,7 +161,7 @@ PFAMResults <- hyperGTest(pfamParams)
 Then we make the PFAM report.  Again we supply \tt publish \rm with the genes of interest and the species annotation for this dataset.  We set the minimum category size to 3 genes.
 
 <<make the PFAM report, eval=FALSE>>=
-PFAMReport <- htmlReportRef(shortName = 'pfam_analysis',
+PFAMReport <- HTMLReport(shortName = 'pfam_analysis',
     title = 'PFAM analysis of BCR/ABL translocation',
     reportDirectory = "./reports")
 publish(PFAMResults, PFAMReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3)
@@ -200,7 +200,7 @@ geneSets<-GeneSetCollection(c(set1,set2,set3,set4))
 
 We can now make a very simple \tt GeneSetCollection \rm html table with \tt ReportingTools \rm.
 <<Make Simple Gene Set Table, eval=FALSE>>=
-geneSetsReport <- htmlReportRef(shortName = "gene_sets",
+geneSetsReport <- HTMLReport(shortName = "gene_sets",
 	title = "Gene Sets", 
 	reportDirectory = "./reports")
 publish(geneSets, geneSetsReport, annotation.db="org.Hs.eg")
@@ -241,7 +241,7 @@ bestPval<-apply(pVals,1, min)
 We can add these statistics to our report page.
 
 <<make the GSEA report, eval=FALSE>>=
-gseaReport <- htmlReportRef(shortName = "gsea_analysis",
+gseaReport <- HTMLReport(shortName = "gsea_analysis",
 	title = "GSEA analysis", 
 	reportDirectory = "./reports")
 publish(geneSets, gseaReport, annotation.db="org.Hs.eg", setStats=GSNorm, setPValues=2*bestPval)
@@ -281,7 +281,7 @@ runGSEA<-function(df,...){
 	return(df)
 }
 
-gseaReport2 <- htmlReportRef(shortName = "gsea_analysis2",
+gseaReport2 <- HTMLReport(shortName = "gsea_analysis2",
 	title = "GSEA analysis", 
 	reportDirectory = "./reports")
 publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .addColumns=runGSEA)
@@ -299,7 +299,7 @@ finish(gseaReport2)
 We now make an index page to put all the output together.
 **TO BE UPDATED**
 <<make the index page, eval=FALSE>>=
-indexPage <- htmlReportRef(shortName = "index",
+indexPage <- HTMLReport(shortName = "index",
     title = "Analysis of ALL Gene Expression",
     reportDirectory = "./reports")
 publish(Link(list(deReport, goReport)), indexPage)

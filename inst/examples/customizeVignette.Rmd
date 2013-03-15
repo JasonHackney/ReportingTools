@@ -8,7 +8,7 @@ We first load the package and create our report (using the provided knitr handle
 
 ```{r message=FALSE, output="hide", results="asis"}
 library(ReportingTools)
-myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
+myrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::knitrHandlers)
 ```
 
 When publishing an object, ReportingTools first checks for a specific objectToHTML method for the class, or a .toHTML function specified at either the report or publish-call level. If it finds such a function, the output of that function is directly inserted into the report. Only object classes which should be published in a non-tabular form, eg images, have specific methods for objectToHTML. All objects can have their publication form overridden by specifying a .toHTML function, however, as we will see later.

@@ -20,7 +20,7 @@ setClass("HTMLReport", contains = "BaseReport",
     )
 )
 
-HTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
+makeOldHTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
     baseUrl = "localhost", basePath = NULL, page = NULL,
     link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
 {

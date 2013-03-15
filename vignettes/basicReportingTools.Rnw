@@ -55,7 +55,7 @@ publish(my.df, csvFile)
 Obviously, this isn't much less work than just calling \verb@write.csv@ on the \verb@data.frame@ itself, but this is really just a toy example. We can also publish the \tt data.frame \rm as an HTML report.
 
 <<basicHTMLReport, eval=FALSE>>=
-htmlRep <- htmlReportRef(shortName = "my_html_file",
+htmlRep <- HTMLReport(shortName = "my_html_file",
     reportDirectory = "./reports")
 publish(my.df, htmlRep)
 finish(htmlRep)
@@ -75,7 +75,7 @@ It's also possible to publish the same object in two separate formats at once.
 <<reportingTwoTypes, eval=FALSE>>=
 csvFile2 <- CSVFile(shortName = "my_csv_file2", 
     reportDirectory = "./reports")
-htmlRep2 <- htmlReportRef(shortName = 'my_html_file2',title="Publishing a data frame and csv file together",
+htmlRep2 <- HTMLReport(shortName = 'my_html_file2',title="Publishing a data frame and csv file together",
     reportDirectory = "./reports")
 publish(my.df, list(csvFile2, htmlRep2))
 finish(htmlRep2)
@@ -92,7 +92,7 @@ The same few lines of code could be used to publish, for example, the results of
 
 \section{Adding plots or text to a report}
 
-To add additional text or existing plots to a report, simply open the report with \tt htmlReportRef \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
+To add additional text or existing plots to a report, simply open the report with \tt HTMLReport \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
 
 
 <<AddTextPlot, eval=FALSE>>=
@@ -102,7 +102,7 @@ barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID",
 dev.off()
 
 library(hwriter)
-htmlRep3 <- htmlReportRef(shortName = "my_html_file3", title="Adding an image",
+htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding an image",
     reportDirectory = "./reports")
     publish(hwrite("This is a link to Bioconductor", link=), htmlRep3) ###ADD LINK
 publish(hwrite("Bar chart of results", heading=2), htmlRep3)
@@ -128,7 +128,7 @@ scatterPlot <- recordPlot()
 library(lattice)
 barPlot<-barchart(my.df$RPKM~my.df$EGID)  ##lattice plots behave slightly differently
 	
-htmlRep4 <- htmlReportRef(shortName = "my_html_file4", title="Adding a plot directly to the page",
+htmlRep4 <- HTMLReport(shortName = "my_html_file4", title="Adding a plot directly to the page",
     reportDirectory = "./reports")
 publish(scatterPlot, htmlRep4, name = "scatterPlot")  ##This is not working for some reason?
 publish("This is a bar plot", htmlRep4)
@@ -155,7 +155,7 @@ my.df$Image<-hwriteImage(imagename, link=imagename, table=FALSE)
 my.df$Link <- hwrite(as.character(my.df$EGID), link=paste("http://www.ncbi.nlm.nih.gov/gene/",
                as.character(my.df$EGID), sep=''), table=FALSE)
 
-htmlRep5 <- htmlReportRef(shortName = "my_html_file5", title="Adding images and links to data frame directly",
+htmlRep5 <- HTMLReport(shortName = "my_html_file5", title="Adding images and links to data frame directly",
     reportDirectory = "./reports")
 publish(my.df, htmlRep5)
 finish(htmlRep5)
@@ -199,7 +199,7 @@ addEGIDLink<-function(object, ...){
                as.character(object$EGID)), table=FALSE)
 	return(object)
 }
-htmlRep6 <- htmlReportRef(shortName = "my_html_file6", title="Manipulating the data frame directly",
+htmlRep6 <- HTMLReport(shortName = "my_html_file6", title="Manipulating the data frame directly",
     reportDirectory = "./reports")
 publish(my.df, htmlRep6, .addColumns=list(add5, makeNewImages, removeLink, addEGIDLink))
 finish(htmlRep6)
@@ -213,7 +213,7 @@ It is also possible to publish multiple tables to the same html page.  We can ch
 df2=data.frame(x=1:5, y=11:15)
 df3=data.frame(x=c("a", "b", "c"), y=1:3)
 
-htmlRep7 <- htmlReportRef(shortName = "my_html_file7", title="Many tables, one page",
+htmlRep7 <- HTMLReport(shortName = "my_html_file7", title="Many tables, one page",
     reportDirectory = "./reports")
 publish(my.df, htmlRep7, .addColumns=list(add5, makeNewImages, removeLink, addEGIDLink), name="Df1")
 publish(df2, htmlRep7, name="Df2")
@@ -227,7 +227,7 @@ If you have a preferred table style, defined in css, it's easy to style your tab
 
 <<styledCss, eval=FALSE>>=
 css.file <- system.file('extdata/table.css', package='ReportingTools')
-htmlRep8 <- htmlReportRef(shortName = 'my_html_file8',
+htmlRep8 <- HTMLReport(shortName = 'my_html_file8',
     reportDirectory = "./reports", link.css=css.file)
 publish(my.df, htmlRep8)
 finish(htmlRep8)
@@ -255,7 +255,7 @@ makeDF <- function(object, ...){
 	names(df) <- paste0("New ", 1:4)
 	return(df)
 } 
-htmlRep9 <- htmlReportRef(shortName = 'my_html_file9', title="Publishing objects that are not data frames",
+htmlRep9 <- HTMLReport(shortName = 'my_html_file9', title="Publishing objects that are not data frames",
     reportDirectory = "./reports")
 publish(my.mat, htmlRep9, .toDF=makeDF)
 finish(htmlRep9)

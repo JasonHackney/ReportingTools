@@ -11,7 +11,7 @@ d <- estimateCommonDisp(d)
 edgeR.de <- exactTest(d)
 min.pval <- min(edgeR.de$table$PValue)/10
 
-myrep = htmlReportRef("DGEExactTest",reportDirectory = "tmp")
+myrep = HTMLReport("DGEExactTest",reportDirectory = "tmp")
 #publish(edgeR.de, myrep,d$counts, conditions, annotation.db='org.Mm.eg', pvalueCutoff=1, lfc=0, n=100, name ="mydge")
 myrep[["mydge", countTable = d$counts, conditions = conditions, annotation.db='org.Mm.eg', pvalueCutoff=1, lfc=0, n=100]] = edgeR.de
 myrep$finish()

@@ -11,7 +11,7 @@ library(lattice)
 ```
 
 ```{r results="asis"}
-myrep = htmlReportRef(reportDirectory = "./",shortName="report2", handlers = ReportingTools:::knitrHandlers)
+myrep = HTMLReport(reportDirectory = "./",shortName="report2", handlers = ReportingTools:::knitrHandlers)
 ```
 
 So now we can put in a data frame. It has all the functionality of the tables in HTML files generated via ReportingTools directly, but is inserted in the midst of the text sections from our Rmd file!

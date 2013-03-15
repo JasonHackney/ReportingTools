@@ -10,7 +10,7 @@ library(GSEABase)
 
 #I was tired of waiting a noticable amount of time each time I wanted to test this stuff. Original code in the if(FALSE) at the bottom of this file
 load("gores.rda")
-myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest")
+myrep = HTMLReport(reportDirectory = "./",shortName="bigtest")
 stuff = publish(goResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
 
 #trace(ReportingTools:::objectToHTML, browser, signature=c(object="ANY"))

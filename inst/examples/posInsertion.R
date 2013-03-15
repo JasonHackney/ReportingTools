@@ -6,7 +6,7 @@ df2 = data.frame(x=c("hi", "lo", "there", "here"), y=4:7)
 
 df3 = data.frame(x=c("I snuck in!"), y=10)
 
-myrep = htmlReportRef(reportDirectory="./", basePath="./", shortName="PosInsert", title="Positional Insertion Test",
+myrep = HTMLReport(reportDirectory="./", basePath="./", shortName="PosInsert", title="Positional Insertion Test",
   handlers=fileWIndexHandlers)
 
 publish(df1, myrep, name="data.frame1")

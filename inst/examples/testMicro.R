@@ -15,7 +15,7 @@ ALL <- featureFilter(ALL)
 
 model <- model.matrix(~mol.biol+sex, ALL)
 fit <- eBayes(lmFit(ALL, model))
-myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest")
+myrep = HTMLReport(reportDirectory = "./",shortName="bigtest")
 publish(fit, myrep, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, name = "bayesfit")
 
 tt <- topTable(fit, coef = 2, n = 100)

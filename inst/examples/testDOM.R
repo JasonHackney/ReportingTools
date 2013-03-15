@@ -2,7 +2,7 @@ library(ReportingTools)
 options(error=recover)
 
 mydf = data.frame(x=rnorm(10), y = rnorm(10))
-myrep = htmlReportRef(reportDirectory = "tmp")
+myrep = HTMLReport(reportDirectory = "tmp")
 
 
 myrep[["df1"]] = mydf

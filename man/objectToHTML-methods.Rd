@@ -9,6 +9,8 @@
 \alias{objectToHTML,ggplot-method}
 \alias{objectToHTML,recordedplot-method}
 \alias{objectToHTML,trellis-method}
+\alias{objectToHTML,XMLInternalNode-method}
+
 \title{ ~~ Methods for Function \code{objectToHTML} in Package \pkg{ReportingTools} ~~}
 \description{
  ~~ Methods for function \code{objectToHTML} in package \pkg{ReportingTools} ~~

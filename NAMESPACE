@@ -23,7 +23,7 @@ importFrom(R.utils, getRelativePath) #this is a lot of dependencies for one func
 importFrom(hwriter, openPage, hwrite, closePage, hwriteImage, hmakeTag)
 importFrom(XML, htmlParse, getNodeSet, saveXML, xmlRoot, addChildren, newXMLNode, removeChildren, xmlChildren, xmlValue, xmlAttrs, 'xmlValue<-', addSibling, xpathSApply)
 
-export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme.alternate, reporting.theme, makeDESeqDf, readReport, fileHandlers, connectionHandlers, knitrHandlers, shinyHandlers, fileWIndexHandlers)
+export(HTMLReport, CSVFile, DataPackage, validConnection, reporting.theme.alternate, reporting.theme, makeDESeqDF, readReport, fileHandlers, connectionHandlers, knitrHandlers, shinyHandlers, fileWIndexHandlers)
 exportMethods(publish, name, title, 'title<-', reportDirectory,
               'reportDirectory<-', filename, path, url, page, 'page<-', finish,
     show, basePath, baseUrl, dependencies, "dependencies<-", addReportColumns, objectToHTML, toReportDF, Link)

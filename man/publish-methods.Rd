@@ -15,6 +15,21 @@
 \alias{publish,list,HTMLReport-method}
 \alias{publish,ANY,HTMLReport-method}
 
+
+\alias{publish,data.frame,HTMLReportRef-method}
+\alias{publish,MArrayLM,HTMLReportRef-method}
+\alias{publish,DGEExact,HTMLReportRef-method}
+\alias{publish,DGELRT,HTMLReportRef-method}
+\alias{publish,HyperGResultBase,HTMLReportRef-method}
+\alias{publish,PFAMHyperGResult,HTMLReportRef-method}
+\alias{publish,GOHyperGResult,HTMLReportRef-method}
+\alias{publish,GeneSetCollection,HTMLReportRef-method}
+\alias{publish,HTMLReport,HTMLReportRef-method}
+\alias{publish,trellis,HTMLReportRef-method}
+\alias{publish,list,HTMLReportRef-method}
+\alias{publish,ANY,HTMLReportRef-method}
+
+
 \alias{publish,data.frame,DataPackage-method}
 \alias{publish,character,DataPackage-method}
 \alias{publish,ANY,DataPackage-method}

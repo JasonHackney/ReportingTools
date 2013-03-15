@@ -25,7 +25,7 @@ setMethod("Link", signature = signature(obj = "character"),
             if(is.na(target))
               stop("No target specified for link")
             if(!is.null(report))
-              target = getRelativePath(target, path(report)[1])
+              target = file.path(getRelativePath(dirname(target), dirname(path(report)[1])), basename(target))
             newXMLNode("a", obj, attrs = list(href=target))
           })
 

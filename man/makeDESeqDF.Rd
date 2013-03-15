@@ -1,5 +1,5 @@
-\name{makeDESeqDf}
-\alias{makeDESeqDf}
+\name{makeDESeqDF}
+\alias{makeDESeqDF}
 \title{Converts DESeq results into a data frame to be published}
 \usage{
     makeDESeqDF(object, countTable, pvalueCutoff, conditions, annotation.db,
@@ -44,11 +44,10 @@
 	#cds<-estimateSizeFactors(cds)
 	#cds<-estimateDispersions(cds)
 	#res<-nbinomTest(cds,"control", "case" )
-	#DESdf<-makeDESeqDf(res,mockRnaSeqData,pvalueCutoff=0.01,conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports")
-	#desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
-   	 	#title = 'RNA-seq analysis of differential expression using DESeq',
-   	 	#reportDirectory = "./reports")
-	#publish(DESdf, desReport)
-	#finish(desReport)
 
+	#desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq',
+    #title = 'RNA-seq analysis of differential expression using DESeq',
+    #reportDirectory = "./reports")
+	#publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05,    #conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDF)
+#finish(desReport)
 }

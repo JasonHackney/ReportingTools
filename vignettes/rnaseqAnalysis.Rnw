@@ -212,7 +212,7 @@ Here, we make an index page that puts all three analyses together for easy navig
 indexPage <- htmlReportRef(shortName = "indexRNASeq",
     title = "Analysis of mockRnaSeqData",
     reportDirectory = "./reports")
-publish(c(deReport,goReport, PFAMReport), indexPage)
+publish(list(deReport,goReport, PFAMReport), indexPage)
 finish(indexPage)
 @
 

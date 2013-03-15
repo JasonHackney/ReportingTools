@@ -47,6 +47,15 @@ table th.top-header-row.filter-num{
     font-size:10pt;
 }
 
+
+/*adds some color to the top header row */
+/*bottom header row is colored in the .sorting class below*/
+table th.top-header-row.filter-num {
+        background-color: #515151;
+        color: white;
+}
+
+
 /* makes room for the icons */
 table th.bottom-header-row {
         padding-right: 15px !important;
@@ -75,12 +84,12 @@ table.table thead .sorting_desc_disabled {
 }
 
 
-table.table thead .sorting { background: url('images/sort_both.png') no-repeat center right; }
-table.table thead .sorting_asc { background: url('images/sort_asc.png') no-repeat center right; }
-table.table thead .sorting_desc { background: url('images/sort_desc.png') no-repeat center right; }
+table.table thead .sorting { background: #515151 url('images/sort_both.png') no-repeat center right; color: white; }
+table.table thead .sorting_asc { background: #515151 url('images/sort_asc.png') no-repeat center right; color: white; }
+table.table thead .sorting_desc { background: #515151 url('images/sort_desc.png') no-repeat center right; color: white; }
 
-table.table thead .sorting_asc_disabled { background: url('images/sort_asc_disabled.png') no-repeat center right; }
-table.table thead .sorting_desc_disabled { background: url('images/sort_desc_disabled.png') no-repeat center right; }
+table.table thead .sorting_asc_disabled { background: #515151 url('images/sort_asc_disabled.png') no-repeat center right; color: white; }
+table.table thead .sorting_desc_disabled { background: #515151 url('images/sort_desc_disabled.png') no-repeat center right; color: white;}
 
 table.dataTable th:active {
 	outline: none;
@@ -121,7 +130,7 @@ div.dataTables_scrollFoot table {
  */
 .table tbody tr.active td,
 .table tbody tr.active th {
-	background-color: #08C;
+ 	background-color: #08C; 
 	color: white;
 }
 
@@ -215,4 +224,6 @@ div.DTFC_LeftBodyWrapper tbody tr:first-child td {
 div.DTFC_LeftFootWrapper table {
 	border-top: none;
 }
+
+
 

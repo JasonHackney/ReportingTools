@@ -2,14 +2,14 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{HTMLReportRef-class}
-\alias{htmlReportRef}
+\alias{HTMLReport}
 \alias{[[<-,HTMLReportRef,ANY,ANY,ANY-method}
 \alias{[[,HTMLReportRef,ANY-method}
 \alias{publish,ANY,HTMLReportRef-method}
 
 \title{Class \code{"HTMLReportRef"}}
 \description{
-A referenceClass-based representation of an HTML report generated using R objects. This class is based around a persistent, DOM-based representation of the HTML page being created, which is created during initialization and updated as the report is manipulated. \code{htmlReportRef} is the constructor function for the class.
+A referenceClass-based representation of an HTML report generated using R objects. This class is based around a persistent, DOM-based representation of the HTML page being created, which is created during initialization and updated as the report is manipulated. \code{HTMLReport} is the constructor function for the class.
 }
 \section{Methods}{
   \describe{

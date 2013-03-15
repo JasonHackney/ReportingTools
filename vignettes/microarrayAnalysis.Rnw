@@ -130,8 +130,7 @@ With these results, we can then make the GO report.  We must supply \tt publish 
 <<make the GO report, eval=FALSE>>=
 goReport <- htmlReportRef(shortName = 'go_analysis',
     title = 'GO analysis of BCR/ABL translocation',
-    reportDirectory = "./reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(goResults, goReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
 finish(goReport)
 @
@@ -164,8 +163,7 @@ Then we make the PFAM report.  Again we supply \tt publish \rm with the genes of
 <<make the PFAM report, eval=FALSE>>=
 PFAMReport <- htmlReportRef(shortName = 'pfam_analysis',
     title = 'PFAM analysis of BCR/ABL translocation',
-    reportDirectory = "./reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(PFAMResults, PFAMReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3)
 finish(PFAMReport)
 @
@@ -288,6 +286,12 @@ gseaReport2 <- htmlReportRef(shortName = "gsea_analysis2",
 	reportDirectory = "./reports")
 publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .addColumns=runGSEA)
 finish(gseaReport2)
+
+gseaReport2 <- HTMLReport(shortName = "gsea_analysis2",
+	title = "GSEA analysis", 
+	reportDirectory = "./reports")
+publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .addColumns=runGSEA)
+finish(gseaReport2)
 @
 
 
@@ -297,8 +301,7 @@ We now make an index page to put all the output together.
 <<make the index page, eval=FALSE>>=
 indexPage <- htmlReportRef(shortName = "index",
     title = "Analysis of ALL Gene Expression",
-    reportDirectory = "./reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(Link(list(deReport, goReport)), indexPage)
 publish(Link(PFAMReport),indexPage)
 publish(Link("GSEA report has a new title", "gsea_analysis.html"), indexPage)

@@ -65,8 +65,7 @@ lattice.options(default.theme = rep.theme)
 
 deReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR',
     title = 'RNA-seq analysis of differential expression using edgeR',
-    reportDirectory = "./reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(edgeR.de, deReport, countTable=mockRnaSeqData,
 	conditions=conditions, annotation.db = 'org.Mm.eg', 
 	pvalueCutoff = .05, lfc = 2, n = 10, name="edgeR")
@@ -102,8 +101,7 @@ edgeR.lrt<-glmLRT(fit, coef=2)
 
 deReport2 <- htmlReportRef(shortName = 'RNAseq_analysis_with_edgeR_2',
     title = 'RNA-seq analysis of differential expression using edgeR (LRT)',
-    reportDirectory = "./reports",
-    baseUrl = "")
+    reportDirectory = "./reports")
 publish(edgeR.lrt, deReport2, countTable=mockRnaSeqData,
 	conditions=conditions, annotation.db = 'org.Mm.eg', 
 	pvalueCutoff = .05, lfc = 2, n = 10, name="edgeRlrt")
@@ -124,13 +122,13 @@ cds<-estimateDispersions(cds)
 res<-nbinomTest(cds,"control", "case" )
 @
 
-Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that makeDESeqDf command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
+Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that \tt makeDESeqDF \rm command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
 
 <<DESeq_report, eval=FALSE>>=
 desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq_2',
     title = 'RNA-seq analysis of differential expression using DESeq',
     reportDirectory = "./reports")
-publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDf)
+publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDF)
 finish(desReport)
 @ 
 
@@ -208,7 +206,7 @@ finish(PFAMReport)
 
 
 \section{Putting it all together}
-THIS HAS TO BE UPDATED
+**THIS HAS TO BE UPDATED**
 Here, we make an index page that puts all three analyses together for easy navigation.
 <<make the index page, eval=FALSE>>=
 indexPage <- htmlReportRef(shortName = "indexRNASeq",

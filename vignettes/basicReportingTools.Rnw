@@ -126,11 +126,11 @@ We can also publish images directly to sites.
 plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
 	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
 scatterPlot <- recordPlot()
+library(lattice)
 barPlot<-barchart(my.df$RPKM)  ##lattice plots behave slightly differently
 	
 htmlRep4 <- htmlReportRef(shortName = "my_html_file4", title="Adding a plot directly to the page",
     reportDirectory = "./reports")
-
 publish(scatterPlot, htmlRep4, name = "scatterPlot")  ##This is not working for some reason?
 publish("This is a bar plot", htmlRep4)
 publish(barPlot, htmlRep4, name = "barPlot")  ##This is not working for some reason?
@@ -175,8 +175,7 @@ We can also change our data frame to edit, add and remove columns with functions
 ##this function adds 5 to each value of my.df$RPKMs 
 add5<-function(object,...){
 	object$plus5<-object$RPKM+5
-	
-	return (object)
+	return(object)
 }
 ##this function replaces the scatter plot images with new plots
 makeNewImages<-function(object,...){

@@ -194,14 +194,14 @@ setMethod("objectToHTML",
                                         #pdf.url <- paste(baseUrl(publicationType), 
                                         #                 reportDirectory(publicationType), 'figures', 
                                         #                   paste(filename, 'pdf', sep='.'), sep="/")
-    pdf.url <- paste(htmlRep$baseUrl,
-                     htmlRep$reportDirectory, figures.dirname, 
+   # pdf.url <- paste(htmlRep$baseUrl,
+   pdf.url <- paste(htmlRep$reportDirectory, figures.dirname, 
                      paste(filename, 'pdf', sep='.'), sep="/")
     
     png.filename <- file.path(figure.directory, 
                               paste(filename, 'png', sep='.'))
-    png.url <- paste(htmlRep$baseUrl,
-                     htmlRep$reportDirectory, figures.dirname, 
+    #png.url <- paste(htmlRep$baseUrl,
+     png.url <- paste(htmlRep$reportDirectory, figures.dirname, 
                      paste(filename, 'png', sep='.'), sep="/")
             
     cairo_pdf(filename = pdf.filename, height = pdf.height, width = pdf.width)

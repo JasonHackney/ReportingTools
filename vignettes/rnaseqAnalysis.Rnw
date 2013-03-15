@@ -120,19 +120,19 @@ cds<-newCountDataSet(mockRnaSeqData, conditions)
 cds<-estimateSizeFactors(cds)
 cds<-estimateDispersions(cds)
 res<-nbinomTest(cds,"control", "case" )
+
+
 @
 
 Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that \tt makeDESeqDF \rm command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
 
 <<DESeq_report, eval=FALSE>>=
-desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq_2',
+desReport <- htmlReportRef(shortName = 'RNAseq_analysis_with_DESeq',
     title = 'RNA-seq analysis of differential expression using DESeq',
     reportDirectory = "./reports")
 publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDF)
 finish(desReport)
 @ 
-
-
 
 
 \section{GO analysis using GOstats}

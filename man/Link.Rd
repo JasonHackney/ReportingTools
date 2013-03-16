@@ -13,7 +13,7 @@ This is a convenience function for creating tables of links (eg for an
 index page).
 }
 \usage{
-Link(obj, target = NA)
+Link(obj, target = NA, report = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,7 +23,10 @@ Link(obj, target = NA)
   }
   \item{target}{
     The link targets for each created link. 
-}
+  }
+  \item{report}{
+    An optional report giving the relative path of the link target, when constructing the target path.
+  }
 }
 \details{
   If \code{target} is NA, Link attempts to infer the link target(s) based on \code{obj} 

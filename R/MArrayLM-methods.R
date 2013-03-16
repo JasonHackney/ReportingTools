@@ -60,7 +60,7 @@ setMethod("publish",
 
 .marrayLM.to.data.frame <- function(object, eSet = NULL, n = 1000, 
     pvalueCutoff = 0.01, lfc = 0, adjust.method='BH', coef = NULL,
-    make.plots = FALSE, ...)
+    make.plots = FALSE, factor = NULL, ...)
 {
     dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
         coef = coef, adjust.method = adjust.method, ...)
@@ -89,7 +89,7 @@ setMethod("publish",
     ## featureData of the eSet itself. If neither are available, try to get it
     ## from the 'genes' slot in the MArrayLM object itself
     fdata <- NULL
-    if(!is.null(eSet)){
+    if(!missing(eSet) & !is.null(eSet)){
         eSet <- eSet[selection, ]
         
         ann.map.available <- tryCatch(getAnnMap("ENTREZID", annotation(eSet)), 

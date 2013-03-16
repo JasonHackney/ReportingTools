@@ -35,20 +35,6 @@ test_1dataframe <- function(){
         "Returning a zero-length data.frame raises an exception")
 }
 
-test_2html <- function(){
-    htmlRep <- HTMLReport("testhtmlPage3", 
-        reportDirectory = 'testHTMLDirectory', title = "Test Report 3")
-
-    html.df <- ReportingTools:::.DGEExact.to.html(edgeR.de, htmlRep, 
-        d$counts, conditions, annotation.db='org.Mm.eg', pvalueCutoff=1, 
-        lfc=0, n=100)
-    checkTrue(nrow(html.df) == 100, 
-        "100 rows are returned in coercing fit to data.frame")
-    checkException(ReportingTools:::.DGEExact.to.html(edgeR.de, htmlRep, 
-            d$counts, conditions, annotation.db='org.Mm.eg', 
-            pvalueCutoff=min.pval, n=100),
-        "Returning a zero-length data.frame raises an exception")
-}
 
 test_3toReportDF <- function(){
     htmlRep <- HTMLReport("testhtmlPage4", 
@@ -74,6 +60,8 @@ test_3addReportColumns <- function(){
     rep.df <- toReportDF(edgeR.de, htmlRep, countTable = d$counts, 
         conditions = conditions, annotation.db='org.Mm.eg', 
         pvalueCutoff=1, lfc=0, n=100, make.plots = TRUE)
+    
+    checkTrue(nrow(rep.df) == 100)
 
     rep.df <- addReportColumns(rep.df, htmlRep, object = edgeR.de,
         countTable = NULL, conditions = NULL, make.plots = FALSE)

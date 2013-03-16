@@ -27,7 +27,6 @@
 \alias{publish,HTMLReport,HTMLReportRef-method}
 \alias{publish,trellis,HTMLReportRef-method}
 \alias{publish,list,HTMLReportRef-method}
-\alias{publish,ANY,HTMLReportRef-method}
 
 
 \alias{publish,data.frame,DataPackage-method}

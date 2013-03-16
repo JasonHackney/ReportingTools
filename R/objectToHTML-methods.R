@@ -175,8 +175,7 @@ setMethod("objectToHTML",
   {
 
      figures.dirname <- paste0('figures', htmlRep$shortName)  
-     figure.directory <- file.path(htmlRep$basePath, 
-            htmlRep$reportDirectory, figures.dirname)
+     figure.directory <- file.path(dirname(path(htmlRep)), figures.dirname)
      .safe.dir.create(figure.directory)
         
     if(is.null(filename)){
@@ -245,7 +244,8 @@ if(FALSE)
 }
 
 
-.PFAMhyperG.to.htmlDF2 <- function(object, report, selectedIDs,annotation.db, pvalueCutoff = 0.01, categorySize=10)
+.PFAMhyperG.to.htmlDF2 <- function(object, report, selectedIDs,annotation.db, 
+    pvalueCutoff = 0.01, categorySize=10)
 {    
   	tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
 		{stop(paste0("Unable to find your annotation.db: ",annotation.db))})
@@ -262,11 +262,13 @@ if(FALSE)
         pages.dirname <- paste0('PFAMPages', report$shortName)  
    # page.directory <- file.path(basePath(htmlRep), 
     #    reportDirectory(htmlRep), pages.dirname)
-        page.directory <- file.path(report$basePath, pages.dirname)
+        page.directory <- file.path(dirname(path(report)), pages.dirname)
         .safe.dir.create(page.directory)
     pfam.reportDirectory <- paste(report$reportDirectory, 
         pages.dirname, sep="/")
-    makeGeneListPages(object,reportDir=pfam.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=FALSE, baseUrl=report$baseUrl, basePath=report$basePath)  
+    makeGeneListPages(object,reportDir=pfam.reportDirectory,  
+        pvalueCutoff=pvalueCutoff, categorySize, selectedIDs, annotation.db, 
+        GO=FALSE, baseUrl=report$baseUrl, basePath=report$basePath)  
 
   	df$CountLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, "All.html",'">', df$Size, '</a>', sep="")
@@ -274,7 +276,7 @@ if(FALSE)
  	colnames(ret)<-c("PFAM ID", "PFAM Term", "PFAM Size","Image","Overlap", "Odds Ratio", "P-value")
 
     figure.dirname <- paste0('PFAMFigures', report$shortName)
-    figure.directory <- file.path(report$basePath, report$reportDirectory, figure.dirname)
+    figure.directory <- file.path(dirname(path(report)), figure.dirname)
     .safe.dir.create(figure.directory)
 
     numSelectedIDs<-length(selectedIDs)    
@@ -377,8 +379,7 @@ setMethod("objectToHTML", signature = signature(
         countTable <- log2(countTable + 1)
     
         figures.dirname <- paste('figures', htmlRep$shortName, sep='')  
-        figure.directory <- file.path(htmlRep$basePath, 
-            htmlRep$reportDirectory, figures.dirname)
+        figure.directory <- file.path(dirname(path(htmlRep)), figures.dirname)
         .safe.dir.create(figure.directory)
         
         .make.gene.plots(ret, countTable, conditions, figure.directory,
@@ -415,8 +416,7 @@ setMethod("objectToHTML", signature = signature(
         pages.dirname <- paste0('GOPages', htmlRep$shortName)  
    # page.directory <- file.path(basePath(htmlRep), 
     #    reportDirectory(htmlRep), pages.dirname)
-        page.directory <- file.path(htmlRep$basePath,
-                                    htmlRep$reportDirectory, pages.dirname)
+        page.directory <- file.path(dirname(path(htmlRep)), pages.dirname)
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(htmlRep$reportDirectory, 
         pages.dirname, sep="/")
@@ -428,7 +428,7 @@ setMethod("objectToHTML", signature = signature(
  	colnames(ret)<-c("Accession", "GO Term","Category Size" ,"Image","Overlap", "Odds Ratio", "P-value" )
  
  	figure.dirname <- paste0('GOFigures', htmlRep$shortName)
-    figure.directory <- file.path(htmlRep$basePath, htmlRep$reportDirectory, figure.dirname)
+    figure.directory <- file.path(dirname(path(htmlRep)), figure.dirname)
     .safe.dir.create(figure.directory)
         if (makePlot==TRUE){
 		plotGOResults(object,pvalueCutoff, categorySize, reportDir=figure.directory)
@@ -571,8 +571,7 @@ setMethod("objectToHTML",
         ret$Image <- rep("", nrow(fdata))
         
         figures.dirname <- paste('figures', htmlRep$shortName, sep='')  
-        figure.directory <- file.path(htmlRep$basePath, 
-            htmlRep$reportDirectory, figures.dirname)
+        figure.directory <- file.path(dirname(path(htmlRep)), figures.dirname)
         .safe.dir.create(figure.directory)
         
         .make.gene.plots(ret, eSet, factor, figure.directory)
@@ -613,8 +612,7 @@ setMethod("objectToHTML",
     setStats=NULL, setPValues=NULL, geneStats = NULL)
 {
     pages.dirname <- paste0('GeneSetCollectionPages', htmlRep$shortName)  
-    page.directory <- file.path(htmlRep$basePath, 
-        htmlRep$reportDirectory, pages.dirname)
+    page.directory <- file.path(dirname(path(htmlRep)), pages.dirname)
     .safe.dir.create(page.directory)  
     gs.reportDirectory <- paste(htmlRep$reportDirectory, pages.dirname, sep="/")
     makeGeneListPagesGSC(object, reportDir=gs.reportDirectory, 
@@ -722,8 +720,7 @@ setMethod("objectToHTML",
         countTable <- log2(countTable + 1)
     
         figures.dirname <- paste('figures', htmlRep$shortName, sep='')  
-        figure.directory <- file.path(htmlRep$basePath, 
-            htmlRep$reportDirectory, figures.dirname)
+        figure.directory <- file.path(dirname(path(htmlRep)), figures.dirname)
         .safe.dir.create(figure.directory)
         
         .make.gene.plots(ret, countTable, conditions, figure.directory,

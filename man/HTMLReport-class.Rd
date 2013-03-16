@@ -51,7 +51,7 @@ Class \code{"\linkS4class{BaseReport}"}, directly.
 my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
                     RPKM = c(4, 5, 3, 100, 75),
                     DE = c("Yes", "Yes", "No", "No", "No"))
-html.report <- HTMLReport(shortName = "my_html_file",
+html.report <- makeOldHTMLReport(shortName = "my_html_file",
     title = "Report Title",
     reportDirectory = "reportDirectory")
 publish(my.df, html.report)

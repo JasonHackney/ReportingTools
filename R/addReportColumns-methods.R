@@ -19,12 +19,10 @@ setMethod("addReportColumns",
    	df$GOLink<-paste('<a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', df$GOID, '">', df$GOID, '</a>', sep="")
    	df$goName<-unlist(lapply(df$GOID, function(x) {strsplit(x, ":")[[1]][2]}))
    	
-   	#pages.dirname <- paste0('GOPages', name(htmlRep))
         pages.dirname <- paste0('GOPages', htmlRep$shortName)  
-   # page.directory <- file.path(basePath(htmlRep), 
-    #    reportDirectory(htmlRep), pages.dirname)
-        page.directory <- file.path(htmlRep$basePath,
-                                    htmlRep$reportDirectory, pages.dirname)
+
+        page.directory <- file.path(dirname(path(htmlRep)), 
+            pages.dirname)
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(htmlRep$reportDirectory, 
         pages.dirname, sep="/")
@@ -36,7 +34,7 @@ setMethod("addReportColumns",
  	colnames(ret)<-c("Accession", "GO Term","Category Size" ,"Image","Overlap", "Odds Ratio", "P-value" )
  
  	figure.dirname <- paste0('GOFigures', htmlRep$shortName)
-    figure.directory <- file.path(htmlRep$basePath, htmlRep$reportDirectory, figure.dirname)
+    figure.directory <- file.path(dirname(path(htmlRep)), figure.dirname)
     .safe.dir.create(figure.directory)
      #   if (makePlot==TRUE){
 #		plotGOResults(object,pvalueCutoff, categorySize, reportDir=figure.directory)
@@ -80,8 +78,8 @@ setMethod("addReportColumns",
         }
         if(make.plots == TRUE){
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
-            figure.directory <- file.path(htmlRep$basePath, 
-                htmlRep$reportDirectory, figure.dirname)
+            figure.directory <- file.path(dirname(path(htmlRep)), 
+                figure.dirname)
             .safe.dir.create(figure.directory)
             
             df <- eSetPlot(df, eSet, factor, figure.directory, figure.dirname)
@@ -102,8 +100,8 @@ setMethod("addReportColumns",
         }
         if(make.plots == TRUE){
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
-            figure.directory <- file.path(htmlRep$basePath, 
-                htmlRep$reportDirectory, figure.dirname)
+            figure.directory <- file.path(dirname(path(htmlRep)), 
+                figure.dirname)
             .safe.dir.create(figure.directory)
             
             df <- eSetPlot(df, countTable+1, conditions, figure.directory,
@@ -127,8 +125,7 @@ setMethod("addReportColumns",
         }
         if(make.plots == TRUE){
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
-            figure.directory <- file.path(htmlRep$basePath, 
-                htmlRep$reportDirectory, figure.dirname)
+            figure.directory <- file.path(dirname(path(htmlRep)), figure.dirname)
             .safe.dir.create(figure.directory)
             
             df <- eSetPlot(df, countTable+1, conditions, figure.directory,

@@ -26,7 +26,7 @@ setMethod("toReportDF",
    signature = signature(
         object = "PFAMHyperGResult"
       ),
-    definition = function(object, report, selectedIDs,annotation.db,
+    definition = function(object, report, selectedIDs, annotation.db,
       pvalueCutoff = 0.01,categorySize=10, name, path, ...){
       df <- .PFAMhyperG.to.htmlDF2(object, report,selectedIDs,annotation.db,pvalueCutoff = pvalueCutoff,categorySize )
     })
@@ -35,17 +35,15 @@ setMethod("toReportDF",
     signature = signature(
         object = "MArrayLM"
       ),
-    definition = function(object, publicationType, eSet, factor, n = 1000, 
-        pvalueCutoff = 0.01, lfc = 0, adjust.method = 'BH', coef = NULL, 
-        make.plots = TRUE, ..., .addColumns, .toDF){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        .marrayLM.to.data.frame(object, eSet, n = n, 
+    definition = function(object, rep, eSet = NULL, n = 1000, 
+        pvalueCutoff = 0.01, lfc = 0, adjust.method = "BH", coef = NULL, 
+        make.plots = FALSE, factor = NULL, ...){
+        .marrayLM.to.data.frame(object, eSet = eSet, n = n, 
             pvalueCutoff = pvalueCutoff, lfc = lfc, 
-            adjust.method = adjust.method,  coef = coef, 
+            adjust.method = adjust.method, coef = coef, 
             make.plots = make.plots, ...)
       }
-          )
+    )
 
 setMethod("toReportDF", signature = signature(
                             object = "DGEExact"),

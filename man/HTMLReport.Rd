@@ -1,5 +1,5 @@
-\name{HTMLReport}
-\alias{HTMLReport}
+\name{makeOldHTMLReport}
+\alias{makeOldHTMLReport}
 \title{
 Creating and initializing an HTMLReport object
 }
@@ -10,7 +10,7 @@ Special care should be taken if non-default javacsript or css files are used, as
 detailed below.
 }
 \usage{
-HTMLReport(shortName, title = NULL, reportDirectory = ".", baseUrl = "localhost", basePath = NULL, page = NULL, link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
+makeOldHTMLReport(shortName, title = NULL, reportDirectory = ".", baseUrl = "localhost", basePath = NULL, page = NULL, link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
 }
 \arguments{
   \item{shortName}{
@@ -63,7 +63,7 @@ An HTMLReport object with an open file handle to an HTML page.
 my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
                     RPKM = c(4, 5, 3, 100, 75),
                     DE = c("Yes", "Yes", "No", "No", "No"))
-html.report <- HTMLReport(shortName = "my_html_file",
+html.report <- makeOldHTMLReport(shortName = "my_html_file",
     reportDirectory = "reportDirectory")
 publish(my.df, html.report)
 }

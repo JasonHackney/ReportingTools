@@ -9,7 +9,8 @@ This function is used to read an existing Report (previously created
 using ReportingTools) into R so that it can modified or computed on.
 }
 \usage{
-readReport(reportFile, handlers = toFileHandlers, .toHTML = NULL, .toDF = NULL, .addColumns = NULL, title)
+readReport(reportFile, handlers = fileHandlers(reportFile), 
+  .toHTML = NULL, .toDF = NULL, .addColumns = NULL, title)
 }
 \arguments{
   \item{reportFile}{

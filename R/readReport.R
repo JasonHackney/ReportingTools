@@ -17,7 +17,9 @@ readReport = function(reportFile, handlers = fileHandlers(reportFile), .toHTML =
     baseUrl = ""
     
 
-    rep = htmlReportRef(shortName = shortName, reportDirectory = reportDirectory, basePath = basePath, baseUrl = baseUrl, handlers = handlers, .toHTML = .toHTML, .toDF = .toDF, .addColumns  = .addColumns)
+    rep = HTMLReport(shortName = shortName, reportDirectory = reportDirectory, 
+        basePath = basePath, baseUrl = baseUrl, handlers = handlers, 
+        .toHTML = .toHTML, .toDF = .toDF, .addColumns  = .addColumns)
     rep$.reportDOM = dom
     #find the report elements within the html!!
     repElNodes = getNodeSet(dom, "//div[@class='ReportingTools']")

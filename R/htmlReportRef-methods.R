@@ -21,7 +21,7 @@ setMethod("finish",
     }
 )
 
-setMethod("path", "HTMLReportRef", function(obj)
+setMethod("path", "HTMLReportRef", function(object)
           {
-            sapply(obj$handlers, path)
+            sapply(object$handlers, path)
           })

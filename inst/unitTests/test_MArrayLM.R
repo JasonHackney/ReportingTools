@@ -17,19 +17,6 @@ test_1dataframe <- function(){
         lfc=max.lfc), "Returning a zero-length data.frame raises an exception")
 }
 
-test_2html <- function(){
-    htmlRep <- HTMLReport("testMArrayLMhtmlPage", 
-        reportDirectory = 'testHTMLDirectory', title = "Test MArrayLM Report")
-
-    html.df <- ReportingTools:::.marrayLM.to.html(fit, htmlRep, ALL, 
-        factor=ALL$mol.biol, coef=2, n=100)
-    checkTrue(nrow(html.df) == 100, 
-        "100 rows are returned in coercing fit to data.frame")
-    checkException(ReportingTools:::.marrayLM.to.html(fit, htmlRep, ALL, 
-            factor=ALL$mol.biol, coef=2, lfc=max.lfc),
-        "Returning a zero-length data.frame raises an exception")    
-}
-
 test_3fdata <- function(){
     htmlRep <- HTMLReport("testMArrayLMhtmlPage",
         reportDirectory = 'testHTMLDirectory', title = "Test MArrayLM Report")
@@ -59,7 +46,8 @@ test_3fdata <- function(){
 test_4publishNoFigures <- function(){
     htmlRep <- HTMLReport("testMArrayLMhtmlPage2", 
         reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 2")
-    publish(fit, htmlRep, coef = 2, n = 100)
+    df <- publish(fit, htmlRep, eSet = ALL, coef = 2, n = 100, make.plots = FALSE)
+    checkTrue(all.equal(dim(df), c(100,6)), "The dimensions of the data.frame are correct")
     finish(htmlRep)
 }
 
@@ -83,6 +71,8 @@ test_7toReportDF <- function(){
 
     df <- toReportDF(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2,
         n = 100, make.plots = FALSE)
+    checkTrue(nrow(df) == 100)
+    checkTrue(ncol(df) == 6)
 }
 
 test_9HTMLReport <- function(){

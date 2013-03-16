@@ -1,3 +1,3 @@
 setMethod("path", "ReportHandlers",
-          function(obj) obj@location)
+          function(object) object@location)
 

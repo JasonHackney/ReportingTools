@@ -43,7 +43,11 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
     if(is.null(title))
         title <- shortName
         
-    pageDir <- file.path(basePath, reportDirectory)
+    if(!is.null(basePath)){
+        pageDir <- file.path(basePath, reportDirectory)
+    } else{
+        pageDir <- reportDirectory
+    }
     pageDir <- gsub("//+", "/", pageDir)
     
     if(is.null(link.javascript)){

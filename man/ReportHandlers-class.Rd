@@ -6,6 +6,8 @@
 \alias{fileWIndexHandlers}
 \alias{knitrHandlers}
 \alias{shinyHandlers}
+\alias{connectionHandlers}
+\alias{path,ReportHandlers-method}
 
 \title{Class \code{"ReportHandlers"}}
 \description{
@@ -20,9 +22,16 @@ Objects can be created by calls of the form \code{new("ReportHandlers", ...)}.
     \item{\code{addElement}:}{A function to be called when an element is added/published to the report }
     \item{\code{removeElement}:}{A function to be called when an element is removed from the report }
     \item{\code{finish}:}{A function to be called when the report is "finished" }
+    \item{\code{location}:}{For \code{fileHandlers}, the path to the file that will be written}
     \item{\code{args}:}{A named list containing zero or more of the elements "init", "addElement", "removeElement", and "finish", which contain additional arguments to be passed to the respective functions when called. }
   }
 }
+\section{Methods}{
+  \describe{
+    \item{path}{\code{signature(object = "ReportHandlers")}: For file handlers, the file system location where the file will be written. For all others, NULL.}
+  }
+}
+
 \details{
 ReportingTools ships with a number of predefined ReportHandlers objects which implement commonly desired behaviors:
 	       \describe{
@@ -32,7 +41,7 @@ ReportingTools ships with a number of predefined ReportHandlers objects which im
 	       \item{knitrHandlers}{These handlers allow ReportingTools to be used as a formatting mechanism to publish objects within a knitr document and have them displayed correctly. Note in this case ReportingTools has no control over where the final HTML file is written}
 	       \item{shinyHandlers}{These handlers allow ReportingTools to be used as a formatting mechanism within a shiny Web application. Note in this case there is no meaninggful HTML file being created that represents the report.}
 }
-	           
+
 }
 \author{
 	Gabriel Becker <gmbecker@ucdavis.edu>

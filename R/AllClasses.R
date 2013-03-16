@@ -1,4 +1,5 @@
 nullFun = function(...) TRUE
+setClassUnion("characterOrNULL", c("character","NULL"))
 
 #I'm envisioning each ReportHandlers set representing a distinct target (eg internal DOM, write to pipe, etc)
 #Currently args expects a named list of named lists, up to one for each function, eg list(finish = list(file = "myfile.html"))
@@ -64,7 +65,7 @@ baseReport <- setRefClass("BaseReportRef",
     },
     .report = "list",
     .reportDOM = "ANY",
-    .basePath = "character",
+    .basePath = "characterOrNULL",
     basePath = function(val)
     {
       if(missing(val))
@@ -292,20 +293,17 @@ HTMLReport <- function(shortName = "coolProject",
         reportDirectory <- path.expand(reportDirectory)
     }
     
-    ## Not sure what to do here when basePath is set, but reportDirectory needs
-    ## to be rewritten... Probably should just throw an execption    
-    if(substr(reportDirectory, 1, 1) == "/"){
-        if(is.null(basePath) || basePath == ""){
-            basePath = "/"
-        }
-    } else {
-        if(is.null(basePath)) basePath = "."
-    }
+    if(substr(reportDirectory, 1, 1) == "/")
+        stop("Non-NULL baseDirectory in combination with absolute reportDirectory is not supported.")
+    if(sum(grepl("[A-Za-z]:", reportDirectory)) > 0 & .Platform$OS.type == "windows")
+        stop("Non-NULL baseDirectory in combination with absolute reportDirectory is not supported.")
+    
     
     htmlReport$new(title = title, shortName = shortName, 
         reportDirectory = reportDirectory, handlers = handlers, 
         basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 
-        .toDF = .toDF, .addColumns  = .addColumns, link.css= link.css, link.javascript = link.javascript, ovewrite.js = overwrite.js)
+        .toDF = .toDF, .addColumns  = .addColumns, link.css= link.css, 
+        link.javascript = link.javascript, ovewrite.js = overwrite.js)
   }
 
 

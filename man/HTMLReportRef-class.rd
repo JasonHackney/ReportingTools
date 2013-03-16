@@ -6,6 +6,7 @@
 \alias{[[<-,HTMLReportRef,ANY,ANY,ANY-method}
 \alias{[[,HTMLReportRef,ANY-method}
 \alias{publish,ANY,HTMLReportRef-method}
+\alias{path,HTMLReportRef-method}
 
 \title{Class \code{"HTMLReportRef"}}
 \description{
@@ -16,6 +17,7 @@ A referenceClass-based representation of an HTML report generated using R object
     \item{[[<-}{\code{signature(x = "HTMLReportRef", i = "ANY", j = "ANY", value = "ANY")}: Place an element representing \code{value} into the report. This will replace any existing element by the same name in the report. \code{x$addElement} is used to perform the actual report manipulation.}
     \item{[[}{\code{signature(x = "HTMLReportRef", i = "ANY")}: Access an element within the report. The element will be returned in its DOM/HTML representation. }
     \item{publish}{\code{signature(object = "ANY", publicationType = "HTMLReportRef")}: Place an element representing \code{object} into the report. \code{publicationType$addElement} is used to perform the actual report manipulation.}
+    \item{path}{\code{signature(object = "HTMLReportRef")}: The paths returned by each of the \code{ReportHandlers} for the report.}
 }
 }
 \author{

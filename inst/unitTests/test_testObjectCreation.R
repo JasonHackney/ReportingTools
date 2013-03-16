@@ -106,20 +106,16 @@ test_4csvFile <- function(){
 }
 
 test_5htmlRep <- function(){
-    checkEquals(name(htmlRep), "testhtmlPage",
+    checkEquals(htmlRep$shortName, "testhtmlPage",
         "The name of the HTMLReport is correctly set.")
-    checkEquals(title(htmlRep), "Test Report",
+    checkEquals(htmlRep$title, "Test Report",
         "The title of the HTMLReport is correctly set.")
-    checkEquals(path(htmlRep), './testHTMLDirectory/testhtmlPage.html',
+    checkEquals(path(htmlRep), 'testHTMLDirectory/testhtmlPage.html',
         "The URI for the HTMLReport is correctly formed.")
-    checkEquals(url(htmlRep), 'localhost/testHTMLDirectory/testhtmlPage.html',
-        "The URL for the HTMLReport is correctly formed.")
     checkTrue(file.exists('testHTMLDirectory'), 
         "The reportDirectory for the HTMLReport exists.")
-    checkTrue(file.exists('testHTMLDirectory/testhtmlPage.html'),
-        "The HTML file is created.")
-    checkTrue(validConnection(htmlRep), 
-        "The connection to the HTMLReport file is currently open.")
+    checkTrue(!file.exists('testHTMLDirectory/testhtmlPage.html'),
+        "The HTML file isn't created created.")
 }
 
 test_6data.frames <- function(){
@@ -144,8 +140,6 @@ test_6data.frames <- function(){
 
 test_zzzcloseHTMLConnection <- function(){
     finish(htmlRep)
-    checkTrue(! validConnection(htmlRep), 
-        "Calling validConnection after finish returns FALSE.")
-    checkException(publish(my.df, htmlRep),
-        "Trying to call publish after finish throws an exception.")
+    checkTrue(file.exists('testHTMLDirectory/testhtmlPage.html'),
+        "The HTML file isn't created created.")
 }

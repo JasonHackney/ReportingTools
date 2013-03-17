@@ -1,0 +1,5 @@
+[.]git/.*
+inst/examples/csslib/.*
+inst/examples/jslib/.*
+inst/examples/.*[.](html|md)
+.*[#].*

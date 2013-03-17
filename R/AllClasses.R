@@ -281,7 +281,8 @@ HTMLReport <- function(shortName = "coolProject",
   .addColumns= list(),
   link.css = NULL,
   link.javascript=NULL,
-  overwrite.js = TRUE
+  overwrite.js = TRUE,
+  ...
   )
   {
     
@@ -292,6 +293,19 @@ HTMLReport <- function(shortName = "coolProject",
     if(substr(reportDirectory,1,1) == "~"){
         reportDirectory <- path.expand(reportDirectory)
     }
+    if(!is.list(handlers))
+      handlers = list(handlers)
+    
+    allargs = list(shortName = shortName, basePath = basePath, reportDirectory = reportDirectory, ...)
+    handlers = lapply(handlers, function(hnd)
+      {
+        if(is(hnd, "ReportHandlers"))
+          hnd
+        else if (is(hnd, "function"))
+          do.call(hnd, allargs)
+        else
+          stop("handlers must be a list containing only ReportHandler objects and/or functions which return such objects.")
+      })
     
     if(substr(reportDirectory, 1, 1) == "/")
         stop("Non-NULL baseDirectory in combination with absolute reportDirectory is not supported.")

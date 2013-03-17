@@ -11,9 +11,11 @@
 \alias{objectToHTML,trellis-method}
 \alias{objectToHTML,XMLInternalNode-method}
 
-\title{ ~~ Methods for Function \code{objectToHTML} in Package \pkg{ReportingTools} ~~}
+\title{ Transform R objects into HTML form to be inserted in HTML reports}
 \description{
- ~~ Methods for function \code{objectToHTML} in package \pkg{ReportingTools} ~~
+ Unless overridden by a .toHTML argument, this function is called to
+ transform objects being published into HTML form before they are
+ inserted into a report.
 }
 \section{Methods}{
 \describe{
@@ -21,34 +23,42 @@
 \item{\code{signature(object = "ANY")}}{
   The default method for objectToHTML calls toReportDF (or the
   overriding .toDF) then addReportColumns (or the overriding
-  .addColumns) to create an HTML table from the object.
+  .addColumns) to create a data.frame to be published. The data.frame
+  method of objectToHTML is then called.
 
   
 }
 
 \item{\code{signature(object = "character")}}{
-%%  ~~describe this method here~~
+  If the character vector contains HTML code (determined by attempted
+  parsing), it is parsed but otherwise unchanged. If not, it is added as
+  content to a new <p> HTML node.
 }
 
 \item{\code{signature(object = "data.frame")}}{
-%%  ~~describe this method here~~
+  The data.frame is transformed into a filterable, sortable HTML table
 }
 
 \item{\code{signature(object = "ggbio")}}{
-%%  ~~describe this method here~~
+  The graphic is written to the report's figure directory and an <image>
+  tag to display the image is returned
 }
 
 \item{\code{signature(object = "ggplot")}}{
-%%  ~~describe this method here~~
+  The graphic is written to the report's figure directory and an <image>
+  tag to display the image is returned
 }
 
 \item{\code{signature(object = "recordedplot")}}{
-%%  ~~describe this method here~~
+  The graphic is written to the report's figure directory and an <image>
+  tag to display the image is returned
 }
 
 \item{\code{signature(object = "trellis")}}{
-%%  ~~describe this method here~~
+  The graphic is written to the report's figure directory and an <image>
+  tag to display the image is returned
 }
 }}
-\keyword{methods}
-\keyword{ ~~ other possible keyword(s) ~~ }
+\keyword{ Report }
+\keyword{ HTML }
+\keyword{ publish }

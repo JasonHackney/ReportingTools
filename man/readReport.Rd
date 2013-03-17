@@ -34,11 +34,8 @@ readReport(reportFile, handlers = fileHandlers(reportFile),
   this value is inferred from the file.
 }
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
 \value{
-An HTMLReportRef object representing the Reportl.
+An HTMLReportRef object representing the Report.
 }
 \author{
   Gabriel Becker

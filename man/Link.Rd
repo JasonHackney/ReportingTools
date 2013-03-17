@@ -25,7 +25,12 @@ Link(obj, target = NA, report = NULL)
     The link targets for each created link. 
   }
   \item{report}{
+<<<<<<< HEAD
     An optional report giving the relative path of the link target, when constructing the target path.
+=======
+    A report (HTMLReportRef object) whose location the generated links should
+    be relative to.
+>>>>>>> preparing to rebase for jason's changes
   }
 }
 \details{

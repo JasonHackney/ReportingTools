@@ -17,7 +17,9 @@
 
 \title{Class \code{"HTMLReport"}}
 \description{
-An HTMLReport is a pointer to an HTML page, built up using calls to publish or using hwrite calls on the page slot of the object.
+This class has been superceded by \code{HTMLReportRef} and is
+deprecated. The \code{HTMLReport} constructor function now creates an
+\code{HTMLReportRef} object.
 }
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("HTMLReport", ...)}.
@@ -46,36 +48,5 @@ Class \code{"\linkS4class{BaseReport}"}, directly.
     \item{page<-}{ Set the connection to the html file. }
     \item{validConnection}{ Is the connection to the html file still open? If finish has been called, this will return FALSE. }
 	 }
-}
-\examples{
-my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
-                    RPKM = c(4, 5, 3, 100, 75),
-                    DE = c("Yes", "Yes", "No", "No", "No"))
-html.report <- makeOldHTMLReport(shortName = "my_html_file",
-    title = "Report Title",
-    reportDirectory = "reportDirectory")
-publish(my.df, html.report)
-
-basePath(html.report) # Returns "."
-
-baseUrl(html.report) # Returns "localhost"
-
-reportDirectory(html.report) # Returns "reportDirectory"
-
-name(html.report) # Returns "my_html_file"
-
-title(html.report) <- "A Better Title"
-title(html.report) # Returns "A Better Title" 
-
-filename(html.report) # Returns "my_html_file.html"
-
-path(html.report) # Returns "./reportDirectory/my_html_file.html"
-
-url(html.report) # Returns "localhost/reportDirectory/my_html_file.html"
-
-library(hwriter)
-hwrite("Add some text here.", page(html.report))
-
-finish(html.report)
 }
 \keyword{classes}

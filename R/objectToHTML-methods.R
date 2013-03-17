@@ -115,20 +115,6 @@ setMethod("objectToHTML",
     }
 )
 
-if(FALSE)
-  {
-setMethod("objectToHTML", 
-          signature = signature(object = "HyperGResultBase"),
-          definition = function(object, report,  
-            pvalueCutoff = 0.01, categorySize = 10, ...){
-            ## First, make a data.frame for publication,
-            ## then call publish on that data.frame
-            df <- .hyperG.to.data.frame(object, pvalueCutoff = pvalueCutoff,
-                                        categorySize = categorySize)
-            objectToHTML(df)
-   
-    })
-}
 setMethod("objectToHTML",
           signature = signature(
             object = "trellis"
@@ -175,7 +161,7 @@ setMethod("objectToHTML",
   {
 
      figures.dirname <- paste0('figures', htmlRep$shortName)  
-     figure.directory <- file.path(dirname(path(htmlRep)), figures.dirname)
+     figure.directory <- file.path(dirname(path(htmlRep)[1]), figures.dirname)
      .safe.dir.create(figure.directory)
         
     if(is.null(filename)){

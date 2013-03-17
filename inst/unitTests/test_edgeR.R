@@ -53,7 +53,7 @@ test_3toReportDF <- function(){
 }
 
 
-test_3addReportColumns <- function(){
+test_3modifyReportDF <- function(){
     htmlRep <- HTMLReport("testhtmlPage4", 
         reportDirectory = 'testHTMLDirectory', title = "Test Report 4")
     
@@ -63,10 +63,10 @@ test_3addReportColumns <- function(){
     
     checkTrue(nrow(rep.df) == 100)
 
-    rep.df <- addReportColumns(rep.df, htmlRep, object = edgeR.de,
+    rep.df <- modifyReportDF(rep.df, htmlRep, object = edgeR.de,
         countTable = NULL, conditions = NULL, make.plots = FALSE)
     
-    rep.df <- addReportColumns(rep.df, htmlRep, object = edgeR.de,
+    rep.df <- modifyReportDF(rep.df, htmlRep, object = edgeR.de,
         countTable = mockRnaSeqData, conditions = conditions, make.plots = TRUE)
  
 }

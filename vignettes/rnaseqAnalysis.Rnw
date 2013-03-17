@@ -130,7 +130,7 @@ Now the results can be written to a report after converting the \tt DESeq \rm ou
 desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq_2',
     title = 'RNA-seq analysis of differential expression using DESeq',
     reportDirectory = "./reports")
-publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDF)
+publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
 finish(desReport)
 @ 
 

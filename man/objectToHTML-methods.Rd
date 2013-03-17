@@ -22,8 +22,8 @@
 
 \item{\code{signature(object = "ANY")}}{
   The default method for objectToHTML calls toReportDF (or the
-  overriding .toDF) then addReportColumns (or the overriding
-  .addColumns) to create a data.frame to be published. The data.frame
+  overriding .toDF) then modifyReportDF (or the overriding
+  .modifyDF) to create a data.frame to be published. The data.frame
   method of objectToHTML is then called.
 
   

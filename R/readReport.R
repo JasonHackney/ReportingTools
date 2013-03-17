@@ -2,7 +2,7 @@
 #problem with specifying new path/dir/etc: The report we read in will have the old values encoded in its links/image tags/etc. Do we want to scan the DOM and try to change these?
 
 ##For now I just won't allow it within this file. One could of course write custom handlers that manipulate the dom and change these attributes after the HTML has been created/read in.
-readReport = function(reportFile, handlers = fileHandlers(reportFile), .toHTML = NULL, .toDF = NULL, .addColumns = NULL, title)
+readReport = function(reportFile, handlers = fileHandlers(reportFile), .toHTML = NULL, .toDF = NULL, .modifyDF = NULL, title)
   {
     dom = htmlParse(reportFile)
 
@@ -19,7 +19,7 @@ readReport = function(reportFile, handlers = fileHandlers(reportFile), .toHTML =
 
     rep = HTMLReport(shortName = shortName, reportDirectory = reportDirectory, 
         basePath = basePath, baseUrl = baseUrl, handlers = handlers, 
-        .toHTML = .toHTML, .toDF = .toDF, .addColumns  = .addColumns)
+        .toHTML = .toHTML, .toDF = .toDF, .modifyDF  = .modifyDF)
     rep$.reportDOM = dom
     #find the report elements within the html!!
     repElNodes = getNodeSet(dom, "//div[@class='ReportingTools']")

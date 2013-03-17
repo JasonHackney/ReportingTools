@@ -85,11 +85,11 @@ setGeneric("worksheetCount<-",
         standardGeneric("worksheetCount<-")
 )
 
-setGeneric("objectToHTML", function(object, report, .addColumns, .toDF,
+setGeneric("objectToHTML", function(object, report, .modifyDF, .toDF,
                                     ...) standardGeneric("objectToHTML"))
 
 setGeneric("toReportDF", function(object, ...) standardGeneric("toReportDF"))
 
-setGeneric("addReportColumns", function(df, htmlRep, object, ...) standardGeneric("addReportColumns"))
+setGeneric("modifyReportDF", function(df, htmlRep, object, ...) standardGeneric("modifyReportDF"))
 
 setGeneric("Link", function(obj, target = NA, report=NULL) standardGeneric("Link"))

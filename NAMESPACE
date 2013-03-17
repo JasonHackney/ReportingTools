@@ -31,7 +31,7 @@ export(HTMLReport, CSVFile, DataPackage, validConnection,
     fileWIndexHandlers, makeOldHTMLReport)
 exportMethods(publish, name, title, 'title<-', reportDirectory,
     'reportDirectory<-', filename, path, url, page, 'page<-', finish, show,
-    basePath, baseUrl, dependencies, "dependencies<-", addReportColumns,
+    basePath, baseUrl, dependencies, "dependencies<-", modifyReportDF,
     objectToHTML, toReportDF, Link)
 exportClasses(DataPackage, CSVFile, HTMLReport, BaseReport, HTMLReportRef, 
     ReportHandlers)

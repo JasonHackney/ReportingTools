@@ -1,10 +1,10 @@
-setMethod("addReportColumns",
+setMethod("modifyReportDF",
           signature = signature(
             object = "ANY"),
           definition=function(df, htmlRep, ...) df
           )
 
-setMethod("addReportColumns",
+setMethod("modifyReportDF",
           signature = signature(
             object = "GOHyperGResult"),
           definition = function(df, htmlRep, object, annotation.db, selectedIDs, pvalueCutoff = 0.01, categorySize = 10,...)
@@ -58,7 +58,7 @@ setMethod("addReportColumns",
         
         ret$Image[i] <- hwriteImage(paste(figure.dirname,png.filename, sep="/"), link=paste(figure.dirname,pdf.filename, sep="/"), table=FALSE,width=100, height=100)
 	}
-#XXX We need to figure out another way to do this This logic doesn't belong in addReportColumns
+#XXX We need to figure out another way to do this This logic doesn't belong in modifyReportDF
         
  #       if(makePlot)
           #If we have the plot we need to mash it all together into HTML here because of how the dispatch is currently set up. We may want to change this in the future...
@@ -69,7 +69,7 @@ setMethod("addReportColumns",
 
           })
 
-setMethod("addReportColumns",
+setMethod("modifyReportDF",
     signature = signature(
     object = "MArrayLM"),
     definition = function(df, htmlRep, object, eSet, factor, make.plots = TRUE, ...){
@@ -89,7 +89,7 @@ setMethod("addReportColumns",
     }
 )
 
-setMethod("addReportColumns",
+setMethod("modifyReportDF",
     signature = signature(
     object = "DGEExact"),
     definition = function(df, htmlRep, object, countTable, conditions, 
@@ -114,7 +114,7 @@ setMethod("addReportColumns",
     }
 )
 
-setMethod("addReportColumns",
+setMethod("modifyReportDF",
     signature = signature(
     object = "DGELRT"),
     definition = function(df, htmlRep, object, countTable, conditions, 

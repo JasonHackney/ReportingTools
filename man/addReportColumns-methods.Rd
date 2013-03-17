@@ -1,12 +1,12 @@
-\name{addReportColumns-methods}
+\name{modifyReportDF-methods}
 \docType{methods}
-\alias{addReportColumns}
-\alias{addReportColumns-methods}
-\alias{addReportColumns,ANY,ANY,ANY-method}
-\alias{addReportColumns,ANY,ANY,DGEExact-method}
-\alias{addReportColumns,ANY,ANY,DGELRT-method}
-\alias{addReportColumns,ANY,ANY,MArrayLM-method}
-\alias{addReportColumns,ANY,ANY,GOHyperGResult-method}
+\alias{modifyReportDF}
+\alias{modifyReportDF-methods}
+\alias{modifyReportDF,ANY,ANY,ANY-method}
+\alias{modifyReportDF,ANY,ANY,DGEExact-method}
+\alias{modifyReportDF,ANY,ANY,DGELRT-method}
+\alias{modifyReportDF,ANY,ANY,MArrayLM-method}
+\alias{modifyReportDF,ANY,ANY,GOHyperGResult-method}
 \title{ Decorate the Basic data.frame Representation of an Object}
 \description{
  This function is called after toReportDF (or the overriding.toDF if it
@@ -14,8 +14,8 @@
  that will appear in the report. This typically includes transforming
  columns into links, adding image columns, etc. Each class publishable
  by ReportingTools should have either a custom objectToHTML method
- (which supercedes toReportDF and addReportColumns) or a custom
- toReportDF and addReportColumns methods which construct a dataframe to
+ (which supercedes toReportDF and modifyReportDF) or a custom
+ toReportDF and modifyReportDF methods which construct a dataframe to
  be placed in the report as an HTML table.
 }
 \section{Methods}{

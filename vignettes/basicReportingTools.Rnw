@@ -157,7 +157,7 @@ finish(htmlRep5)
 @
 
 
-We can also change our data frame to edit, add and remove columns with functions.  We then include these functions in our publish call as a list with \tt .addColumns \rm and \tt .toHTML \rm.
+We can also change our data frame to edit, add and remove columns with functions.  We then include these functions in our publish call as a list with \tt .modifyDF \rm and \tt .toHTML \rm.
 
 <<AddPlotLinkFunctions, eval=FALSE>>=
 ##this function adds 5 to each value of my.df$RPKMs 
@@ -190,14 +190,14 @@ addEGIDLink<-function(object, ...){
 }
 htmlRep6 <- HTMLReport(shortName = "my_html_file6", title="Manipulating the data frame directly",
     reportDirectory = "./reports")
-publish(my.df, htmlRep6, .addColumns=list(add5, makeNewImages, removeLink, addEGIDLink))
+publish(my.df, htmlRep6, .modifyDF=list(add5, makeNewImages, removeLink, addEGIDLink))
 finish(htmlRep6)
 @
 
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{html6.png}
-\caption{Resulting page created after adding figures and links to table with \tt .addColumns \rm.}
+\caption{Resulting page created after adding figures and links to table with \tt .modifyDF \rm.}
 \end{figure}
 
 \section{Multiple Tables to the same page}
@@ -209,7 +209,7 @@ df3=data.frame(x=c("a", "b", "c"), y=1:3)
 
 htmlRep7 <- HTMLReport(shortName = "my_html_file7", title="Many tables, one page",
     reportDirectory = "./reports")
-publish(my.df, htmlRep7, .addColumns=list(add5, makeNewImages, removeLink, addEGIDLink), name="Df1")
+publish(my.df, htmlRep7, .modifyDF=list(add5, makeNewImages, removeLink, addEGIDLink), name="Df1")
 publish(df2, htmlRep7, name="Df2")
 publish(df3, htmlRep7, name="Df3", pos=2)
 finish(htmlRep7)

@@ -81,7 +81,7 @@ The resulting output is displayed on an .html page and includes several statisti
 \caption{Resulting page created by \tt publish \rm for \tt fit \rm.}
 \end{figure}
 
-If we want to change our images, we can do so with \tt .addColumns \rm (see the basic vignette for more examples of how to use this feature).  In this example, we make lattice plots of the expression of each gene in our table stratified by \tt mol.biol \rm and \tt sex \rm.
+If we want to change our images, we can do so with \tt .modifyDF \rm (see the basic vignette for more examples of how to use this feature).  In this example, we make lattice plots of the expression of each gene in our table stratified by \tt mol.biol \rm and \tt sex \rm.
 
 <<making the DE report with new images, eval=FALSE>>=
 makeNewImages<-function(df,...){
@@ -101,7 +101,7 @@ makeNewImages<-function(df,...){
 deReport2<-HTMLReport(shortName='de_analysis2',
 	title = 'Analysis of BCR/ABL translocation differential expression with new plots',
     reportDirectory = "./reports")
-publish(fit, deReport2, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .addColumns=makeNewImages)
+publish(fit, deReport2, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .modifyDF=makeNewImages)
 finish(deReport2)
 @
 
@@ -263,7 +263,7 @@ The resulting output is displayed on an .html page and includes our set statisti
 \end{figure}
 
 
-We can also add the same statistics via \tt .addColumns \rm.  As demonstrated in the basic vignette, .addColumns allows us to manipulate the output published to our html pages.
+We can also add the same statistics via \tt .modifyDF \rm.  As demonstrated in the basic vignette, .modifyDF allows us to manipulate the output published to our html pages.
 <<make the GSEA report with new columns, eval=FALSE>>=
 runGSEA<-function(df,...){
 	mat <- matrix(data=0, ncol=length(universeIDs),nrow=length(geneSets))
@@ -284,7 +284,7 @@ runGSEA<-function(df,...){
 gseaReport2 <- HTMLReport(shortName = "gsea_analysis2",
 	title = "GSEA analysis", 
 	reportDirectory = "./reports")
-publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .addColumns=runGSEA)
+publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .modifyDF=runGSEA)
 finish(gseaReport2)
 @
 

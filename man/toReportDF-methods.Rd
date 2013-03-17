@@ -24,7 +24,7 @@
 The default \code{toReportDF} method is equivalent to calling \code{as.data.frame}.
 }
 \seealso{
-  \code{\link{addReportColumns}}
+  \code{\link{modifyReportDF}}
 }
 \keyword{methods}
 \keyword{ data.frame}

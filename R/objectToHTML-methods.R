@@ -1,7 +1,7 @@
 setMethod("objectToHTML",
           signature = signature(
             object = "ANY"),
-          definition = function(object, report, .addColumns, .toDF, ...)
+          definition = function(object, report, .modifyDF, .toDF, ...)
           {
             #cat("I'm in the ANY method for objectToHTML")
             if(!missing(.toDF) && is.function(.toDF))
@@ -9,17 +9,17 @@ setMethod("objectToHTML",
             else
               df = toReportDF(object, report,...)
 
-            if(!missing(.addColumns) && !is.null(.addColumns))
+            if(!missing(.modifyDF) && !is.null(.modifyDF))
               {
-                if(!is.list(.addColumns))
-                  .addColumns = list(.addColumns)
+                if(!is.list(.modifyDF))
+                  .modifyDF = list(.modifyDF)
 
-                for(f in .addColumns)
+                for(f in .modifyDF)
                   df = f(df, report, object = object, ...)
               } else {
-                df = addReportColumns(df, report, object = object, ...)
+                df = modifyReportDF(df, report, object = object, ...)
               }
-            objectToHTML(df, report = report, .toDF = NULL, .addColumns = NULL)
+            objectToHTML(df, report = report, .toDF = NULL, .modifyDF = NULL)
 
           })
 
@@ -48,18 +48,18 @@ setMethod("objectToHTML",
 setMethod("objectToHTML",
     signature = signature(
         object          = "data.frame"),
-    definition = function(object, report, .addColumns,   tableTitle="",
+    definition = function(object, report, .modifyDF,   tableTitle="",
       filter.columns = sapply(object, is.numeric), ...){
 
-       if(!missing(.addColumns) && !is.null(.addColumns))
+       if(!missing(.modifyDF) && !is.null(.modifyDF))
               {
-                if(!is.list(.addColumns))
-                  .addColumns = list(.addColumns)
+                if(!is.list(.modifyDF))
+                  .modifyDF = list(.modifyDF)
 
-                for(f in .addColumns)
+                for(f in .modifyDF)
                   object = f(object, report, object = object, ...)
               } #else {
-                #object = addReportColumns(object, report, object = object, ...)
+                #object = modifyReportDF(object, report, object = object, ...)
               #}
             
         if(nrow(object) == 0)
@@ -454,7 +454,7 @@ setMethod("objectToHTML",
       ),
     definition = function(object, publicationType, eSet, factor, n = 1000, 
         pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
-        make.plots = TRUE, ..., .addColumns, .toDF){
+        make.plots = TRUE, ..., .modifyDF, .toDF){
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
         df <- .marrayLM.to.html2(object, publicationType, eSet, factor,

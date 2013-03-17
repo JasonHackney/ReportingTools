@@ -9,10 +9,10 @@ setMethod("[[", c(x="HTMLReportRef"),  function(x, i, exact = TRUE)
  
 setMethod("publish", 
     signature = signature(object = "ANY", publicationType = "HTMLReportRef"), 
-    definition = function(object, publicationType, .addColumns = NULL, 
+    definition = function(object, publicationType, .modifyDF = NULL, 
         .toDF = NULL, ...) 
         publicationType$addElement(value = object, ..., 
-            .addColumns = .addColumns, .toDF = .toDF ))
+            .modifyDF = .modifyDF, .toDF = .toDF ))
 
 setMethod("finish",
     signature = signature(publicationType = "HTMLReportRef"),

@@ -10,7 +10,7 @@ using ReportingTools) into R so that it can modified or computed on.
 }
 \usage{
 readReport(reportFile, handlers = fileHandlers(reportFile), 
-  .toHTML = NULL, .toDF = NULL, .addColumns = NULL, title)
+  .toHTML = NULL, .toDF = NULL, .modifyDF = NULL, title)
 }
 \arguments{
   \item{reportFile}{
@@ -25,8 +25,8 @@ readReport(reportFile, handlers = fileHandlers(reportFile),
   \item{.toDF}{
     The list of .toDF overrides to attach to the HTMLReportRef object
 }
-  \item{.addColumns}{
-    The list of .addColumns overrides to attach to the HTMLReportRef object
+  \item{.modifyDF}{
+    The list of .modifyDF overrides to attach to the HTMLReportRef object
 
 }
   \item{title}{

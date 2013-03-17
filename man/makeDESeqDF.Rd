@@ -48,6 +48,6 @@
 	#desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
     #title = 'RNA-seq analysis of differential expression using DESeq',
     #reportDirectory = "./reports")
-	#publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05,    #conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .addColumns=makeDESeqDF)
+	#publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05,    #conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
 #finish(desReport)
 }

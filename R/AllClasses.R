@@ -118,10 +118,10 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
   fields = list(
     .toHTML = "list",
     .toDF = "list",
-    .addColumns = "list"),
+    .modifyDF = "list"),
   methods = list(
     
-    prepare = function(obj,.toHTML = NULL, .toDF = NULL, .addColumns = NULL, ... )
+    prepare = function(obj,.toHTML = NULL, .toDF = NULL, .modifyDF = NULL, ... )
     {
       #if the user has overridden  the html conversion for this class, we use that
       #we grab the first class if there are more than one (ie with XMLInternalNode)
@@ -137,11 +137,11 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
             .toDF2 = .self$.toDF[[klass]]
           else
             .toDF2 = .toDF
-          if(missing(.addColumns) || is.null(.addColumns))
-            .addColumns2 = .self$.addColumns[[klass]]
+          if(missing(.modifyDF) || is.null(.modifyDF))
+            .modifyDF2 = .self$.modifyDF[[klass]]
           else
-            .addColumns2 = .addColumns
-          html = objectToHTML(obj, .self, ..., .toDF=.toDF2, .addColumns = .addColumns2 )
+            .modifyDF2 = .modifyDF
+          html = objectToHTML(obj, .self, ..., .toDF=.toDF2, .modifyDF = .modifyDF2 )
           
           #prepping for conversion from text HTML nubuilding to XML construction Once the
           #conversion is complete objectToHTML methods will be returning XMLInternalNode
@@ -181,7 +181,7 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
       # not write a file.
     },
     addElement = function(name, value, .toHTML = NULL, .toDF = NULL, 
-        .addColumns = NULL, pos = NA, ... )
+        .modifyDF = NULL, pos = NA, ... )
     {
       
       if(missing(name))
@@ -216,7 +216,7 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
 
       #turn value into html nodes to add to DOM
       newcontent = .self$prepare(value, .toHTML = .toHTML, .toDF = .toDF, 
-          .addColumns = .addColumns,... )
+          .modifyDF = .modifyDF,... )
       obj = newcontent$object
       newcontent=newcontent$html
       if(is.list(newcontent))
@@ -278,7 +278,7 @@ HTMLReport <- function(shortName = "coolProject",
   handlers = list(fileHandlers(makeReportPath(basePath, reportDirectory, shortName))),
   .toHTML = list(),
   .toDF = list(),
-  .addColumns= list(),
+  .modifyDF= list(),
   link.css = NULL,
   link.javascript=NULL,
   overwrite.js = TRUE,
@@ -316,7 +316,7 @@ HTMLReport <- function(shortName = "coolProject",
     htmlReport$new(title = title, shortName = shortName, 
         reportDirectory = reportDirectory, handlers = handlers, 
         basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 
-        .toDF = .toDF, .addColumns  = .addColumns, link.css= link.css, 
+        .toDF = .toDF, .modifyDF  = .modifyDF, link.css= link.css, 
         link.javascript = link.javascript, ovewrite.js = overwrite.js)
   }
 

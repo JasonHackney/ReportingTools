@@ -7,7 +7,7 @@ Depends: methods
 Imports:
         Biobase,hwriter,Category,GOstats,limma,lattice,AnnotationDbi,edgeR,
         annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6), grid, XML, R.utils
-Suggests: RUnit, ggplot2, ggbio
+Suggests: RUnit, ggplot2, ggbio, ALL, hgu95av2.db, org.Mm.eg.db
 Type: Package
 LazyLoad: yes
 License: Artistic-2.0

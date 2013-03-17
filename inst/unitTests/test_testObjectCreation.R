@@ -141,5 +141,5 @@ test_6data.frames <- function(){
 test_zzzcloseHTMLConnection <- function(){
     finish(htmlRep)
     checkTrue(file.exists('testHTMLDirectory/testhtmlPage.html'),
-        "The HTML file isn't created created.")
+        "The HTML file isn't created.")
 }

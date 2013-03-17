@@ -20,12 +20,9 @@
 }
 \section{Methods}{
 \describe{
-
 \item{\code{signature(df = "ANY", htmlRep = "ANY", object = "ANY")}}{
 The default method is simply a placeholder, and returns the data.frame unchanged.
 }
-
-
 }}
 \keyword{methods}
 \keyword{ ~~ other possible keyword(s) ~~ }

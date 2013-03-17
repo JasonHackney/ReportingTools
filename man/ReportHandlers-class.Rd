@@ -7,7 +7,7 @@
 \alias{knitrHandlers}
 \alias{shinyHandlers}
 \alias{connectionHandlers}
-\alias{path, ReportHandlers-method}
+\alias{path,ReportHandlers-method}
 \title{Class \code{"ReportHandlers"}}
 \description{
 A set of event-handler functions to be called when certain actions are performed on a \code{HTMLReportRef} object.
@@ -21,18 +21,13 @@ Objects can be created by calls of the form \code{new("ReportHandlers", ...)}.
     \item{\code{addElement}:}{A function to be called when an element is added/published to the report }
     \item{\code{removeElement}:}{A function to be called when an element is removed from the report }
     \item{\code{finish}:}{A function to be called when the report is "finished" }
-<<<<<<< HEAD
-    \item{\code{location}:}{For \code{fileHandlers}, the path to the file that will be written}
-    \item{\code{args}:}{A named list containing zero or more of the elements "init", "addElement", "removeElement", and "finish", which contain additional arguments to be passed to the respective functions when called. }
-=======
     \item{\code{args}:}{A named list containing zero or more of the
       elements "init", "addElement", "removeElement", and "finish",
       which contain additional arguments to be passed to the respective
       functions when called. }
-    \item{\code{locatoin}:}{An R object indicating the location these
+    \item{\code{location}:}{An R object indicating the location these
       handlers will publish the report to. The exact meaning of this
       argument depends on the behavior of the handlers.}
->>>>>>> preparing to rebase for jason's changes
   }
 }
 \section{Methods}{
@@ -65,19 +60,14 @@ Objects can be created by calls of the form \code{new("ReportHandlers", ...)}.
   }
   
 }
-<<<<<<< HEAD
-
-=======
 \section{Methods}{
   \describe{
     \item{path}{Returns the location associated with these ReportHandlers}
   }
->>>>>>> preparing to rebase for jason's changes
 }
 \author{
   Gabriel Becker <gmbecker@ucdavis.edu>
 }
-
 \seealso{
 	\code{\linkS4class{HTMLReportRef}}
 }

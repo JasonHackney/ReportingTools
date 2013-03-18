@@ -1,9 +1,10 @@
 library(knitr)
 
 test_knitr = function(){
-  
-  fileout = knit2html(system.file("inst/examples/testRmd.Rmd", package="ReportingTools"))
-  checkTrue(file.exists(fileout))
-  lines = readLines(fileout)
+
+  #write to testRmd.html
+  knit2html(system.file("examples/testRmd.Rmd", package="ReportingTools"))
+  checkTrue(file.exists("testRmd.html"))
+  lines = readLines("testRmd.html")
   checkTrue(length(grep("Error", lines)) == 0)
 }

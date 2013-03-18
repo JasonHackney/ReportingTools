@@ -122,15 +122,15 @@ barplot(my.df$RPKM, names.arg=my.df$EGID, xlab="EGID",
 dev.off()
 
 library(hwriter)
-htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding a link, text and image",
+htmlRep4 <- HTMLReport(shortName = "my_html_file4", title="Adding a link, text and image",
     reportDirectory = "./reports")
-publish(hwrite("This is a link to Bioconductor", link = "www.bioconductor.org"), htmlRep3) 
-publish(hwrite("Bar chart of results", heading=2), htmlRep3)
+publish(hwrite("This is a link to Bioconductor", link = "www.bioconductor.org"), htmlRep4) 
+publish(hwrite("Bar chart of results", heading=2), htmlRep4)
 himg <- hwriteImage("barplot.png", link="barplot.png")
-publish(hwrite(himg, br=TRUE), htmlRep3)
-publish(hwrite("Results Table", heading=2), htmlRep3)
-publish(my.df, htmlRep3)
-finish(htmlRep3)
+publish(hwrite(himg, br=TRUE), htmlRep4)
+publish(hwrite("Results Table", heading=2), htmlRep4)
+publish(my.df, htmlRep4)
+finish(htmlRep4)
 @
 
 
@@ -216,10 +216,6 @@ publish(df2, htmlRep7, name="Df2")
 publish(df3, htmlRep7, name="Df3", pos=2)
 finish(htmlRep7)
 @
-
-\section{Knitr}
-\tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd\rm
-
 
 \section{Publishing other types of data and more advanced features}
 To publish data that is not a data frame, there is a need to create and use a \tt .toDF\rm function.  For example, suppose we have a matrix we would like to publish.  \tt ReportingTools\rm will convert the basic matrix to a data.frame and then publish it.  

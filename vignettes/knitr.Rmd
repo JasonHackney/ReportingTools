@@ -1,0 +1,25 @@
+Knitr and ReportingTools
+===============================================
+
+       
+We can use knitter and ReportingTools together, as shown in this very simple example from our basic vignette.  To see the output of this vignette, simply run the knitr function knit2html('knitr.Rmd').  The output will be an html page with this text, R code, and the following table.
+
+```{r message=FALSE, results="asis"}
+my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
+                    RPKM = c(4, 5, 3, 100, 75),
+                    DE = c("Yes", "Yes", "No", "No", "No"))
+my.df
+
+library(ReportingTools)
+```
+We now can publish our data frame as table through the use of the knitrHandlers.  We do not call finish since we will still add output to our knitr report.
+
+```{r results="asis"}
+library(XML)
+htmlRep <- HTMLReport(shortName = "knitrReport",
+    reportDirectory = "./reports", handlers=knitrHandlers, location="./reports/knitrTest.html")
+#publish(my.df, htmlRep)
+htmlRep[["mydf"]]<-my.df  ##this line is equivalent to the one above
+```
+
+With knitter, we have all the functionality of the tables in HTML files generated via ReportingTools directly, but is inserted in the midst of the text sections from our Rmd file!

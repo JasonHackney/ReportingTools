@@ -304,7 +304,7 @@ HTMLReport <- function(shortName = "coolProject",
     if(sum(grepl("[A-Za-z]:", reportDirectory)) > 0 & .Platform$OS.type == "windows")
         stop("Non-NULL baseDirectory in combination with absolute reportDirectory is not supported.")
     
-    force(handlers)
+    
     htmlReport$new(title = title, shortName = shortName, 
         reportDirectory = reportDirectory, handlers = handlers, 
         basePath = basePath, .toHTML = .toHTML, 

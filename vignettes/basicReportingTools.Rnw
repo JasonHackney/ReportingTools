@@ -99,7 +99,7 @@ library(hwriter)
 htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding a link, text and image",
     reportDirectory = "./reports")
 ###ADD LINK
-publish(hwrite("This is a link to Bioconductor", link = "www.bioconductor.org"), htmlRep3) 
+publish(hwrite("This is a link to Bioconductor", link = "http://www.bioconductor.org"), htmlRep3) 
 publish(hwrite("Bar chart of results", heading=2), htmlRep3)
 himg <- hwriteImage("barplot.png", link="barplot.png")
 publish(hwrite(himg, br=TRUE), htmlRep3)

@@ -120,20 +120,22 @@ cds<-newCountDataSet(mockRnaSeqData, conditions)
 cds<-estimateSizeFactors(cds)
 cds<-estimateDispersions(cds)
 res<-nbinomTest(cds,"control", "case" )
-
-
 @
 
 Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that \tt makeDESeqDF \rm command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
 
 <<DESeq_report, eval=FALSE>>=
-desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq_2',
+desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
     title = 'RNA-seq analysis of differential expression using DESeq',
     reportDirectory = "./reports")
 publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
 finish(desReport)
 @ 
-
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{rnaseq2.png}
+\caption{Resulting page created by \tt makeDESeqDF \rm}
+\end{figure}
 
 \section{GO analysis using GOstats}
 In this section, we show how to use \tt ReportingTools \rm to write a table of GO analysis results to an html file.  First we select or genes of interest and then we run the \tt hyperGTest\rm.
@@ -168,7 +170,7 @@ finish(goReport)
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{rnaseq2.png}
+\includegraphics[scale = .5]{rnaseq3.png}
 \caption{Resulting page created by \tt publish \rm for \tt goResults\rm.}
 \end{figure}
 
@@ -200,13 +202,12 @@ finish(PFAMReport)
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{rnaseq3.png}
+\includegraphics[scale = .5]{rnaseq4.png}
 \caption{Resulting page created by \tt publish \rm for \tt PFAMResults\rm.}
 \end{figure}
 
 
 \section{Putting it all together}
-**THIS HAS TO BE UPDATED**
 Here, we make an index page that puts all three analyses together for easy navigation.
 <<make the index page, eval=FALSE>>=
 indexPage <- HTMLReport(shortName = "indexRNASeq",
@@ -219,7 +220,7 @@ finish(indexPage)
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{rnaseq4.png}
+\includegraphics[scale = .5]{rnaseq5.png}
 \caption{Resulting page created by calling \tt publish \rm on all our analysis pages.}
 \end{figure}
 

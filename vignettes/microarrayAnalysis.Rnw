@@ -105,6 +105,12 @@ publish(fit, deReport2, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .modifyDF=
 finish(deReport2)
 @
 
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{microarray2.png}
+\caption{Resulting page created by \tt makeNewImages \rm}
+\end{figure}
+
 
 \section{GO analysis using GOstats}
 In this section, we show how to use \tt ReportingTools \rm to \tt publish \rm a GO analysis to an html file.  First we select the top 100 differential genes and then run the \tt hyperGTest \rm from the \tt GOstats \rm package.
@@ -139,7 +145,7 @@ The resulting output is displayed on an .html page and includes several statisti
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{microarray2.png}
+\includegraphics[scale = .5]{microarray3.png}
 \caption{Resulting page created by \tt publish \rm for \tt goResults\rm.}
 \end{figure}
 
@@ -169,12 +175,6 @@ finish(PFAMReport)
 @
 
 The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the overlap for each category.
-
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{microarray3.png}
-\caption{Resulting page created by \tt publish \rm for \tt PFAMResults\rm.}
-\end{figure}
 
 
 \section{GSEA analysis}
@@ -208,13 +208,6 @@ finish(geneSetsReport)
 @
 
 The resulting output is displayed on an .html page and includes the gene sets and links to pages listing the genes within the corresponding set.
-
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{microarray4.png}
-\caption{Resulting page created by \tt publish \rm for \tt geneSets\rm.}
-\end{figure}
-
 
 Often, investigators would like more information about the enrichment of certain gene sets.  Thus, we will proceed with gene set enrichment analysis (GSEA).  To begin, we determine the overlap between our sets and our genes of interest by creating an incidence matrix.
 
@@ -252,13 +245,13 @@ The resulting output is displayed on an .html page and includes our set statisti
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{microarray5.png}
+\includegraphics[scale = .5]{microarray4.png}
 \caption{Resulting updated page created by \tt publish \rm for \tt geneSets \rm after we include the set statistics and p-values.}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{microarray6.png}
+\includegraphics[scale = .5]{microarray5.png}
 \caption{The set-specific page.}
 \end{figure}
 
@@ -291,7 +284,6 @@ finish(gseaReport2)
 
 \section{Putting it all together}
 We now make an index page to put all the output together.
-**TO BE UPDATED**
 <<make the index page, eval=FALSE>>=
 indexPage <- HTMLReport(shortName = "index",
     title = "Analysis of ALL Gene Expression",
@@ -303,7 +295,7 @@ finish(indexPage)
 @
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{microarray7.png}
+\includegraphics[scale = .5]{microarray6.png}
 \caption{The page created from calling \tt publish \rm on all of our previous pages.}
 \end{figure}
 

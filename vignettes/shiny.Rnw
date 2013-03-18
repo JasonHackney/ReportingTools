@@ -29,7 +29,7 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A primary strength of \verb@ReportingTools@ is that it provides powerful, customizable facilities for creating rich, interactive (sortable, filterable, pagable, etc) and aesthetically pleasing HTML tables based on many disparate types of \verb@R@ objects. \verb@shiny@ is a Web application framework developed by RStudio, Inc. which allows the creation, and deployment of Web applications using only \verb@R@ code. Often-times these Web applications involve the display of \verb@R@ objects or output, but formatting and rendering of complex \verb@R@ objects is not the focus of the \verb@shiny@ framework.
+A primary strength of \verb@ReportingTools@ is that it provides powerful, customizable facilities for creating rich, interactive (sortable, filterable, pagable, etc.) and aesthetically pleasing HTML tables based on many disparate types of \verb@R@ objects. \verb@shiny@ is a Web application framework developed by RStudio, Inc. which allows the creation, and deployment of Web applications using only \verb@R@ code. Often these Web applications involve the display of \verb@R@ objects or output, but formatting and rendering of complex \verb@R@ objects is not the focus of the \verb@shiny@ framework.
 
 Using the techniques in this vignette, \verb@ReportTools@' formatting and display capabilities, including both the default mechanisms and the full range of customizable behavior, can be incorporated into \verb@shiny@ applications, allowing the creation of powerful Web applications which involve the display of \verb@R@ objects representing complex data and analysis results. This vignette assumes knowledge of the \verb@shiny@ framework. Readers who are not familiar with shiny are encouraged to read the official \verb@shiny@ tutorial \href{http://rstudio.github.com/shiny/tutorial/}{here} before continuing.
 \begin{figure}[h]
@@ -37,12 +37,12 @@ Using the techniques in this vignette, \verb@ReportTools@' formatting and displa
 \fbox{
   \includegraphics[scale = .5]{shiny.png}
 }
-\caption{A shiny Web Application which uses ReportingTools to display R data.frame objects.}
+\caption{A shiny web application which uses \tt ReportingTools \rm to display R \tt data.frame \rm objects}
 \end{figure}
 
-The example we will discuss in this document, pictured above, gives the viewer the opportunity to choose between 3 data.frames and displays both a summary and a ReportingTools-powered table containing the chosen data. We will discuss in detail only portions of the code specific to the interface between \verb@shiny@ and \verb@ReportingTools@. Full code for the application is included in our package in the inst/examples/shinyexample directory.
+The example we will discuss in this document, pictured above, gives the viewer the opportunity to choose between three data frames and displays both a summary and a ReportingTools-powered table containing the chosen data. We will discuss in detail only portions of the code specific to the interface between \verb@shiny@ and \verb@ReportingTools@. Full code for the application is included in our package in the inst/examples/shinyexample directory.
 
-\section{Changes to ui.R when Using ReportingTools}
+\section{Changes to ui.R when using ReportingTools}
 
 The single largest change to a ui.R file in order to add \verb@ReportingTools@ functionality is that \verb@ReportingTools@' JavaScript and CSS files must be included in the header of the resulting page so that the \verb@ReportingTools@ tables function properly.
 
@@ -60,7 +60,7 @@ custHeaderPanel = function(title, windowTitle =title, js= NULL, css=NULL)
 }
 @ 
 
-With this function defined we are able to use it within the standard \verb@shiny@ page layout functions, such as \verb@pageWithSidebar@, in place of the \verb@headerPanel@ function. In particular, we include all (Javascript) files in extdata/jslib and all Twitter Bootstrap based CSS files in extdata/csslib, like so:
+With this function defined we are able to use it within the standard \verb@shiny@ page layout functions, such as \verb@pageWithSidebar@, in place of the \verb@headerPanel@ function. In particular, we include all (Javascript) files in extdata/jslib and all Twitter Bootstrap based CSS files in extdata/csslib:
 
 <<eval=FALSE>>=
     custHeaderPanel("ReportingTools", 
@@ -73,9 +73,9 @@ With this function defined we are able to use it within the standard \verb@shiny
 
 These Javascript and CSS files will be included in the header of the resulting dynamic HTML page, allowing our \verb@ReportingTools@-based output to behave correctly.
 
-Code for specifying input controls is identical whether or not \verb@ReportingTools@ is being used to format the output, and so is ommitted here.
+Code for specifying input controls is identical whether or not \verb@ReportingTools@ is being used to format the output and is omitted here.
 
-Finally, output elements which will be formatted by \verb@ReportingTools@ should be declared as \verb@htmlOutput@. We do this for the view2 element in the code below:
+Finally, output elements which will be formatted by \verb@ReportingTools@ should be declared as \verb@htmlOutput@. We do this for the \tt view2 \rm element in the code below:
 
 <<eval=FALSE>>=
    mainPanel(
@@ -84,11 +84,11 @@ Finally, output elements which will be formatted by \verb@ReportingTools@ should
                )
 @ 
 
-This indicates to the \verb@shiny@ system that the output will be HTML code ready to be inserted directly into the specified element. With this our page layout is defined and we are ready to  write the server.R code which will populate it.
+This indicates to the \verb@shiny@ system that the output will be HTML code ready to be inserted directly into the specified element. With this our page layout is defined and we are ready to write the server.R code which will populate it.
 
-\section{Changes to server.R when Using ReportingTools}
+\section{Changes to server.R when using ReportingTools}
 
-Our task here is to specify a rendering function which can interface with the ReportingTools publish mechanism. To do this we first create a Report (within server.R, outside of any function calls) with \verb@ReportHandlers@ created via the  \verb@shinyHandlers@ constructor, like so:
+Our task here is to specify a rendering function which can interface with the \tt ReportingTools \rm publish mechanism. To do this we first create a Report (within server.R, outside of any function calls) with \verb@ReportHandlers@ created via the \verb@shinyHandlers@ constructor:
 
 <<eval=FALSE>>=
 myrep = HTMLReport(reportDirectory = "./",shortName="bigtest", 
@@ -109,9 +109,9 @@ renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
 }
 @ 
 
-By using this custom rendering mechanism/\verb@ReportHandlers@ combination shiny is able to ``hear'' elements being added to our report and insert them into the dynamic HTML of our Web App.
+By using this custom rendering mechanism and \verb@ReportHandlers@ combination, shiny is able to ``hear'' elements being added to our report and insert them into the dynamic HTML of our Web App.
 
-To make use of this we simply publish elements to our report within the expression passed to \verb@renderRepTools@, like so:
+To make use of this we simply publish elements to our report within the expression passed to \verb@renderRepTools@:
 
 <<eval=FALSE>>=
  output$view2 <- renderRepTools({
@@ -119,7 +119,7 @@ To make use of this we simply publish elements to our report within the expressi
   })
 @ 
 
-The resulting Web Application is controlled entirely by \verb@shiny@, but has the added rendering power built into \verb@ReportingTools@. Though we used a standard data.frame in this example, the implications/differences from vanilla \verb@shiny@ are much larger when writing applications which use \verb@Bioconductor@ to analyze Biological data and generate objects which would be difficult to effectively display without \verb@ReportingTools@. Furthermore, all customization mechanisms for the HTML output discussed in the our other vignettes are fully functional in this setting.
+The resulting web application is controlled entirely by \verb@shiny@, but has the added rendering power built into \verb@ReportingTools@. Though we used a standard \tt data.frame \rm in this example, we can expand this application to more general biological data and \tt Bioconductor \rm objects which would be difficult to effectively display without \verb@ReportingTools@.  Furthermore, all customization mechanisms for the HTML output discussed in the other vignettes are fully functional in this setting.
 
 
 \end{document}

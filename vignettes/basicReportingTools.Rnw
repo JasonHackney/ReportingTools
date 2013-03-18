@@ -24,12 +24,14 @@
 \tableofcontents
 \newpage
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Frequently, when performing an analysis, it is helpful to be able to share these results in several formats at once: as HTML tables, csv files or even as R data packages. \verb@ReportingTools@ attempts to make this as painless as possible. At its heart, \verb@ReportingTools@ is nothing more than a set of S4 classes that describe what kinds of reports to generate, and a set of S4 methods that describe how to publish something in that format.  In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results; for more details, please refer to the corresponding vignettes.
+Frequently, when performing an analysis, it is helpful to be able to share these results in several formats at once: as HTML tables, csv files or even as R data packages. \verb@ReportingTools@ attempts to make this as painless as possible. At its heart, \verb@ReportingTools@ is based on a number of pieces of interlocking machinery that transform popular \tt Biocondutor\rm objects into reports.
 
+In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results and can also be incorporated into \tt shiny\rm applications; for more details, please refer to the corresponding vignettes or the \verb@ReportingTools@ \href{http://research-pub.gene.com/ReportingTools}{site}.
 \section{Basics of Reporting}
 
 The easiest type of report to generate is a csv file. This is done using the \verb@CSVFile@ class and the publish method. To start we'll create a \verb@data.frame@ that we'll use throughout the vignette.
@@ -42,7 +44,7 @@ my.df <- data.frame(EGID = c("103", "104", "105", "106", "107"),
 my.df
 @
 
-Next, we'll create the \verb@CSVFile@ object to which we'll publish our results.  We output the results to a new directory called \tt reports \rm.  Note that \tt ReportingTools \rm will create this directory for you if it does not exist already.
+Next, we'll create the \verb@CSVFile@ object to which we'll publish our results.  We output the results to a new directory called \tt reports\rm.  Note that \tt ReportingTools \rm will create this directory for you if it does not exist already.
 
 <<makeCSVFile, eval=FALSE>>=
 library(ReportingTools)
@@ -64,7 +66,7 @@ finish(htmlRep)
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{html1.png}
-\caption{Resulting page created by \tt publish \rm for \tt my.df\rm.}
+\caption{Resulting page created by \tt publish\rm for \tt my.df\rm.}
 \end{figure}
 
 
@@ -75,7 +77,8 @@ It's also possible to publish the same object in two separate formats at once.
 <<reportingTwoTypes, eval=FALSE>>=
 csvFile2 <- CSVFile(shortName = "my_csv_file2", 
     reportDirectory = "./reports")
-htmlRep2 <- HTMLReport(shortName = 'my_html_file2',title="Publishing a data frame and csv file together",
+htmlRep2 <- HTMLReport(shortName = 'my_html_file2',
+	title="Publishing a data frame and csv file together",
     reportDirectory = "./reports")
 publish(my.df, list(csvFile2, htmlRep2))
 finish(htmlRep2)
@@ -86,8 +89,31 @@ The same few lines of code could be used to publish, for example, the results of
 
 \section{Adding plots or text to a report}
 
-To add links, additional text or existing plots to a report, simply open the report with \tt HTMLReport \rm, write to it (e.g., with \tt hwriter \rm functions), and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
+To add links, additional text or plots to a report, simply open the report with \tt HTMLReport\rm, write to it via the \tt publish \rm function  and then call \tt publish\rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
 
+<<AddImage, eval=FALSE>>=
+plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
+	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
+scatterPlot <- recordPlot()
+library(lattice)
+barPlot<-barchart(my.df$RPKM~my.df$EGID)  ##lattice plots behave slightly differently
+	
+htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding a plot directly to the page",
+    reportDirectory = "./reports")
+publish(scatterPlot, htmlRep3, name = "scatterPlot")  
+publish("This is a bar plot", htmlRep3)
+publish(barPlot, htmlRep3, name = "barPlot")
+publish(my.df, htmlRep3, name="Table")
+finish(htmlRep3)
+@
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{html3.png}
+\caption{Resulting page created after adding additional figures and text with \tt publish\rm.}
+\end{figure}
+
+We can also publish exicisting images and text directly to sites with \tt hwriter \rm.
 
 <<AddTextPlot, eval=FALSE>>=
 png(filename="reports/barplot.png")
@@ -98,8 +124,7 @@ dev.off()
 library(hwriter)
 htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding a link, text and image",
     reportDirectory = "./reports")
-###ADD LINK
-publish(hwrite("This is a link to Bioconductor", link = "http://www.bioconductor.org"), htmlRep3) 
+publish(hwrite("This is a link to Bioconductor", link = "www.bioconductor.org"), htmlRep3) 
 publish(hwrite("Bar chart of results", heading=2), htmlRep3)
 himg <- hwriteImage("barplot.png", link="barplot.png")
 publish(hwrite(himg, br=TRUE), htmlRep3)
@@ -108,35 +133,12 @@ publish(my.df, htmlRep3)
 finish(htmlRep3)
 @
 
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{html3.png}
-\caption{Resulting page created after adding additional links, figures and text.}
-\end{figure}
-
-
-We can also publish images and text directly to sites without \tt hwriter \rm.
-<<AddImage, eval=FALSE>>=
-plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
-	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
-scatterPlot <- recordPlot()
-library(lattice)
-barPlot<-barchart(my.df$RPKM~my.df$EGID)  ##lattice plots behave slightly differently
-	
-htmlRep4 <- HTMLReport(shortName = "my_html_file4", title="Adding a plot directly to the page",
-    reportDirectory = "./reports")
-publish(scatterPlot, htmlRep4, name = "scatterPlot")  ##This is not working for some reason?
-publish("This is a bar plot", htmlRep4)
-publish(barPlot, htmlRep4, name = "barPlot")  ##This is not working for some reason?
-publish(my.df, htmlRep4, name="Table")
-finish(htmlRep4)
-@
 
 
 \section{Adding plots or links to a report table}
 To add additional plots or links to a report table, we can create a new data frame with the path to the plots and our links of interest.  We then \tt publish \rm this data frame.  
 
-Below we make a set of simple plots and then add the images along with new links to the ncbi gene database to our data frame.
+Below we make a set of simple plots and then add the images along with new links to the NCBI gene database to our data frame.
 
 <<AddPlotLink, eval=FALSE>>=
 imagename<-c()
@@ -157,7 +159,7 @@ finish(htmlRep5)
 @
 
 
-We can also change our data frame to edit, add and remove columns with functions.  We then include these functions in our publish call as a list with \tt .modifyDF \rm and \tt .toHTML \rm.
+We can also update our data frame by editing, adding and removing columns with functions.  We then include these functions in our publish call as a list with \tt .modifyDF \rm and \tt .toHTML\rm.
 
 <<AddPlotLinkFunctions, eval=FALSE>>=
 ##this function adds 5 to each value of my.df$RPKMs 
@@ -197,11 +199,11 @@ finish(htmlRep6)
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{html6.png}
-\caption{Resulting page created after adding figures and links to table with \tt .modifyDF \rm.}
+\caption{Resulting page created after adding figures and links to table with \tt .modifyDF\rm.}
 \end{figure}
 
 \section{Multiple Tables to the same page}
-It is also possible to publish multiple tables to the same html page.  We can change the order of the tables via \tt pos \rm.
+It is also possible to publish multiple tables to the same html page.  We can change the order of the tables via \tt pos\rm.
 
 <<multipleTables, eval=FALSE>>=
 df2=data.frame(x=1:5, y=11:15)
@@ -216,11 +218,11 @@ finish(htmlRep7)
 @
 
 \section{Knitr}
-\tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd \rm
+\tt ReportingTools \rm can also be used to publish output via knitr.  For an example, please explore \tt basicReportingTools.Rmd\rm
 
 
 \section{Publishing other types of data and more advanced features}
-To publish data that is not a data frame, there is a need to create and use a /tt .toDF /rm function.  For example, suppose we have a matrix we would like to publish.  /tt ReportingTools /rm will convert the basic matrix to a data.frame and then publish it.  
+To publish data that is not a data frame, there is a need to create and use a \tt .toDF\rm function.  For example, suppose we have a matrix we would like to publish.  \tt ReportingTools\rm will convert the basic matrix to a data.frame and then publish it.  
 
 <<publishMatrix, eval=FALSE>>=
 set.seed(123)
@@ -230,7 +232,8 @@ makeDF <- function(object, ...){
 	names(df) <- paste0("New ", 1:4)
 	return(df)
 } 
-htmlRep8 <- HTMLReport(shortName = 'my_html_file8', title="Publishing objects that are not data frames",
+htmlRep8 <- HTMLReport(shortName = 'my_html_file8', 
+	title="Publishing objects that are not data frames",
     reportDirectory = "./reports")
 publish(my.mat, htmlRep8, .toDF=makeDF)
 finish(htmlRep8)
@@ -239,16 +242,16 @@ finish(htmlRep8)
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{html8.png}
-\caption{Resulting page created after transforming a matrix to a data frame with \tt .toDF \rm .}
+\caption{Resulting page created after transforming a matrix to a data frame with \tt .toDF\rm .}
 \end{figure}
 
 
-For publishing experimental results, including how to publish a \verb@limma@-based linear model and an \verb@edgeR@ RNA-seq analysis, please see the relevant vignette.  There are built-in \tt ReportingTools \rm methods to publish non-data frame objects typically encountered in microarray and RNA-seq analyses.  Example output is shown below.
+For publishing experimental results, including how to publish a \verb@limma@-based linear model and a \verb@edgeR@ objects, please see the relevant vignettes.  There are built-in \tt ReportingTools \rm methods to publish non-data frame objects typically encountered in microarray and RNA-seq analyses.  Example output is shown below.
 
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{microarray1.png}
-\caption{Resulting page created for analysis of a microarray study with \tt limma@\rm.}
+\caption{Resulting page created for analysis of a microarray study with \tt limma\rm.}
 \end{figure}
 
 

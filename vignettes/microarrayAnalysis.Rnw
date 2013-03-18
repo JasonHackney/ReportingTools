@@ -44,13 +44,13 @@ We will compare the gene expression between the \tt BCR/ABL \rm and \tt NEG \rm 
 
 <<filter ALL data, eval=FALSE>>=
 ALL <- ALL[, ALL$mol.biol %in% c('NEG','BCR/ABL') &
-    !is.na(ALL$sex)]
+           !is.na(ALL$sex)]
 ALL$mol.biol <- factor(ALL$mol.biol, 
-    levels = c('NEG', 'BCR/ABL'))
+                       levels = c('NEG', 'BCR/ABL'))
 ALL <- featureFilter(ALL)
 @
 
-Next we use \tt limma \rm to find statistical evidence of differential genes.
+Next we use \tt limma \rm to find statistical evidence of differentially expressed genes.
 
 <<limma linear model, eval=FALSE>>=
 library(limma)
@@ -66,8 +66,8 @@ rep.theme <- reporting.theme()
 lattice.options(default.theme = rep.theme)
 
 deReport <- HTMLReport(shortName = 'de_analysis',
-    title = 'Analysis of BCR/ABL translocation differential expression',
-    reportDirectory = "./reports")
+                       title = 'Analysis of BCR/ABL translocation differential expression',
+                       reportDirectory = "./reports")
 publish(fit, deReport, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100)
 finish(deReport)
 @
@@ -84,24 +84,28 @@ The resulting output is displayed on an .html page and includes several statisti
 If we want to change our images, we can do so with \tt .modifyDF \rm (see the basic vignette for more examples of how to use this feature).  In this example, we make lattice plots of the expression of each gene in our table stratified by \tt mol.biol \rm and \tt sex \rm.
 
 <<making the DE report with new images, eval=FALSE>>=
-makeNewImages<-function(df,...){
-	imagename<-c()
+makeNewImages <- function(df,...){
+	imagename <- c()
 	for (i in 1:nrow(df)){
-		probeId<-df$ProbeId[i]
-		y_at<-pretty(exprs(ALL)[probeId,])
-		y_labels<-formatC(y_at, digits=1, format='f')
-		imagename[i]<-paste0("plot", probeId, ".png")
-		png(filename=paste0("./reports/figuresde_analysis/", imagename[i]))
+		probeId <- df$ProbeId[i]
+		y_at <- pretty(exprs(ALL)[probeId,])
+		y_labels <- formatC(y_at, digits = 1, format = 'f')
+		imagename[i] <- paste0("plot", probeId, ".png")
+		png(filename = paste0("./reports/figuresde_analysis/", 
+                      imagename[i]))
 		print(stripplot(exprs(ALL)[probeId,]~ALL$mol.biol|ALL$sex))
 		dev.off()
 	}
-	df$Image<-hwriteImage(paste0("figuresde_analysis/", imagename), link=paste0("figuresde_analysis/", imagename), table=FALSE, width=100)
+	df$Image <- hwriteImage(paste0("figuresde_analysis/", imagename), 
+                                link=paste0("figuresde_analysis/", imagename), 
+                                table=FALSE, width=100)
 	return(df)
 }
-deReport2<-HTMLReport(shortName='de_analysis2',
-	title = 'Analysis of BCR/ABL translocation differential expression with new plots',
-    reportDirectory = "./reports")
-publish(fit, deReport2, eSet=ALL, factor=ALL$mol.biol, coef=2, n=100, .modifyDF=makeNewImages)
+deReport2 <- HTMLReport(shortName='de_analysis2',
+                        title = 'Analysis of BCR/ABL translocation differential expression with new plots',
+                        reportDirectory = "./reports")
+publish(fit, deReport2, eSet = ALL, factor = ALL$mol.biol, coef=2, 
+        n=100, .modifyDF=makeNewImages)
 finish(deReport2)
 @
 
@@ -121,13 +125,13 @@ tt <- topTable(fit, coef = 2, n = 100)
 selectedIDs <- unlist(mget(tt$ID, hgu95av2ENTREZID))
 universeIDs <- unlist(mget(featureNames(ALL), hgu95av2ENTREZID))
 goParams <- new("GOHyperGParams", 
-    geneIds = selectedIDs, 
-    universeGeneIds = universeIDs, 
-    annotation = annotation(ALL), 
-    ontology = "BP", 
-    pvalueCutoff = 0.01,
-    conditional = TRUE, 
-    testDirection = "over")
+                geneIds = selectedIDs, 
+                universeGeneIds = universeIDs, 
+                annotation = annotation(ALL), 
+                ontology = "BP", 
+                pvalueCutoff = 0.01,
+                conditional = TRUE, 
+                testDirection = "over")
 goResults <- hyperGTest(goParams)
 @
 
@@ -135,9 +139,9 @@ With these results, we can then make the GO report.  We must supply \tt publish 
 
 <<make the GO report, eval=FALSE>>=
 goReport <- HTMLReport(shortName = 'go_analysis',
-    title = 'GO analysis of BCR/ABL translocation',
-    reportDirectory = "./reports")
-publish(goResults, goReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg")
+                       title = 'GO analysis of BCR/ABL translocation',
+                       reportDirectory = "./reports")
+publish(goResults, goReport, selectedIDs = selectedIDs, annotation.db = "org.Hs.eg")
 finish(goReport)
 @
 The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the overlap for each category.
@@ -156,11 +160,11 @@ In this section, we show how to use \tt ReportingTools \rm to write a table of P
 <<Do PFAM analysis, eval=FALSE>>=
 library(Category)
 pfamParams <- new("PFAMHyperGParams", 
-    geneIds = selectedIDs, 
-    universeGeneIds = universeIDs, 
-    annotation = annotation(ALL),  
-    pvalueCutoff = 0.01,
-    testDirection = "over")
+                  geneIds = selectedIDs, 
+                  universeGeneIds = universeIDs, 
+                  annotation = annotation(ALL),  
+                  pvalueCutoff = 0.01,
+                  testDirection = "over")
 PFAMResults <- hyperGTest(pfamParams)
 @
 
@@ -168,9 +172,10 @@ Then we make the PFAM report.  Again we supply \tt publish \rm with the genes of
 
 <<make the PFAM report, eval=FALSE>>=
 PFAMReport <- HTMLReport(shortName = 'pfam_analysis',
-    title = 'PFAM analysis of BCR/ABL translocation',
-    reportDirectory = "./reports")
-publish(PFAMResults, PFAMReport, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3)
+                         title = 'PFAM analysis of BCR/ABL translocation',
+                         reportDirectory = "./reports")
+publish(PFAMResults, PFAMReport, selectedIDs = selectedIDs, 
+        annotation.db = "org.Hs.eg", categorySize = 3)
 finish(PFAMReport)
 @
 
@@ -185,25 +190,25 @@ library(GSEAlm)
 library(GSEABase)
 mapped_genes <- mappedkeys(org.Hs.egSYMBOL)
 eidsAndSymbols <- as.list(org.Hs.egSYMBOL[mapped_genes])
-geneEids<-names(eidsAndSymbols)
+geneEids <- names(eidsAndSymbols)
 set.seed(123)
-set1<-GeneSet(geneIds=sample(geneEids,100, replace=FALSE), setName="set1", 
-	shortDescription="This is set1")
-set2<-GeneSet(geneIds=sample(geneEids,10, replace=FALSE), setName="set2",  
-	shortDescription="This is set2")
-set3<-GeneSet(geneIds=sample(geneEids,37, replace=FALSE), setName="set3",  
-	shortDescription="This is set3")
-set4<-GeneSet(geneIds=sample(geneEids,300, replace=FALSE), setName="set4", 
-	shortDescription="This is set4")
-geneSets<-GeneSetCollection(c(set1,set2,set3,set4))
+set1 <- GeneSet(geneIds=sample(geneEids, 100, replace=FALSE), setName="set1", 
+                shortDescription = "This is set1")
+set2 <- GeneSet(geneIds=sample(geneEids, 10, replace=FALSE), setName="set2",  
+                shortDescription = "This is set2")
+set3 <- GeneSet(geneIds=sample(geneEids, 37, replace=FALSE), setName="set3",  
+                shortDescription = "This is set3") 
+set4 <- GeneSet(geneIds=sample(geneEids, 300, replace=FALSE), setName="set4", 
+                shortDescription = "This is set4")
+geneSets <- GeneSetCollection(c(set1, set2, set3, set4))
 @
 
 We can now make a very simple \tt GeneSetCollection \rm html table with \tt ReportingTools \rm.
 <<Make Simple Gene Set Table, eval=FALSE>>=
 geneSetsReport <- HTMLReport(shortName = "gene_sets",
-	title = "Gene Sets", 
-	reportDirectory = "./reports")
-publish(geneSets, geneSetsReport, annotation.db="org.Hs.eg")
+                             title = "Gene Sets", 
+                             reportDirectory = "./reports")
+publish(geneSets, geneSetsReport, annotation.db = "org.Hs.eg")
 finish(geneSetsReport)
 @
 
@@ -214,8 +219,8 @@ Often, investigators would like more information about the enrichment of certain
 <<Get incidence matrix , eval=FALSE>>=
 mat <- matrix(data=0, ncol=length(universeIDs),nrow=length(geneSets))
 for(i in 1:length(geneSets)){
-	geneIdEntrez<-unlist(geneIds(geneSets[[i]]))
-	mat[i,match(geneIdEntrez, universeIDs)] <- 1
+  geneIdEntrez <- unlist(geneIds(geneSets[[i]]))
+  mat[i,match(geneIdEntrez, universeIDs)] <- 1
 }
 colnames(mat) <- universeIDs
 rownames(mat) <- sapply(geneSets, function(x) x@setName)
@@ -224,20 +229,21 @@ rownames(mat) <- sapply(geneSets, function(x) x@setName)
 Now we can run the GSEA and obtain set-specific statistics and p-values.
 
 <<Run GSEA, eval=FALSE>>=
-lm<-lmPerGene(ALL, ~mol.biol+sex, na.rm=TRUE)
-GSNorm<-GSNormalize(lm$tstat[2,], mat)
+lm <- lmPerGene(ALL, ~mol.biol+sex, na.rm=TRUE)
+GSNorm <- GSNormalize(lm$tstat[2,], mat)
 #one-sided p-values
-pVals<-gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
-bestPval<-apply(pVals,1, min)
+pVals <- gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
+bestPval <- apply(pVals, 1, min)
 @
 
 We can add these statistics to our report page.
 
 <<make the GSEA report, eval=FALSE>>=
 gseaReport <- HTMLReport(shortName = "gsea_analysis",
-	title = "GSEA analysis", 
-	reportDirectory = "./reports")
-publish(geneSets, gseaReport, annotation.db="org.Hs.eg", setStats=GSNorm, setPValues=2*bestPval)
+                         title = "GSEA analysis", 
+                         reportDirectory = "./reports")
+publish(geneSets, gseaReport, annotation.db = "org.Hs.eg", 
+        setStats = GSNorm, setPValues = 2*bestPval)
 finish(gseaReport)
 @
 
@@ -258,26 +264,27 @@ The resulting output is displayed on an .html page and includes our set statisti
 
 We can also add the same statistics via \tt .modifyDF \rm.  As demonstrated in the basic vignette, .modifyDF allows us to manipulate the output published to our html pages.
 <<make the GSEA report with new columns, eval=FALSE>>=
-runGSEA<-function(df,...){
-	mat <- matrix(data=0, ncol=length(universeIDs),nrow=length(geneSets))
-	for(i in 1:length(geneSets)){
-		geneIdEntrez<-unlist(geneIds(geneSets[[i]]))
-		mat[i,match(geneIdEntrez, universeIDs)] <- 1
-	}
-	colnames(mat) <- universeIDs
-	rownames(mat) <- sapply(geneSets, function(x) x@setName)	
-	lm<-lmPerGene(ALL, ~mol.biol+sex, na.rm=TRUE)
-	GSNorm<-GSNormalize(lm$tstat[2,], mat)
-	pVals<-gsealmPerm(ALL,~mol.biol+sex, mat, nperm=100)  
-	bestPval<-apply(pVals,1, min)
-	df<-cbind(df, GSNorm, bestPval)
-	return(df)
+runGSEA <- function(df,...){
+  mat <- matrix(data = 0, ncol = length(universeIDs), nrow = length(geneSets))
+  for(i in 1:length(geneSets)){
+    geneIdEntrez <- unlist(geneIds(geneSets[[i]]))
+    mat[i,match(geneIdEntrez, universeIDs)] <- 1
+  }
+  colnames(mat) <- universeIDs
+  rownames(mat) <- sapply(geneSets, function(x) x@setName)	
+  lm <- lmPerGene(ALL, ~mol.biol+sex, na.rm=TRUE)
+  GSNorm <- GSNormalize(lm$tstat[2,], mat)
+  pVals <- gsealmPerm(ALL,~mol.biol+sex, mat, nperm = 100)  
+  bestPval <- apply(pVals,1, min)
+  df <- cbind(df, GSNorm, bestPval)
+  return(df)
 }
 
 gseaReport2 <- HTMLReport(shortName = "gsea_analysis2",
-	title = "GSEA analysis", 
-	reportDirectory = "./reports")
-publish(geneSets, gseaReport2, annotation.db="org.Hs.eg", .modifyDF=runGSEA)
+                          title = "GSEA analysis", 
+                          reportDirectory = "./reports")
+publish(geneSets, gseaReport2, annotation.db = "org.Hs.eg", 
+        .modifyDF = runGSEA)
 finish(gseaReport2)
 @
 
@@ -286,10 +293,10 @@ finish(gseaReport2)
 We now make an index page to put all the output together.
 <<make the index page, eval=FALSE>>=
 indexPage <- HTMLReport(shortName = "index",
-    title = "Analysis of ALL Gene Expression",
-    reportDirectory = "./reports")
-publish(Link(list(deReport, goReport), report=indexPage), indexPage)
-publish(Link(PFAMReport, report=indexPage),indexPage)
+                        title = "Analysis of ALL Gene Expression",
+                        reportDirectory = "./reports")
+publish(Link(list(deReport, goReport), report = indexPage), indexPage)
+publish(Link(PFAMReport, report = indexPage), indexPage)
 publish(Link("GSEA report has a new title", "gsea_analysis.html"), indexPage)
 finish(indexPage)
 @

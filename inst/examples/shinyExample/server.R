@@ -3,27 +3,15 @@ library(datasets)
 library(XML)
 library(ReportingTools)
 
-
-reactiveHTML = function(func, ...)
-{
-  reactive(function(){
-    html = func()
-    if(!is.character(html))
-      html = capture.output(print(html))
-    return(paste(html, collapse = "\n"))
-   })
+renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
+  func <- exprToFunction(expr, env, quoted)
   
+  function(){
+    paste(capture.output(func()), collapse="\n")
+  }
 }
 
-reactiveRepTools = function(func, ...)
-{
-  reactive(function(){
-    ret = capture.output(func(...))
-    return(paste(ret, collapse="\n"))
-  })
-}
-
-myrep = htmlReportRef(reportDirectory = "./",shortName="bigtest", handlers = ReportingTools:::shinyHandlers)
+myrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = shinyHandlers)
 
 # Define server logic required to summarize and view the selected dataset
 shinyServer(function(input, output) {
@@ -44,36 +32,18 @@ shinyServer(function(input, output) {
            "cars" = cars)
   })
   
-  # The output$caption is computed based on a reactive function that
-  # returns input$caption. When the user changes the "caption" field:
-  #
-  #  1) This function is automatically called to recompute the output 
-  #  2) The new caption is pushed back to the browser for re-display
-  # 
-  # Note that because the data-oriented reactive functions below don't 
-  # depend on input$caption, those functions are NOT called when 
-  # input$caption changes.
-  #output$caption <- reactiveText(function() {
-  #output$caption <- reactiveHTML(function() {
-  #  paste("<a href='cnn.com'>",input$caption, "</a>")
-  #})
-  
+ 
   # The output$summary depends on the datasetInput reactive function, 
   # so will be re-executed whenever datasetInput is re-executed 
   # (i.e. whenever the input$dataset changes)
-  output$summary <- reactivePrint(function() {
+  output$summary <- renderPrint({
     dataset <- datasetInput()
     summary(dataset)
   })
   
-  # The output$view depends on both the databaseInput reactive function
-  # and input$obs, so will be re-executed whenever input$dataset or 
-  # input$obs is changed. 
-  #output$view <- reactiveTable(function() {
-  #  head(datasetInput(), n = input$obs)
-  #})
+ 
   
-  output$view2 <- reactiveRepTools(function() {
-    myrep[["view2tabdiv"]] = datasetInput()
+  output$view2 <- renderRepTools({
+    publish(datasetInput(), myrep, name="view2tabdiv")
   })
 })

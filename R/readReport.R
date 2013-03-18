@@ -13,12 +13,8 @@ readReport = function(reportFile, handlers = fileHandlers(reportFile), .toHTML =
     
     shortName = gsub("(.*)\\..*", "\\1",basename(reportFile))
 
-    #XXX I don't see a general way of getting the baseUrl out of the HTML currently. Maybe add a metatag?
-    baseUrl = ""
-    
-
     rep = HTMLReport(shortName = shortName, reportDirectory = reportDirectory, 
-        basePath = basePath, baseUrl = baseUrl, handlers = handlers, 
+        basePath = basePath, handlers = handlers, 
         .toHTML = .toHTML, .toDF = .toDF, .modifyDF  = .modifyDF)
     rep$.reportDOM = dom
     #find the report elements within the html!!

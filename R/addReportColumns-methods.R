@@ -26,7 +26,7 @@ setMethod("modifyReportDF",
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(htmlRep$reportDirectory, 
         pages.dirname, sep="/")
-   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, baseUrl=htmlRep$baseUrl, basePath=htmlRep$basePath)  
+   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, basePath=htmlRep$basePath)  
    	
    	df$CountLink<-paste('<a href="',pages.dirname, "/" ,df$goName, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname, "/",df$goName, "All.html",'">', df$Size, '</a>', sep="")

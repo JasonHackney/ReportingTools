@@ -35,7 +35,7 @@ makePageEnd = function()
 
 #This will be called from the initialize method of HTMLReportRef to create the initial internal DOM representation
 startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
-    baseUrl = "localhost", basePath = ".", page = NULL,
+    basePath = ".", page = NULL,
     link.css = NULL, link.javascript = NULL, overwrite.js=TRUE,
                        ...)
 {

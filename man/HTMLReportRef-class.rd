@@ -39,7 +39,6 @@ showClass("HTMLReportRef")
     \item{\code{title}:}{Title of the report.}
     \item{\code{reportDirectory}:}{Directory (relative to \code{basePath}) in which to publish the report.}
     \item{\code{basePath}:}{Base path to publish to.}
-    \item{\code{baseUrl}:}{Base URL report will be published to (used to generate link URLs, etc)}
     \item{\code{handlers}:}{A list of \code{ReportHandlers} objects specifying actions to be taken in reponse specific events during the report creation/manipulation process. See Details.}
   }
 }

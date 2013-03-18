@@ -64,7 +64,7 @@ setMethod("publish",
     .safe.dir.create(page.directory)  
     gs.reportDirectory <- paste(reportDirectory(htmlRep), pages.dirname, sep="/")
     makeGeneListPagesGSC(object, reportDir=gs.reportDirectory, 
-        annotation.db, geneStats = geneStats, baseUrl=baseUrl(htmlRep), 
+        annotation.db, geneStats = geneStats, 
         basePath=basePath(htmlRep))
    
     setLink <- paste('<a href="',pages.dirname,"/", gsub(":", "", names(object)), 

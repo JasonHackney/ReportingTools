@@ -175,10 +175,7 @@ setMethod("objectToHTML",
     filename = gsub("\\.(png|jpg|pdf)", "", filename,ignore.case=TRUE)
     pdf.filename <- file.path(figure.directory,
                               paste(filename, 'pdf', sep='.'))
-    ## The URL is really hard to get right. What to do?
-                                        #pdf.url <- paste(baseUrl(publicationType), 
-                                        #                 reportDirectory(publicationType), 'figures', 
-                                        #                   paste(filename, 'pdf', sep='.'), sep="/")
+   
    pdf.url <- paste(figures.dirname, 
                      paste(filename, 'pdf', sep='.'), sep="/")
     
@@ -199,35 +196,6 @@ setMethod("objectToHTML",
   }
 
 
-if(FALSE)
-{
-setMethod("objectToHTML",
-          signature = signature(
-        object = "GOHyperGResult"
-      ),
-    definition = function(object, report, selectedIDs,annotation.db,pvalueCutoff = 0.01, categorySize = 10, makePlot=FALSE, ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .GOhyperG.to.html2(object, report, selectedIDs, annotation.db,pvalueCutoff = pvalueCutoff, categorySize=categorySize, makePlot=makePlot)
-       objectToHTML(df)
-    }
-)
-
-}
-          
-if(FALSE)
-{
-  setMethod("objectToHTML",
-    signature = signature(
-        object = "PFAMHyperGResult"
-      ),
-    definition = function(object, report, selectedIDs,annotation.db,
-        pvalueCutoff = 0.01,categorySize=10, name, path, ...){
-        df <- .PFAMhyperG.to.htmlDF2(object, report,selectedIDs,annotation.db,pvalueCutoff = pvalueCutoff,categorySize )
-        objectToHTML(df)
-    }
-)
-}
 
 
 .PFAMhyperG.to.htmlDF2 <- function(object, report, selectedIDs,annotation.db, 
@@ -254,7 +222,7 @@ if(FALSE)
         pages.dirname, sep="/")
     makeGeneListPages(object,reportDir=pfam.reportDirectory,  
         pvalueCutoff=pvalueCutoff, categorySize, selectedIDs, annotation.db, 
-        GO=FALSE, baseUrl=report$baseUrl, basePath=report$basePath)  
+        GO=FALSE, basePath=report$basePath)  
 
   	df$CountLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, "All.html",'">', df$Size, '</a>', sep="")
@@ -288,18 +256,6 @@ if(FALSE)
 
 
 
-if(FALSE)
-  {
-
-setMethod("objectToHTML", signature = signature(
-                            object = "DGEExact"),
-          definition = function(object, rep, ...)
-          {
-            df = .DGEExact.to.html2(object, rep, ...)
-            objectToHTML(df)
-          }
-          )
-}
 
 
 .DGEExact.to.html2 <- function(object, htmlRep, countTable, conditions, 
@@ -406,7 +362,7 @@ setMethod("objectToHTML", signature = signature(
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(htmlRep$reportDirectory, 
         pages.dirname, sep="/")
-   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, baseUrl=htmlRep$baseUrl, basePath=htmlRep$basePath)  
+   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, basePath=htmlRep$basePath)  
    	
    	df$CountLink<-paste('<a href="',pages.dirname, "/" ,df$goName, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname, "/",df$goName, "All.html",'">', df$Size, '</a>', sep="")
@@ -445,25 +401,6 @@ setMethod("objectToHTML", signature = signature(
           ret
       }
 
-
-if(FALSE)
-  {
-setMethod("objectToHTML",
-    signature = signature(
-        object = "MArrayLM"
-      ),
-    definition = function(object, publicationType, eSet, factor, n = 1000, 
-        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
-        make.plots = TRUE, ..., .modifyDF, .toDF){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .marrayLM.to.html2(object, publicationType, eSet, factor,
-            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, coef = coef, 
-            adjust.method = adjust.method, make.plots = make.plots, ...)
-        objectToHTML(df)
-      }
-          )
-}
 
 .marrayLM.to.html2 <- function(object, htmlRep, eSet = NULL, factor = NULL, 
     n = 1000, pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method='BH', 
@@ -583,17 +520,6 @@ setMethod("objectToHTML",
     return(ret)
 }
 
-if(FALSE)
-{
-setMethod("objectToHTML",
-    signature = signature(
-        object = "GeneSetCollection"
-    ),
-          definition = function(object, htmlRep, ...)
-          objectToHTML(.GeneSetCollection.to.html2(object, htmlRep, ...))
-          )
-}
-
 .GeneSetCollection.to.html2 <- function(object, htmlRep, annotation.db=NULL, 
     setStats=NULL, setPValues=NULL, geneStats = NULL)
 {
@@ -602,7 +528,7 @@ setMethod("objectToHTML",
     .safe.dir.create(page.directory)  
     gs.reportDirectory <- paste(htmlRep$reportDirectory, pages.dirname, sep="/")
     makeGeneListPagesGSC(object, reportDir=gs.reportDirectory, 
-        annotation.db, geneStats = geneStats, baseUrl=htmlRep$baseUrl, 
+        annotation.db, geneStats = geneStats, 
         basePath=htmlRep$basePath)
    
    	names2<-names(object)
@@ -633,14 +559,7 @@ setMethod("objectToHTML",
     return(ret)
 }
 
-if(FALSE)
-  {
-setMethod("objectToHTML",
-          signature = signature(object = "DGELRT"),
-          definition = function(object, rep, ...)
-           objectToHTML(.DGELRT.to.html2(object, rep, ...))
-          )
-}
+
 .DGELRT.to.html2 <- function(object, htmlRep, countTable, conditions, 
     annotation.db = 'org.Hs.eg', pvalueCutoff = 0.01, n = 1000, lfc = 0, 
     adjust.method = 'BH', sort.method = 'p.value', make.plots = TRUE, ...)

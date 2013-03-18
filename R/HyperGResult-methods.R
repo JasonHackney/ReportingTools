@@ -125,7 +125,7 @@ setMethod("publish",
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(reportDirectory(htmlRep), 
         pages.dirname, sep="/")
-   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, baseUrl=baseUrl(htmlRep), basePath=basePath(htmlRep))  
+   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, basePath=basePath(htmlRep))  
    	
    	df$CountLink<-paste('<a href="',pages.dirname, "/" ,df$goName, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname, "/",df$goName, "All.html",'">', df$Size, '</a>', sep="")
@@ -179,7 +179,7 @@ setMethod("publish",
     .safe.dir.create(page.directory)
     pfam.reportDirectory <- paste(reportDirectory(htmlRep), 
         pages.dirname, sep="/")
-    makeGeneListPages(object,reportDir=pfam.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=FALSE, baseUrl=baseUrl(htmlRep), basePath=basePath(htmlRep))  
+    makeGeneListPages(object,reportDir=pfam.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=FALSE,  basePath=basePath(htmlRep))  
 
   	df$CountLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, "All.html",'">', df$Size, '</a>', sep="")

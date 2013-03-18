@@ -73,14 +73,7 @@ baseReport <- setRefClass("BaseReportRef",
       else
         .self$.basePath <- val
     },
-    .baseUrl = "character",
-    baseUrl = function(val)
-    {
-      if(missing(val))
-        .baseUrl
-      else
-        .self$.baseUrl <- val
-    },
+
     .handlers = "list",
     handlers = function(val)
     {
@@ -264,7 +257,7 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
       sapply(handlers2, function(h) h@init(dom, h@args$init))
       .self$initFields(shortName = args$shortName, title = args$title,
           reportDirectory = args$reportDirectory, handlers = handlers2, 
-          basePath = args$basePath, baseUrl = args$baseUrl)
+          basePath = args$basePath)
 
     }
     )
@@ -274,7 +267,6 @@ HTMLReport <- function(shortName = "coolProject",
   title = shortName, 
   reportDirectory = ".",
   basePath = NULL,
-  baseUrl = "localhost",
   handlers = list(fileHandlers(makeReportPath(basePath, reportDirectory, shortName))),
   .toHTML = list(),
   .toDF = list(),
@@ -315,7 +307,7 @@ HTMLReport <- function(shortName = "coolProject",
     force(handlers)
     htmlReport$new(title = title, shortName = shortName, 
         reportDirectory = reportDirectory, handlers = handlers, 
-        basePath = basePath, baseUrl = baseUrl, .toHTML = .toHTML, 
+        basePath = basePath, .toHTML = .toHTML, 
         .toDF = .toDF, .modifyDF  = .modifyDF, link.css= link.css, 
         link.javascript = link.javascript, ovewrite.js = overwrite.js)
   }

@@ -29,9 +29,9 @@
 \section{Introduction}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Frequently, when performing an analysis, it is helpful to be able to share these results in several formats at once: as HTML tables, csv files or even as R data packages. \verb@ReportingTools@ attempts to make this as painless as possible. At its heart, \verb@ReportingTools@ is based on a number of pieces of interlocking machinery that transform popular \tt Biocondutor\rm objects into reports.
+Frequently, when performing an analysis, it is helpful to be able to share these results in several formats at once: as HTML tables, csv files or even as R data packages. \verb@ReportingTools@ attempts to make this as painless as possible. At its heart, \verb@ReportingTools@ is based on a number of pieces of interlocking machinery that transform popular \tt Bioconductor \rm objects into reports.
 
-In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results and can also be incorporated into \tt shiny\rm applications; for more details, please refer to the corresponding vignettes or the \verb@ReportingTools@ \href{http://research-pub.gene.com/ReportingTools}{site}.
+In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results and can also be incorporated into \tt shiny \rm applications; for more details, please refer to the corresponding vignettes or the \verb@ReportingTools@ \href{http://research-pub.gene.com/ReportingTools}{site}.
 \section{Basics of Reporting}
 
 The easiest type of report to generate is a csv file. This is done using the \verb@CSVFile@ class and the publish method. To start we'll create a \verb@data.frame@ that we'll use throughout the vignette.
@@ -66,7 +66,7 @@ finish(htmlRep)
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{html1.png}
-\caption{Resulting page created by \tt publish\rm for \tt my.df\rm.}
+\caption{Resulting page created by \tt publish \rm for \tt my.df\rm.}
 \end{figure}
 
 
@@ -89,14 +89,14 @@ The same few lines of code could be used to publish, for example, the results of
 
 \section{Adding plots or text to a report}
 
-To add links, additional text or plots to a report, simply open the report with \tt HTMLReport\rm, write to it via the \tt publish \rm function  and then call \tt publish\rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
+To add links, additional text or plots to a report, simply open the report with \tt HTMLReport\rm, write to it via the \tt publish \rm function  and then call \tt publish \rm on the original data frame and \tt finish \rm the report.  Below we make a simple plot and then add it and some descriptive text to our report.
 
 <<AddImage, eval=FALSE>>=
 plot(my.df$EGID, my.df$RPKM, xlab="EGID", 
 	ylab="RPKM", main="Scatter plot of RPKMs", col="blue")
 scatterPlot <- recordPlot()
 library(lattice)
-barPlot<-barchart(my.df$RPKM~my.df$EGID)  ##lattice plots behave slightly differently
+barPlot <- barchart(my.df$RPKM~my.df$EGID)  ##lattice plots behave slightly differently
 	
 htmlRep3 <- HTMLReport(shortName = "my_html_file3", title="Adding a plot directly to the page",
     reportDirectory = "./reports")
@@ -113,7 +113,7 @@ finish(htmlRep3)
 \caption{Resulting page created after adding additional figures and text with \tt publish\rm.}
 \end{figure}
 
-We can also publish exicisting images and text directly to sites with \tt hwriter \rm.
+We can also publish existing images and text directly to sites with \tt hwriter \rm.
 
 <<AddTextPlot, eval=FALSE>>=
 png(filename="reports/barplot.png")
@@ -141,19 +141,20 @@ To add additional plots or links to a report table, we can create a new data fra
 Below we make a set of simple plots and then add the images along with new links to the NCBI gene database to our data frame.
 
 <<AddPlotLink, eval=FALSE>>=
-imagename<-c()
+imagename <- c()
 for (i in 1:nrow(my.df)){
-	imagename[i]<-paste0("plot",i,".png")
-	png(filename=paste0("reports/",imagename[i]))
-	plot(my.df$RPKM[i], ylab="RPKM", xlab=my.df$EGID[i],main="RPKM Plot", col="blue")
+	imagename[i] <- paste0("plot", i, ".png")
+	png(filename = paste0("reports/", imagename[i]))
+	plot(my.df$RPKM[i], ylab="RPKM", xlab = my.df$EGID[i], main = "RPKM Plot", col = "blue")
 	dev.off()
 }
-my.df$Image<-hwriteImage(imagename, link=imagename, table=FALSE)
-my.df$Link <- hwrite(as.character(my.df$EGID), link=paste("http://www.ncbi.nlm.nih.gov/gene/",
-               as.character(my.df$EGID), sep=''), table=FALSE)
+my.df$Image <- hwriteImage(imagename, link = imagename, table = FALSE)
+my.df$Link <- hwrite(as.character(my.df$EGID), link = paste("http://www.ncbi.nlm.nih.gov/gene/",
+               as.character(my.df$EGID), sep = ''), table=FALSE)
 
-htmlRep5 <- HTMLReport(shortName = "my_html_file5", title="Adding images and links to data frame directly",
-    reportDirectory = "./reports")
+htmlRep5 <- HTMLReport(shortName = "my_html_file5", 
+                       title = "Adding images and links to data frame directly",
+                       reportDirectory = "./reports")
 publish(my.df, htmlRep5)
 finish(htmlRep5)
 @
@@ -163,36 +164,40 @@ We can also update our data frame by editing, adding and removing columns with f
 
 <<AddPlotLinkFunctions, eval=FALSE>>=
 ##this function adds 5 to each value of my.df$RPKMs 
-add5<-function(object,...){
-	object$plus5<-object$RPKM+5
+add5 <- function(object,...){
+	object$plus5 <- object$RPKM+5
 	return(object)
 }
 ##this function replaces the scatter plot images with new plots
 makeNewImages<-function(object,...){
-	imagename<-c()
+	imagename <- c()
 	for (i in 1:nrow(object)){
-		imagename[i]<-paste0("plotNew",i,".png")
-		png(filename=paste0("reports/",imagename[i]))
-		plot(object$RPKM[i], ylab="RPKM", xlab=object$EGID[i],main="New RPKM Plot", col="red", pch=15)
+		imagename[i] <- paste0("plotNew", i, ".png")
+		png(filename = paste0("reports/", imagename[i]))
+		plot(object$RPKM[i], ylab = "RPKM", xlab = object$EGID[i],
+                     main = "New RPKM Plot", col = "red", pch = 15)
 		dev.off()
 	}
-	object$Image<-hwriteImage(imagename, link=imagename, table=FALSE)
+	object$Image <- hwriteImage(imagename, link = imagename, table = FALSE)
 	return(object)
 }
 ##This function removes the link column 
-removeLink<-function(object, ...){
-	object<-subset(object,select=-Link)
+removeLink <- function(object, ...){
+	object <- subset(object, select = -Link)
 	return(object)
 }
 ##This function links the EGID column to the entrez database 
-addEGIDLink<-function(object, ...){
-	object$EGID<-hwrite(as.character(object$EGID), link=paste0("http://www.ncbi.nlm.nih.gov/gene/",
-               as.character(object$EGID)), table=FALSE)
+addEGIDLink <- function(object, ...){
+	object$EGID <- hwrite(as.character(object$EGID), 
+                              link = paste0("http://www.ncbi.nlm.nih.gov/gene/",
+                                as.character(object$EGID)), table = FALSE)
 	return(object)
 }
-htmlRep6 <- HTMLReport(shortName = "my_html_file6", title="Manipulating the data frame directly",
-    reportDirectory = "./reports")
-publish(my.df, htmlRep6, .modifyDF=list(add5, makeNewImages, removeLink, addEGIDLink))
+htmlRep6 <- HTMLReport(shortName = "my_html_file6", 
+                       title = "Manipulating the data frame directly",
+                       reportDirectory = "./reports")
+publish(my.df, htmlRep6, 
+        .modifyDF = list(add5, makeNewImages, removeLink, addEGIDLink))
 finish(htmlRep6)
 @
 
@@ -206,19 +211,21 @@ finish(htmlRep6)
 It is also possible to publish multiple tables to the same html page.  We can change the order of the tables via \tt pos\rm.
 
 <<multipleTables, eval=FALSE>>=
-df2=data.frame(x=1:5, y=11:15)
-df3=data.frame(x=c("a", "b", "c"), y=1:3)
+df2 <- data.frame(x = 1:5, y = 11:15)
+df3 <- data.frame(x = c("a", "b", "c"), y = 1:3)
 
-htmlRep7 <- HTMLReport(shortName = "my_html_file7", title="Many tables, one page",
-    reportDirectory = "./reports")
-publish(my.df, htmlRep7, .modifyDF=list(add5, makeNewImages, removeLink, addEGIDLink), name="Df1")
-publish(df2, htmlRep7, name="Df2")
-publish(df3, htmlRep7, name="Df3", pos=2)
+htmlRep7 <- HTMLReport(shortName = "my_html_file7", title = "Many tables, one page",
+                       reportDirectory = "./reports")
+publish(my.df, htmlRep7, 
+        .modifyDF = list(add5, makeNewImages, removeLink, addEGIDLink), 
+        name = "Df1")
+publish(df2, htmlRep7, name = "Df2")
+publish(df3, htmlRep7, name = "Df3", pos = 2)
 finish(htmlRep7)
 @
 
 \section{Publishing other types of data and more advanced features}
-To publish data that is not a data frame, there is a need to create and use a \tt .toDF\rm function.  For example, suppose we have a matrix we would like to publish.  \tt ReportingTools\rm will convert the basic matrix to a data.frame and then publish it.  
+To publish data that is not a data frame, there is a need to create and use a \tt .toDF \rm function.  For example, suppose we have a matrix we would like to publish.  \tt ReportingTools \rm will convert the basic matrix to a data.frame and then publish it.  
 
 <<publishMatrix, eval=FALSE>>=
 set.seed(123)
@@ -229,9 +236,9 @@ makeDF <- function(object, ...){
 	return(df)
 } 
 htmlRep8 <- HTMLReport(shortName = 'my_html_file8', 
-	title="Publishing objects that are not data frames",
-    reportDirectory = "./reports")
-publish(my.mat, htmlRep8, .toDF=makeDF)
+                       title="Publishing objects that are not data frames",
+                       reportDirectory = "./reports")
+publish(my.mat, htmlRep8, .toDF = makeDF)
 finish(htmlRep8)
 @
 

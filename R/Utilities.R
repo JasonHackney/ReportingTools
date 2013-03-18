@@ -1,6 +1,7 @@
 makeReportPath = function(basePath, reportDirectory, shortName)
 {
-      
+    if(missing(shortName))
+      stop("No report/file name specified. Unable to compute report path")
     filename = paste0(shortName, ".html")
     if(substr(reportDirectory,1,1) == "~"){
         reportDirectory <- path.expand(reportDirectory)

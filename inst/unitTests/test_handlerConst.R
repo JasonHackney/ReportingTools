@@ -11,3 +11,6 @@ test_constructors2 = function(){
 
   checkTrue(path(myrep) == "./reports/something.html")
 }
+
+
+  

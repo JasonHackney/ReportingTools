@@ -46,9 +46,6 @@ Gabriel Becker
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
 \examples{
 mylinks = Link(c("Link1", "Link2"), c("www.google.com", "www.cnn.com"))
 }

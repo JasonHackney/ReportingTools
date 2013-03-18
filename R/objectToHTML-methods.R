@@ -354,10 +354,7 @@ setMethod("objectToHTML",
    	df$GOLink<-paste('<a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', df$GOID, '">', df$GOID, '</a>', sep="")
    	df$goName<-unlist(lapply(df$GOID, function(x) {strsplit(x, ":")[[1]][2]}))
    	
-   	#pages.dirname <- paste0('GOPages', name(htmlRep))
         pages.dirname <- paste0('GOPages', htmlRep$shortName)  
-   # page.directory <- file.path(basePath(htmlRep), 
-    #    reportDirectory(htmlRep), pages.dirname)
         page.directory <- file.path(dirname(path(htmlRep)), pages.dirname)
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(htmlRep$reportDirectory, 

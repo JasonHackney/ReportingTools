@@ -124,7 +124,7 @@ dev.off()
 library(hwriter)
 htmlRep4 <- HTMLReport(shortName = "my_html_file4", title="Adding a link, text and image",
     reportDirectory = "./reports")
-publish(hwrite("This is a link to Bioconductor", link = "www.bioconductor.org"), htmlRep4) 
+publish(hwrite("This is a link to Bioconductor", link = "http://www.bioconductor.org"), htmlRep4) 
 publish(hwrite("Bar chart of results", heading=2), htmlRep4)
 himg <- hwriteImage("barplot.png", link="barplot.png")
 publish(hwrite(himg, br=TRUE), htmlRep4)
@@ -148,7 +148,7 @@ for (i in 1:nrow(my.df)){
 	plot(my.df$RPKM[i], ylab="RPKM", xlab = my.df$EGID[i], main = "RPKM Plot", col = "blue")
 	dev.off()
 }
-my.df$Image <- hwriteImage(imagename, link = imagename, table = FALSE)
+my.df$Image <- hwriteImage(imagename, link = imagename, table = FALSE, width=100, height=100)
 my.df$Link <- hwrite(as.character(my.df$EGID), link = paste("http://www.ncbi.nlm.nih.gov/gene/",
                as.character(my.df$EGID), sep = ''), table=FALSE)
 
@@ -175,10 +175,10 @@ makeNewImages<-function(object,...){
 		imagename[i] <- paste0("plotNew", i, ".png")
 		png(filename = paste0("reports/", imagename[i]))
 		plot(object$RPKM[i], ylab = "RPKM", xlab = object$EGID[i],
-                     main = "New RPKM Plot", col = "red", pch = 15)
+                     main = "New RPKM Plot", col = "red", pch = 15, cex=3)
 		dev.off()
 	}
-	object$Image <- hwriteImage(imagename, link = imagename, table = FALSE)
+	object$Image <- hwriteImage(imagename, link = imagename, table = FALSE, height=150, width=150)
 	return(object)
 }
 ##This function removes the link column 

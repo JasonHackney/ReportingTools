@@ -37,19 +37,21 @@ makePageEnd = function()
 startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
     basePath = ".", page = NULL,
     link.css = NULL, link.javascript = NULL, overwrite.js=TRUE,
-                       ...)
+  handlers, ...)
 {
     shortName <- sub(".html$", "", shortName)
     if(is.null(title))
         title <- shortName
         
-    if(!is.null(basePath)){
-        pageDir <- file.path(basePath, reportDirectory)
-    } else{
-        pageDir <- reportDirectory
-    }
-    pageDir <- gsub("//+", "/", pageDir)
+    #if(!is.null(basePath)){
+    #    pageDir <- file.path(basePath, reportDirectory)
+    #} else{
+    #    pageDir <- reportDirectory
+    #}
+    #pageDir <- gsub("//+", "/", pageDir)
+
     
+    pageDir = dirname(path(handlers[[1]]))
     if(is.null(link.javascript)){
         js.libloc <- Sys.getenv("REPORTINGTOOLSJSLIB")
         if(js.libloc == ""){

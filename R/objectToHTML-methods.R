@@ -175,13 +175,15 @@ setMethod("objectToHTML",
     filename = gsub("\\.(png|jpg|pdf)", "", filename,ignore.case=TRUE)
     pdf.filename <- file.path(figure.directory,
                               paste(filename, 'pdf', sep='.'))
-   
-   pdf.url <- paste(figures.dirname, 
+   url.location = getRelativePath(figure.directory, dirname(path(htmlRep)[1]))
+   #pdf.url <- paste(figures.dirname,
+     pdf.url <- paste(url.location, 
                      paste(filename, 'pdf', sep='.'), sep="/")
     
     png.filename <- file.path(figure.directory, 
                               paste(filename, 'png', sep='.'))
-     png.url <- paste(figures.dirname, 
+     #png.url <- paste(figures.dirname,
+     png.url <- paste( url.location, 
                      paste(filename, 'png', sep='.'), sep="/")
             
     cairo_pdf(filename = pdf.filename, height = pdf.height, width = pdf.width)
@@ -190,9 +192,11 @@ setMethod("objectToHTML",
     png(filename = png.filename, height = png.height, width= png.width)
     print(object)
     dev.off()
-        
-    img <- hwriteImage(png.url)
-    hwrite(img, link=pdf.url, br=br)
+
+     anode = newXMLNode("a", attrs=list(href = pdf.url), newXMLNode("img", attrs=list(src=png.url, alt=png.url)))
+     anode
+    #img <- hwriteImage(png.url)
+    #hwrite(img, link=pdf.url, br=br)
   }
 
 

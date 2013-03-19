@@ -7,3 +7,8 @@ knit2html("rnaseqtest.Rmd")
 
 knit2html("knitrformattest.Rmd")
 knit2html("extensibility.Rmd")
+
+
+#knit2html("../../vignettes/knitr.Rmd")
+setwd("../../vignettes")
+knit2html("knitr.Rmd", output = "./reports/knitr.html")

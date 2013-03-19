@@ -31,7 +31,7 @@
 
 Frequently, when performing an analysis, it is helpful to be able to share these results in several formats at once: as HTML tables, csv files or even as R data packages. \verb@ReportingTools@ attempts to make this as painless as possible. At its heart, \verb@ReportingTools@ is based on a number of pieces of interlocking machinery that transform popular \tt Bioconductor \rm objects into reports.
 
-In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results and can also be incorporated into \tt shiny \rm applications and \tt knitr \rm reports; for more details, please refer to the corresponding vignettes or the \verb@ReportingTools@ \href{http://research-pub.gene.com/ReportingTools}{site}.
+In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results and can also be incorporated into \tt shiny \rm applications and \tt knitr \rm reports; for more details, please refer to the corresponding vignettes (knitr.Rmd and shiny.Rnw, respectively) or the \verb@ReportingTools@ \href{http://research-pub.gene.com/ReportingTools}{site}.
 \section{Basics of Reporting}
 
 The easiest type of report to generate is a csv file. This is done using the \verb@CSVFile@ class and the publish method. To start we'll create a \verb@data.frame@ that we'll use throughout the vignette.

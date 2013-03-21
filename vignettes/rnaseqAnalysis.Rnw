@@ -87,17 +87,17 @@ finish(deReport)
 
 
 
-We can also ouput results of the LRT test. 
+We can also ouput results of the LRT test from edgeR.
 
 <<edgeR_report, eval=FALSE>>=
 d <- DGEList(counts = mockRnaSeqData, group = conditions)
 d <- calcNormFactors(d)
-design<-model.matrix(~conditions)
+design <- model.matrix(~conditions)
 d <- estimateGLMCommonDisp(d, design)
 d <- estimateGLMTrendedDisp(d, design)
 d <- estimateGLMTagwiseDisp(d, design)
-fit<-glmFit(d,design)
-edgeR.lrt<-glmLRT(fit, coef=2)
+fit <- glmFit(d,design)
+edgeR.lrt <- glmLRT(fit, coef=2)
 
 deReport2 <- HTMLReport(shortName = 'RNAseq_analysis_with_edgeR_2',
     title = 'RNA-seq analysis of differential expression using edgeR (LRT)',
@@ -122,7 +122,7 @@ cds<-estimateDispersions(cds)
 res<-nbinomTest(cds,"control", "case" )
 @
 
-Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done vis that \tt makeDESeqDF \rm command, which is is a built in function to covert DESeq differential expression output to a more meaningful data frame with pictures, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility.  See the basic vignette for more details and examples.
+Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done using the \tt makeDESeqDF \rm command, which is a built-in function to convert DESeq differential expression output to a more meaningful data frame with plots, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility (see the basic vignette for more details and examples).
 
 <<DESeq_report, eval=FALSE>>=
 desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
@@ -131,6 +131,7 @@ desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
 publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05, conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
 finish(desReport)
 @ 
+
 \begin{figure}
 \centering
 \includegraphics[scale = .5]{rnaseq2.png}
@@ -138,14 +139,14 @@ finish(desReport)
 \end{figure}
 
 \section{GO analysis using GOstats}
-In this section, we show how to use \tt ReportingTools \rm to write a table of GO analysis results to an html file.  First we select or genes of interest and then we run the \tt hyperGTest\rm.
+This section will demonstrate how to use \tt ReportingTools \rm to write a table of GO analysis results to an html file.  First we select our genes of interest, and then run the \tt hyperGTest\rm.
 
 <<Do GO analysis, eval=FALSE>>=
 library(GOstats)
 library(org.Mm.eg.db)
-tt<-topTags(edgeR.de, n = 1000, adjust.method = 'BH', sort.by = 'p.value')
-selectedIDs<-rownames(tt$table)
-universeIDs<-rownames(mockRnaSeqData)
+tt <- topTags(edgeR.de, n = 1000, adjust.method = 'BH', sort.by = 'p.value')
+selectedIDs <- rownames(tt$table)
+universeIDs <- rownames(mockRnaSeqData)
 goParams <- new("GOHyperGParams", 
     geneIds = selectedIDs, 
     universeGeneIds = universeIDs, 
@@ -157,7 +158,7 @@ goParams <- new("GOHyperGParams",
 goResults <- hyperGTest(goParams)
 @
 
-With these results, we then make the GO report.  
+With these results, we can then make the GO report.  
 
 <<make the GO report, eval=FALSE>>=
 goReport <- HTMLReport(shortName = 'go_analysis_rnaseq',

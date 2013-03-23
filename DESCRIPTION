@@ -15,4 +15,4 @@ Description: The ReportingTools software package enables users to easily display
 ByteCompile: TRUE
 biocViews: Bioinformatics, Software, Visualization, Microarray, RNAseq,
         GO
-VignetteBuilder: knitr
+VignetteBuilder: utils, knitr

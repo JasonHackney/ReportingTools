@@ -106,7 +106,7 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
             css.pngs <- list.files(path=css.png.package.dir)
             css.pngs <-  paste(css.png.package.dir,css.pngs, sep="")
 
-            cssPngsDir <- (file.path(pageDir,"csslib/images"))
+            cssPngsDir <- (file.path(cssDir, "images"))
             .safe.dir.create(cssPngsDir, recursive=TRUE)            
             file.copy(css.pngs,cssPngsDir)
             

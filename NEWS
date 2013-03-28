@@ -1,20 +1,21 @@
-CHANGES IN VERSION 2.0.0
+2013-4-1: version 2.0.0
 ------------------------
- o HTML reports are now represented by the HTMLReportRef referenceClass
- o HTML output now fully customizable via .toHTML, .toDF and .modifyDF arguments to publish (see vignette)
- o Publication mechanism is abstrated and customizable via ReportHandlers class
- o ReportingTools output can be used within knitr documents and shiny Web applications (see vignettes knitr.Rmd and shiny.Rnw)
- o Persistent representation of the HTML report being created is stored and accessible in the .reportDOM field of HTMLReportRef objects
- o [[ and [[<- methods created for HTMLReportRef objects which allow selection, replacement and insertion of objects directly into reports
- o publish generic now accepts a 'name' argument.
- o Existing reports can be read in via readReport, modified (via publish, [[<-, or direct manipulation of .reportDOM), and rewritten to file
- o path generic now returns a list/vector of the location slot values of the attached ReportHandlers object(s). These can be paths, connections, or other indications of report destination.
- o Link generic function provided to build tables/sets of HTML links
- o Added support for publishing ggbio and recordedPlot objects
- o CSS changed to Twitter Bootstrap-Spruce
- o Bugfixes to how NAs are handled when filtering and sorting columns
- o DEPRECATED: HTMLReport class is superceded by HTMLReportRef
- o DEPRECATED: publication of HTMLReportRefs directly to a report (in order to make an index page) is no longer supported. Use the Link function.
- o DEPRECATED: the page generic is not meaningful for HTMLReportRef objects (not all of which have a corresponding connection) and is deprecated. Use path instead.
+ - HTML reports are now represented by the HTMLReportRef referenceClass
+ - HTML output now fully customizable via .toHTML, .toDF and .modifyDF arguments to publish (see vignette)
+ - Publication mechanism is abstracted and customizable via ReportHandlers class
+ - ReportingTools output can be used within knitr documents and shiny Web applications (see vignettes knitr.Rmd and shiny.Rnw)
+ - Persistent representation of the HTML report being created is stored and accessible in the .reportDOM field of HTMLReportRef objects
+ - [[ and [[<- methods created for HTMLReportRef objects which allow selection, replacement and insertion of objects directly into reports
+ - Publish generic now accepts a 'name' argument.
+ - Existing reports can be read in via readReport, modified (via publish, [[<-, or direct manipulation of .reportDOM), and rewritten to file
+ - Path generic now returns a list/vector of the location slot values of the attached ReportHandlers object(s). These can be paths, connections, or other indications of report destination.
+ - Link generic function provided to build tables/sets of HTML links
+ - Added support for publishing ggbio and recordedPlot objects
+ - CSS changed to Twitter Bootstrap
+ - Bugfixes to how NAs are handled when filtering and sorting columns
+ - New methods to handle output from running a glmLRT test in edgeR or nbinomTest in DESeq
+ - DEPRECATED: HTMLReport class is superseded by HTMLReportRef
+ - DEPRECATED: publication of HTMLReportRefs directly to a report (in order to make an index page) is no longer supported. Use the Link function.
+ - DEPRECATED: the page generic is not meaningful for HTMLReportRef objects (not all of which have a corresponding connection) and is deprecated. Use path instead.
 
 

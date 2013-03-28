@@ -34,13 +34,18 @@ setMethod("objectToHTML", signature(
 setMethod("objectToHTML",
           signature = signature(
             object = "character"),
-          definition = function(object, report, ...)
+          definition = function(object, report, para = TRUE,...)
           {
             #if it is HTML code it will be handled as such, if not it will be spit out as text in the page (in a <p>)...
             ret = tryCatch(htmlParse(object), error=function(e) NULL)
             if(is.null(ret))
-              #stuff our text into a <p> node
-              newXMLNode("p", object)
+              {
+                if(!para)
+                  newXMLNode("span", object)
+                else
+                 #stuff our text into a <p> node
+                  newXMLNode("p", object)
+              }
             else
               getNodeSet(ret, "//body/*")
           })

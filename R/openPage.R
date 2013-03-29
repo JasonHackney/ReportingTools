@@ -121,7 +121,7 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
     pagestart = makePageStart(title = title, link.css = link.css, link.javascript = link.javascript)
     #DOM (HTML) representation of the (currently empty) report
     node = xmlRoot(htmlParse(paste(pagestart, makePageEnd(), collapse = "\n")))
-    htitle = hwrite(title, heading=2, br=TRUE)
+    htitle = hwrite(paste("<h2>",title,"</h2>",sep=""), br=TRUE, class="container", div=TRUE)
     body = node[["body"]]
     child = xmlRoot(htmlParse(htitle))[["body"]][[1]]
     addChildren(body, child )

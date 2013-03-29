@@ -18,7 +18,7 @@ readReport = function(reportFile, handlers = fileHandlers(reportFile), .toHTML =
         .toHTML = .toHTML, .toDF = .toDF, .modifyDF  = .modifyDF)
     rep$.reportDOM = dom
     #find the report elements within the html!!
-    repElNodes = getNodeSet(dom, "//div[@class='ReportingTools']")
+    repElNodes = getNodeSet(dom, "//div[@class='ReportingTools container']")
     names(repElNodes) = sapply(repElNodes, function(x) xmlAttrs(x)[["id"]])
     class(repElNodes) = "list"
     rep$.report = repElNodes

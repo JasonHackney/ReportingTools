@@ -194,7 +194,7 @@ htmlReport <- setRefClass("HTMLReportRef", contains = "BaseReportRef",
           
         } else {
           #create new div with the specified id and add it to the body of the HTML page
-          node = newXMLNode("div", attrs= list(id=name, class = "ReportingTools"))
+          node = newXMLNode("div", attrs= list(id=name, class = "ReportingTools container"))
           if(is.na(pos))
             {
               #No position means it gets added to the end of the document

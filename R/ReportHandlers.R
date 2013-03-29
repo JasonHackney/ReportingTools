@@ -42,7 +42,7 @@ fileWIndexHandlers = function(filename, basePath, reportDirectory, shortName, ..
         finish = function(rep, args)
         {
        
-          elementids  = xpathSApply(rep$.reportDOM, "//div[@class='ReportingTools']/@id")
+          elementids  = xpathSApply(rep$.reportDOM, "//div[@class='ReportingTools container']/@id")
           hnodes =  getNodeSet(rep$.reportDOM, "/html/body/h1|/html/body/h2|/html/body/h3")
           tabcontents = Link(elementids, paste0("#", elementids))
           

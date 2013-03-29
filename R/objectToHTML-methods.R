@@ -36,6 +36,12 @@ setMethod("objectToHTML",
             object = "character"),
           definition = function(object, report, para = TRUE,...)
           {
+            if(length(object) > 1)
+              {
+                toret = lapply(object, objectToHTML, para=para)
+                toret = unlist(toret, recursive=FALSE)
+                return(structure(toret, class="XMLNodeSet"))
+          }
             #if it is HTML code it will be handled as such, if not it will be spit out as text in the page (in a <p>)...
             ret = tryCatch(htmlParse(object), error=function(e) NULL)
             if(is.null(ret))

@@ -10,7 +10,7 @@
  - Existing reports can be read in via readReport, modified (via publish, [[<-, or direct manipulation of .reportDOM), and rewritten to file
  - Path generic now returns a list/vector of the location slot values of the attached ReportHandlers object(s). These can be paths, connections, or other indications of report destination.
  - Link generic function provided to build tables/sets of HTML links
- - Added support for publishing ggbio and recordedPlot objects
+ - Added support for publishing ggbio and recordedplot objects
  - CSS changed to Twitter Bootstrap
  - Bugfixes to how NAs are handled when filtering and sorting columns
  - New methods to handle output from running a glmLRT test in edgeR or nbinomTest in DESeq

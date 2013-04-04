@@ -7,6 +7,7 @@
 \alias{[[,HTMLReportRef,ANY-method}
 \alias{publish,ANY,HTMLReportRef-method}
 \alias{path,HTMLReportRef-method}
+\alias{show,HTMLReportRef-method}
 \title{Class \code{"HTMLReportRef"}}
 \description{
 A referenceClass-based representation of an HTML report generated using R objects. This class is based around a persistent, DOM-based representation of the HTML page being created, which is created during initialization and updated as the report is manipulated. \code{HTMLReport} is the constructor function for the class.

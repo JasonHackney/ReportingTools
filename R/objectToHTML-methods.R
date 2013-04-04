@@ -348,7 +348,8 @@ setMethod("objectToHTML",
 
 
 .GeneSetCollection.to.html2 <- function(object, htmlRep, annotation.db = NULL, 
-    setStats = NULL, setPValues = NULL, geneStats = NULL)
+    setStats = NULL, setPValues = NULL, geneStats = NULL, .setToHTML = NULL, 
+    .setToDF = NULL, .modifySetDF = NULL)
 {
     pages.dirname <- paste0('GeneSetCollectionPages', htmlRep$shortName)  
     page.directory <- file.path(dirname(path(htmlRep)), pages.dirname)
@@ -358,7 +359,9 @@ setMethod("objectToHTML",
         sep = "/")
     
     makeGeneListPagesGSC(object, reportDir = gs.reportDirectory, 
-        annotation.db, geneStats = geneStats, basePath = htmlRep$basePath)
+        annotation.db, geneStats = geneStats, basePath = htmlRep$basePath,
+        .setToHTML = .setToHTML, .setToDF = .setToDF, 
+        .modifySetDF = .modifySetDF)
    
     names2<-names(object)
     names2<-gsub(":","", names2)

@@ -6,6 +6,7 @@
 \alias{modifyReportDF,ANY,ANY,DGEExact-method}
 \alias{modifyReportDF,ANY,ANY,DGELRT-method}
 \alias{modifyReportDF,ANY,ANY,MArrayLM-method}
+\alias{modifyReportDF,ANY,ANY,GeneSet-method}
 \alias{modifyReportDF,ANY,ANY,GOHyperGResult-method}
 \title{ Decorate the Basic data.frame Representation of an Object}
 \description{

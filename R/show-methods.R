@@ -25,4 +25,14 @@ setMethod("show",
     }
 )
 
+setMethod("show",
+    signature = signature(object = "HTMLReportRef"),
+    definition = function(object)
+    {
+        cat("An object of type \"", class(object), "\"\n", sep = "")
+        cat("shortName:", object$shortName ,"\n")
+        cat("title:", object$title, "\n")
+        cat("reportFilePath:", path(object), "\n")
+    }
+)
 

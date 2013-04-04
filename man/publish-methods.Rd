@@ -10,6 +10,7 @@
 \alias{publish,PFAMHyperGResult,HTMLReport-method}
 \alias{publish,GOHyperGResult,HTMLReport-method}
 \alias{publish,GeneSetCollection,HTMLReport-method}
+\alias{publish,GeneSet,HTMLReport-method}
 \alias{publish,HTMLReport,HTMLReport-method}
 \alias{publish,trellis,HTMLReport-method}
 \alias{publish,list,HTMLReport-method}
@@ -135,13 +136,32 @@
       
         GeneSetCollection:\cr
         \code{publish(object, htmlReport, annotation.db, 
-        setStats=NULL, setPValues=NULL,...)}
-        A GeneSetCollection object is coerced to a data.frame. The resulting
-        table of set names includes links to additional pages containing the
-        ids, names and symbols of each gene in the corresponding set. If GSEA
-        statistics and/or p-values are provided, then they are also included in
-        the gene set table. The genes within the GeneSetCollection must be
-        Entrez ids and annotation.db is the species of the ids.
+        setStats=NULL, setPValues=NULL, geneStats = NULL, ..., 
+        .setToHTML = NULL, .setToDF = NULL, .modifySetDF = NULL)}
+        A GeneSetCollection object is coerced to a data.frame. If setStats
+        and/or setPValues are provided, they are included in the table of gene
+        sets. The resulting table includes links to additional pages containing
+        the ids, names and symbols of each gene in the corresponding set. To get
+        the appropriate annotations for the individual gene sets, either
+        annotation.db has to be the name of the appropriate annotation package,
+        or the geneIdType of the individual gene sets has to have a non-empty
+        annotation slot. The user can provide custom functions for coercing the
+        enclosed GeneSets to their own preferred HTML representation by
+        providing a function for .setToHTML. Likewise, a user-provided function
+        can be passed in for .setToDF, to control the coercion of individual
+        GeneSets to a data.frame. Additional modifications to the individual
+        GeneSet data.frames can be provided as a list of functions in
+        .modifySetDF.
+        
+        GeneSet:\cr
+        \code{publish(object, htmlReport, annotation.db, geneStats = NULL, ...)}
+        A GeneSet object is coerced to a data.frame. If geneStats are provided,
+        an extra column of values for each of the geneIds in the GeneSet is
+        appended to the table. The data.frame will optionally include feature
+        annotations, such as Entrez IDs, gene symbols and gene names, if either
+        annotation.db is a valid annotation package name or if the annotation
+        slot of the geneIdType of the GeneSet is a valid annotation package 
+        name.
     
         trellis:\cr
         \code{publish(object, publicationType, figureTitle = NULL, 

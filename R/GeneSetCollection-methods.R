@@ -28,6 +28,51 @@ setMethod("publish",
    return(ret)
 }
 
+.GeneSet.to.data.frame <- function(object, htmlRep, annotation.db = NULL, 
+    geneStats = NULL)
+{
+    if(!is.null(annotation.db)){
+        tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
+            {stop(paste0("Unable to find your annotation.db: ",annotation.db))}
+        )
+    } else if(annotation(geneIdType(object)) != ""){
+        annotation.db <- annotation(geneIdType(object))
+        tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
+            {stop(paste0("Unable to find your annotation.db: ",annotation.db))}
+        )
+    }
+    
+    geneIds <- geneIds(object)
+    if(!is.null(annotation.db)){
+        ret <- getNamesAndSymbols(geneIds, annotation.db)
+        if(! "geneids" %in% names(ret) ){
+            ret <- data.frame(
+                EntrezId = geneIds,
+                Symbol = ret$symbol,
+                "Gene Name" = ret$name,
+                stringsAsFactors = FALSE, check.names = FALSE
+            )
+        } else {
+            ret <- data.frame(
+                ID = geneIds,
+                EntrezId = ret$entrez,
+                Symbol = ret$symbol,
+                "Gene Name" = ret$name,
+                stringsAsFactors = FALSE, check.names = FALSE
+            )
+        }
+    } else {
+        ret <- data.frame(
+            ID = geneIds,
+            stringsAsFactors = FALSE
+        )
+    }
+    if(!is.null(geneStats)){
+        ret$Statistic <- geneStats[geneIds]
+    }
+    ret
+}
+
 setMethod("publish",
     signature = signature(
         object = "GeneSetCollection",
@@ -75,8 +120,8 @@ setMethod("publish",
     colnames(ret) <- c("Gene Set", "Description")
     
     if (descriptions[1]==""){
-    	ret <- data.frame("GeneSet" = setLink, stringsAsFactors = FALSE)
-    	colnames(ret) <- c("Gene Set")
+        ret <- data.frame("GeneSet" = setLink, stringsAsFactors = FALSE)
+        colnames(ret) <- c("Gene Set")
     }
 
     if(!is.null(setStats)){

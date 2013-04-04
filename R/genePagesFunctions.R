@@ -38,23 +38,19 @@ makeGeneListPages<-function(hg, reportDir, pvalueCutoff=0.01, categorySize=10,
 
 
 makeGeneListPagesGSC <- function(geneSets, reportDir, annotation.db,
-    geneStats = NULL, basePath="")
+    geneStats = NULL, basePath="", .setToHTML = NULL, .setToDF = NULL, 
+    .modifySetDF = NULL)
 {
 	ann.map <- NULL
 	if(!is.null(annotation.db)) {
 		tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
 		{stop(paste0("Unable to find your annotation.db: ",annotation.db))})
 		ann.map <- getAnnMap("SYMBOL", annotation.db)
-	} #else {
-		#annotation.db <- annotation(geneIdType(geneSets[[1]]))
-		#if(annotation.db == '') {
-	#		annotation.db <- NULL
-	#	} else {
-	#		ann.map <- getAnnMap("SYMBOL", annotation.db)
-	#	}
-	#}
-    numSets <- length(geneSets)
+	} 
+	
+	numSets <- length(geneSets)
     for (i in 1:numSets){
+        
         setName <- names(geneSets)[i]
         setName<-gsub(":", "", setName)
         setName<-gsub(" ","", setName)
@@ -62,31 +58,45 @@ makeGeneListPagesGSC <- function(geneSets, reportDir, annotation.db,
         description <- description(geneSets[[i]])
         entrez <- unlist(geneIds(geneSets[[i]]))
         setTable <- data.frame(GeneName=entrez)
-        if(!is.null(annotation.db)) { 
-        	check <- unlist(mget(entrez, ann.map, ifnotfound=NA))
-			if ((sum(is.na(check)) < length(entrez)/2)==TRUE){
-				setTable <- getNamesAndSymbols(entrez, annotation.db)
-        		setTable$entrezLink <- paste('<a href="http://www.ncbi.nlm.nih.gov/gene/', 
-            		setTable$entrez, '">', setTable$entrez, '</a>', sep="")  
-        		setTable <- data.frame(EntrezId=setTable$entrezLink, 
-            		Symbol=setTable$symbol, GeneName=setTable$name)
-            }
-        }
-        if(!is.null(geneStats)){
-            setTable$Gene.Statistic <- geneStats[entrez]
-        }
+        
         table_title <- paste("Genes in ", setName, " -- ", description , sep="")
         Report <- HTMLReport(shortName = setName, title = table_title, 
             reportDirectory = reportDir, basePath=basePath)
-        publish(setTable, Report)
+        publish(geneSets[[i]], Report, annotation.db = annotation.db, 
+            geneStats = geneStats, .toHTML = .setToHTML, .toDF = .setToDF,
+            .modifyDF = .modifySetDF)
         finish(Report)
     }
 }
 
 
-getNamesAndSymbols<-function(entrez, annotation.db){
-    symbol <- unlist(mget(entrez, getAnnMap("SYMBOL", annotation.db), ifnotfound=NA))
-    name <- unlist(mget(entrez, getAnnMap("GENENAME", annotation.db), ifnotfound=NA))
+getNamesAndSymbols <- function(entrez, annotation.db){
+    
+    geneids <- entrez
+    
+    ## If the annotation.db has a mapping to Entrez Ids, then
+    ## asking for the map returns the usual AnnDbBimap, but if it is
+    ## an organism package, then asking for the Entrez map returns an object
+    ## of class AnnotationDbMap. There is at least one case where getAnnMap 
+    ## will fail for ENTREZID, but will succeed for SYMBOL and GENENAME: where
+    ## the annotation.db is "org.Hs.eg", there is no object returned, and an 
+    ## error is generated.  When the annotation.db is "org.Hs.eg.db", an
+    ## object is correctly returned.
+    entrezmap <- NULL
+    tryCatch(entrezmap <- getAnnMap("ENTREZID", annotation.db), 
+        error = function(e) {})
+    if(is(entrezmap, "AnnDbBimap")){
+        entrez <- unlist(mget(geneids, entrezmap, ifnotfound = NA))
+    } 
+    
+    symbol <- unlist(mget(geneids, getAnnMap("SYMBOL", annotation.db),
+        ifnotfound=NA))
+    name <- unlist(mget(geneids, getAnnMap("GENENAME", annotation.db),
+        ifnotfound=NA))
     countTable <- list(entrez=entrez, symbol=symbol, name=name)
+    if(is(entrezmap, "AnnDbBimap")){
+        countTable$geneids <- geneids
+    }
+    
     return(countTable)
 }

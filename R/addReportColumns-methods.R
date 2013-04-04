@@ -115,6 +115,16 @@ setMethod("modifyReportDF",
 )
 
 setMethod("modifyReportDF",
+    signature = signature(object = "GeneSet"),
+    definition = function(df, htmlRep, object, ...){
+        if("EntrezId" %in% colnames(df)){
+            df <- entrezGene.link(df)
+        }
+        df
+    }
+)
+
+setMethod("modifyReportDF",
     signature = signature(
     object = "DGELRT"),
     definition = function(df, htmlRep, object, countTable, conditions, 

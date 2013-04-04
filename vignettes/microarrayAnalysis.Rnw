@@ -84,6 +84,7 @@ The resulting output is displayed on an .html page and includes several statisti
 If we want to change our images, we can do so with \tt .modifyDF \rm (see the basic vignette for more examples of how to use this feature).  In this example, we make lattice plots of the expression of each gene in our table stratified by \tt mol.biol \rm and \tt sex \rm.
 
 <<making the DE report with new images, eval=FALSE>>=
+library(hwriter)
 makeNewImages <- function(df,...){
 	imagename <- c()
 	for (i in 1:nrow(df)){
@@ -141,7 +142,8 @@ With these results, we can then make the GO report.  We must supply \tt publish 
 goReport <- HTMLReport(shortName = 'go_analysis',
                        title = 'GO analysis of BCR/ABL translocation',
                        reportDirectory = "./reports")
-publish(goResults, goReport, selectedIDs = selectedIDs, annotation.db = "org.Hs.eg")
+publish(goResults, goReport, selectedIDs = selectedIDs, 
+    annotation.db = "org.Hs.eg")
 finish(goReport)
 @
 The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the overlap for each category.

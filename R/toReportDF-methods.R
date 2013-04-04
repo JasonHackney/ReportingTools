@@ -62,6 +62,11 @@ setMethod("toReportDF",
         .GeneSetCollection.to.html2(object, htmlRep, ...)
 )
 
+setMethod("toReportDF",
+    signature = signature(object = "GeneSet"),
+    definition = function(object, htmlRep, ...)
+        .GeneSet.to.data.frame(object, htmlRep, ...)
+)
 
 setMethod("toReportDF",
     signature = signature(object="data.frame"),

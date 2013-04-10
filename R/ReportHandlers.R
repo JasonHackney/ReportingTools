@@ -4,7 +4,7 @@
 
 
 .makeSplash <- function(){
-    hwLink <- hwrite("hwriter", link = "http://www.embl.de/~gpau/hwriter/index.html")
+    hwLink <- hwrite("hwriter", link = "http://www.ebi.ac.uk/~gpau/hwriter/")
     hwVersion <- sessionInfo()$otherPkgs[["hwriter"]]$Version
     rtLink <- hwrite("ReportingTools", 
         link = "http://research-pub.gene.com/ReportingTools/")

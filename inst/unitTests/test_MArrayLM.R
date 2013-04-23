@@ -32,7 +32,7 @@ test_3fdata <- function(){
     annotation(ALL2) <- ""
     df <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL2, coef=2, n=100)
     checkTrue(all.equal(colnames(df), 
-        c("ID", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
+        c("ProbeId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
     
     ALL3 <- ALL
     annotation(ALL3) <- ""

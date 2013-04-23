@@ -69,20 +69,19 @@ setMethod("publish",
     
     ## If only one coefficient is selected, then topTable is called
     ## otherwise topTableF is called, returning different values
+    selection <- rownames(dat)
+    if(length(selection) == 0)
+        stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
+
     if(length(coef) == 1){
-        selection <- as.numeric(rownames(dat))
-        if(length(selection) == 0)
-            stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
         padj <- apply(object$p.value, 2, p.adjust, method = adjust.method)
         padj <- padj[selection, coef]
-        object <- object[selection, coef]
     } else {
-        selection <- rownames(dat)
-        if(length(selection) == 0)
-            stop("No probes meet selection criteria. Try changing the log-fold change or p-value cutoff.")
         padj <- dat$adj.P.Val
-        object <- object[selection, coef]        
     }
+
+    object <- object[selection, coef]        
+
     
     ## If there's an eSet, try to get the featureData from the appropriate
     ## annotation package. If there's no annotation package, get it from the
@@ -112,8 +111,16 @@ setMethod("publish",
             }
         }
     }
+    
     if( is.null(fdata) ){
-        fdata <- object$genes
+        if(!is.null(object$genes)){
+            fdata <- object$genes
+        } else {
+            fdata <- data.frame(
+                ProbeId = rownames(eSet),
+                stringsAsFactors = FALSE
+            )
+        }
     }
     
     if(make.plots){

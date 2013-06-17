@@ -1,11 +1,12 @@
 setMethod("objectToHTML",
     signature = signature(object = "ANY"),
-    definition = function(object, report, .modifyDF, .toDF, ...)
+    definition = function(object, report, .modifyDF, .toDF, colClasses = NULL,
+        ...)
     {
         if(!missing(.toDF) && is.function(.toDF))
             df = .toDF(object, report, ...) #XXX adding report here for the quick fix, this should be taken back out once the methods are properly sorted
         else
-            df = toReportDF(object, report,...)
+            df = toReportDF(object, report, ...)
 
         if(!missing(.modifyDF) && !is.null(.modifyDF)){
             if(!is.list(.modifyDF))
@@ -16,7 +17,13 @@ setMethod("objectToHTML",
         } else {
             df = modifyReportDF(df, report, object = object, ...)
         }
-        objectToHTML(df, report = report, .toDF = NULL, .modifyDF = NULL)
+        
+        if(is.null(colClasses)){
+            colClasses <- getDefaultColumnClasses(object, df)
+        }
+        
+        objectToHTML(df, report = report, .toDF = NULL, .modifyDF = NULL,
+            colClasses = colClasses)
 
     }
 )
@@ -57,56 +64,32 @@ setMethod("objectToHTML",
     signature = signature(
         object          = "data.frame"),
     definition = function(object, report, .modifyDF,   tableTitle="",
-      filter.columns = sapply(object, is.numeric), ...){
-
-       if(!missing(.modifyDF) && !is.null(.modifyDF))
-              {
-                if(!is.list(.modifyDF))
-                  .modifyDF = list(.modifyDF)
-
-                for(f in .modifyDF)
-                  object = f(object, report, object = object, ...)
-              } #else {
-                #object = modifyReportDF(object, report, object = object, ...)
-              #}
+        filter.columns = sapply(object, is.numeric), colClasses = NULL, ...)
+    {
+        
+        if(!missing(.modifyDF) && !is.null(.modifyDF)){
+            if(!is.list(.modifyDF))
+                .modifyDF = list(.modifyDF)
             
+            for(f in .modifyDF)
+                object = f(object, report, object = object, ...)
+        }
+        
         if(nrow(object) == 0)
             stop("No rows available in data.")
         
         if(ncol(object) == 0)
             stop("No columns available in data.")
-
-        filter.columns <-
-          IRanges:::normalizeSingleBracketSubscript(filter.columns,object)
         
-        sort.class.map <- c(
-            "numeric"   = "sort-num-robust",
-            "integer"   = "sort-num-robust",
-            "Date"      = "sort-date",
-            "character" = "sort-string-robust",
-            "factor"    = "sort-string-robust"
-        )
-        sort.classes <- sort.class.map[sapply(object, class)]
-        sort.classes[is.na(sort.classes)] <- "sort-string-robust"
-        
-        filter.class.map <- c(
-            "numeric" = "filter-num",
-            "integer" = "filter-num",
-            "logical" = "filter-cat",
-            "factor"  = "filter-cat",
-            "Date"    = "filter-date",
-            "character" = "filter-string")
-        filter.classes <- filter.class.map[sapply(object, class)]
-        filter.classes[is.na(filter.classes)] <- "filter-string"
-        sel.filter.classes <- filter.classes[filter.columns]
-        col.classes <- sort.classes
-        col.classes[filter.columns] <-
-          paste(sel.filter.classes, col.classes[filter.columns])
+        if(is.null(colClasses)){
+            colClasses <- getDefaultColumnClasses(object, 
+                filter.columns = filter.columns)
+        }
         
         col.specs <- data.frame(
             column  = seq_along(object),
             label   = colnames(object),
-            class   = col.classes,
+            class   = colClasses,
             stringsAsFactors = FALSE
         )
         
@@ -114,10 +97,6 @@ setMethod("objectToHTML",
         for(col in numeric.columns){
             object[, col] <- signif(object[, col], 3)
         }
-       # p <- .writeHTMLTable(object, tableTitle = tableTitle, col.specs, 
-       #     p = page(publicationType))
-       # invisible(p)
-        #addToReport(object, publicationType, tableTitle = tableTitle, col.specs)
         html = .writeHTMLTable(object, tableTitle = tableTitle, col.specs)
         list(html=html, object = object)
     }

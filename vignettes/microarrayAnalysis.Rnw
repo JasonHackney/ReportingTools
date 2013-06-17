@@ -123,7 +123,7 @@ In this section, we show how to use \tt ReportingTools \rm to \tt publish \rm a 
 <<Do GO analysis, eval=FALSE>>=
 library(GOstats)
 tt <- topTable(fit, coef = 2, n = 100)
-selectedIDs <- unlist(mget(tt$ID, hgu95av2ENTREZID))
+selectedIDs <- unlist(mget(rownames(tt), hgu95av2ENTREZID))
 universeIDs <- unlist(mget(featureNames(ALL), hgu95av2ENTREZID))
 goParams <- new("GOHyperGParams", 
                 geneIds = selectedIDs, 

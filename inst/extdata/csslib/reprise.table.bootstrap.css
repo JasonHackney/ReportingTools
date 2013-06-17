@@ -34,11 +34,17 @@ table th.no-print {
  	font-size: 0pt; 
 } 
 
+
+/* from-to box and search: size of the text entered into input boxes */
+/* also changes height of the box to make the txt centered */
+input {
+    font-size:8pt;
+    min-height: 25px;
+}
+
 /* from-to box: size of the input boxes */
-/* from-to box: size of the text entered into input boxes */
 input.number_range_filter {
     width:40px;
-    font-size:8pt;
 }
 
 

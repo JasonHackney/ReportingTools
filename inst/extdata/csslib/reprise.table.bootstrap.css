@@ -41,18 +41,17 @@ input.number_range_filter {
     font-size:8pt;
 }
 
+
 /* from-to box: text of the from/to input box label */
-table th.top-header-row.filter-num{
-    font-weight: bold;
-    font-size:10pt;
-}
-
-
 /*adds some color to the top header row */
 /*bottom header row is colored in the .sorting class below*/
+/*also set the width of the bos so that the txt doesn't wrap in the from-to*/
 table th.top-header-row.filter-num {
         background-color: #515151;
         color: white;
+        min-width:140px;
+        font-weight: bold;
+        font-size:10pt;
 }
 
 

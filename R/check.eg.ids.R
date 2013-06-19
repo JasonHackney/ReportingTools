@@ -8,6 +8,6 @@ check.eg.ids <- function(ids, annotation.db = 'org.Hs.eg'){
     if(sum(is.na(check))== length(ids)){
         stop("Ids do not appear to be Entrez Ids for the specified species.", call. = FALSE)
     } else if(sum(is.na(check)) >= length(ids)/2){
-        stop("More than half of your IDs could not be mapped.", call. = FALSE)
+        warning("More than half of your IDs could not be mapped.", call. = FALSE)
     }
 }

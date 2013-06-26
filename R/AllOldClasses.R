@@ -32,7 +32,8 @@ makeOldHTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
         reportDirectory <- path.expand(reportDirectory)
     }
     
-    warning("HTMLReport has been superceded by htmlReportRef. It is currently still supported but will be deprecated in future releases of ReportingTools.")
+    warning("HTMLReport has been superceded by htmlReportRef. It is still supported,
+but will be deprecated in future releases of ReportingTools.")
     
     ## Not sure what to do here when basePath is set, but reportDirectory needs
     ## to be rewritten... Probably should just throw an execption    
@@ -51,6 +52,14 @@ makeOldHTMLReport <- function(shortName, title = NULL, reportDirectory = ".",
     
     pageDir <- file.path(basePath, reportDirectory)
     pageDir <- gsub("//+", "/", pageDir)
+    
+    jslibenv <- Sys.getenv("REPORTINGTOOLSJSLIB")
+    csslibenv <- Sys.getenv("REPORTINGTOOLSCSSLIB")
+    if(jslibenv != "" | csslibenv != "")
+    {
+        warning("Use of REPORTINGTOOLSJSLIB and REPORTINGTOOLSCSSLIB environment variables is 
+deprecated. Please unset these in your environment.")
+    }
 
     
     if(is.null(link.javascript)){

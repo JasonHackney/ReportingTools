@@ -47,11 +47,9 @@ javascript libraries for ReportingTools aren't linked, then it is likely that
 the resulting pages will not be as interactive as the default. The default css
 files are found in the extdata/csslib directory of the ReportingTools package,
 while the default javascript libraries are found in the extdata/jslib directory
-of the ReportingTools package. The default behavior is for the css and js files
-to be copied from the package directory into the \code{reportDirectory} of the
-\code{HTMLReport}. If these are copied to an alternate location, then the user
-can set the environment variables REPORTINGTOOLSCSSLIB and REPORTINGTOOLSJSLIB
-to point to the locations of the css and javascript files, respectively.
+of the ReportingTools package. Both css and js files are copied from the package
+\code{extdata} directory into the \code{reportDirectory} of the
+\code{HTMLReport}.
 }
 \value{
 An HTMLReport object with an open file handle to an HTML page.

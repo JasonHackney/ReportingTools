@@ -35,21 +35,20 @@ makePageEnd = function()
 
 #This will be called from the initialize method of HTMLReportRef to create the initial internal DOM representation
 startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
-    basePath = ".", page = NULL,
-    link.css = NULL, link.javascript = NULL, overwrite.js=TRUE,
-  handlers, ...)
+    basePath = ".", page = NULL, link.css = NULL, link.javascript = NULL,
+    overwrite.js=TRUE, handlers, ...)
 {
     shortName <- sub(".html$", "", shortName)
     if(is.null(title))
         title <- shortName
-        
-    #if(!is.null(basePath)){
-    #    pageDir <- file.path(basePath, reportDirectory)
-    #} else{
-    #    pageDir <- reportDirectory
-    #}
-    #pageDir <- gsub("//+", "/", pageDir)
-
+    
+    jslibenv <- Sys.getenv("REPORTINGTOOLSJSLIB")
+    csslibenv <- Sys.getenv("REPORTINGTOOLSCSSLIB")
+    if(jslibenv != "" | csslibenv != "")
+    {
+        warning("Use of REPORTINGTOOLSJSLIB and REPORTINGTOOLSCSSLIB environment variables is now deprecated. 
+Please unset these in your environment.")
+    }
     
     pageDir = dirname(path(handlers[[1]]))
     if(is.null(link.javascript)){
@@ -102,7 +101,8 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
             file.copy(css.files,cssDir, overwrite=overwrite.js)
             css.files <- sub(".*extdata/","",css.files)
 
-            css.png.package.dir <- c(system.file("extdata/csslib/images/", package="ReportingTools"))
+            css.png.package.dir <- c(system.file("extdata/csslib/images/",
+                package="ReportingTools"))
             css.pngs <- list.files(path=css.png.package.dir)
             css.pngs <-  paste(css.png.package.dir,css.pngs, sep="")
 
@@ -118,8 +118,8 @@ startHTMLReport =  function(shortName, title = NULL, reportDirectory = ".",
     }
     
 
-    pagestart = makePageStart(title = title, link.css = link.css, link.javascript = link.javascript)
-    #DOM (HTML) representation of the (currently empty) report
+    pagestart = makePageStart(title = title, link.css = link.css, 
+        link.javascript = link.javascript)
     node = xmlRoot(htmlParse(paste(pagestart, makePageEnd(), collapse = "\n")))
     htitle = hwrite(paste("<h2>",title,"</h2>",sep=""), br=TRUE, class="container", div=TRUE)
     body = node[["body"]]

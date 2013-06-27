@@ -4,7 +4,7 @@ setGeneric("getDefaultColumnClasses",
 )
 
 setMethod("getDefaultColumnClasses",
-    signature = signature(object = "data.frame"),
+    signature = signature(object = "ANY"),
     definition = function(object, df = NULL, 
         filter.columns = sapply(object, is.numeric), ...)
     {
@@ -41,6 +41,61 @@ setMethod("getDefaultColumnClasses",
         
         names(colClasses) <- colnames(object)
         
+        colClasses
+    }
+)
+
+setMethod("getDefaultColumnClasses",
+    signature = signature(object = "MArrayLM"),
+    definition = function(object, df = NULL, ...)
+    {
+        ## For the basic columns, these are the types we generally use.
+        colClasses <- c(
+            "ProbeId" = "sort-string-robust",
+            "EntrezId" = "sort-num-robust",
+            "Symbol" = "sort-string-robust",
+            "GeneName" = "sort-string-robust",
+            "Image" = "sort-off"
+        )
+        if(!is.null(df)){
+            ## There might also be additional columns beyond these,
+            subDF <- df[, ! colnames(df) %in% c("ProbeId", "EntrezId", "Symbol", 
+                "GeneName", "Image"), drop = FALSE]
+            if(ncol(subDF) > 0){
+                subColClasses <- getDefaultColumnClasses(subDF)
+                colClasses <- c(colClasses, subColClasses)
+            }
+
+            colClasses <- colClasses[colnames(df)]
+        }
+        
+        colClasses
+    }
+)
+
+setMethod("getDefaultColumnClasses",
+    signature = signature(object = "DESeqDataSet"),
+    definition = function(object, df = NULL, ...)
+    {
+        ## For the basic columns, these are the types we generally use.
+        colClasses <- c(
+            "ProbeId" = "sort-string-robust",
+            "EntrezId" = "sort-num-robust",
+            "Symbol" = "sort-string-robust",
+            "GeneName" = "sort-string-robust",
+            "Image" = "sort-off"
+        )
+        if(!is.null(df)){
+            ## There might also be additional columns beyond these,
+            subDF <- df[, ! colnames(df) %in% c("ProbeId", "EntrezId", "Symbol", 
+                "GeneName", "Image"), drop = FALSE]
+            if(ncol(subDF) > 0){
+                subColClasses <- getDefaultColumnClasses(subDF)
+                colClasses <- c(colClasses, subColClasses)
+            }
+
+            colClasses <- colClasses[colnames(df)]
+        }
         colClasses
     }
 )
@@ -149,34 +204,6 @@ setMethod("getDefaultColumnClasses",
         
         colClasses
         
-    }
-)
-
-setMethod("getDefaultColumnClasses",
-    signature = signature(object = "MArrayLM"),
-    definition = function(object, df = NULL, ...)
-    {
-        ## For the basic columns, these are the types we generally use.
-        colClasses <- c(
-            "ProbeId" = "sort-string-robust",
-            "EntrezId" = "sort-num-robust",
-            "Symbol" = "sort-string-robust",
-            "GeneName" = "sort-string-robust",
-            "Image" = "sort-off"
-        )
-        if(!is.null(df)){
-            ## There might also be additional columns beyond these,
-            subDF <- df[, ! colnames(df) %in% c("ProbeId", "EntrezId", "Symbol", 
-                "GeneName", "Image"), drop = FALSE]
-            if(ncol(subDF) > 0){
-                subColClasses <- getDefaultColumnClasses(subDF)
-                colClasses <- c(colClasses, subColClasses)
-            }
-
-            colClasses <- colClasses[colnames(df)]
-        }
-        
-        colClasses
     }
 )
 

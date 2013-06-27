@@ -21,6 +21,7 @@
 \alias{publish,MArrayLM,HTMLReportRef-method}
 \alias{publish,DGEExact,HTMLReportRef-method}
 \alias{publish,DGELRT,HTMLReportRef-method}
+\alias{publish,DESeqDataSet,HTMLReportRef-method}
 \alias{publish,HyperGResultBase,HTMLReportRef-method}
 \alias{publish,PFAMHyperGResult,HTMLReportRef-method}
 \alias{publish,GOHyperGResult,HTMLReportRef-method}
@@ -80,7 +81,20 @@
         values from the ExpressionSet given in eSet, and the levels set in
         factor.
       
-    
+        DESeqDataSet:\cr
+        \code{publish(object, publicationType, factor = NULL, n = 1000,
+        pvalueCutoff = 0.01, lfc = 0, coef = NULL, make.plots = TRUE, 
+        ..., name)}
+        To coerce a \code{\linkS4class{DESeqDataSet}} to a \code{data.frame}, we
+        use the \code{\link{results}} function from the \code{DESeq2} package,
+        therefore one of \code{\link{DESeq}}, or something similar must be run
+        prior to \code{publish}. By default, the last coefficient from
+        \code{\link(resultsNames)} is reported. Log fold changes, p-values and
+        adjusted p-values are taken directly from the DESeqDataSet. Stripplots
+        showing the expression values for each transcript are produced based on
+        the normalized counts from the \code{\linkS4class{DESeqDataSet}},
+        grouped by the levels in \code{factor}.
+        
         DGEExact:\cr
         \code{publish(object, htmlReport, countTable, conditions, 
         annotation.db = "org.Hs.eg", n = 1000, pvalueCutoff = 0.01, lfc = 0, 

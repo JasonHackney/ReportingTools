@@ -1,13 +1,13 @@
 Package: ReportingTools
 Title: Tools for making reports in various formats
-Version: 2.1.6
+Version: 2.1.7
 Author: Jason A. Hackney, Melanie Huntley, Jessica L. Larson, Christina Chaivorapol, Gabriel Becker, and Josh Kaminker
 Maintainer: Jason A. Hackney <hackney.jason@gene.com>, Gabriel Becker <gmbecker@ucdavis.edu>
 Depends: methods, knitr
 Imports:
         Biobase,hwriter,Category,GOstats,limma,lattice,AnnotationDbi,edgeR,
         annotate,PFAM.db, GSEABase, BiocGenerics(>= 0.1.6), grid, XML, R.utils,
-        ggplot2, ggbio
+        ggplot2, ggbio, DESeq2, IRanges
 Suggests: RUnit, ggplot2, ggbio, ALL, hgu95av2.db, org.Mm.eg.db, knitr
 Type: Package
 LazyLoad: yes

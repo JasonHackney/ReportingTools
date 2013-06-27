@@ -148,6 +148,27 @@ setMethod("modifyReportDF",
     }
 )
 
+setMethod("modifyReportDF",
+    signature = signature(
+    object = "DESeqDataSet"),
+    definition = function(df, htmlRep, object, factor, make.plots = TRUE, ...)
+    {
+        if("EntrezId" %in% colnames(df)){
+            df <- entrezGene.link(df)
+        }
+        if(make.plots == TRUE){
+            figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
+            figure.directory <- file.path(dirname(path(htmlRep)), 
+                figure.dirname)
+            .safe.dir.create(figure.directory)
+            
+            df <- eSetPlot(df, object, factor, figure.directory, figure.dirname)
+            df
+        }
+        df
+    }
+)
+
 entrezGene.link <- function(df, ...)
 {
     df$EntrezId <- hwrite(df$EntrezId, 

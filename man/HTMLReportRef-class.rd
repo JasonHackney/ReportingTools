@@ -5,6 +5,7 @@
 \alias{HTMLReport}
 \alias{[[<-,HTMLReportRef,ANY,ANY,ANY-method}
 \alias{[[,HTMLReportRef,ANY-method}
+\alias{[[,HTMLReportRef,ANY,ANY-method}
 \alias{publish,ANY,HTMLReportRef-method}
 \alias{path,HTMLReportRef-method}
 \alias{show,HTMLReportRef-method}

@@ -22,14 +22,17 @@
 }
 
 .make.gene.plots <- function(df, expression.dat, factor, figure.directory,
-    ylab.type = "Expression Value", scales = list(), ...){
-
+    ylab.type = "Expression Value", scales = list(), par.settings = list(),
+    xlab = NULL, ...){
+        
+    scales <- c(scales, list(x = list(rot = 45)))
+    
     if(is(expression.dat, "CountDataSet")){
         ## Get the normalized counts, but add a pseudocount to all of the
         ## entries, because we're going to plot on a log-scale
         
         expression.dat <- counts(expression.dat, normalized=TRUE)+1
-        
+        scales <- c(scales, list(y = list(log = 10)))
     } else if(inherits(expression.dat, "eSet")){
     
         expression.dat <- exprs(expression.dat)
@@ -44,9 +47,11 @@
         ## but this might not work.
         
         expression.dat <- as.matrix(expression.dat)
+    } else if(is(expression.dat, "DESeqDataSet")){
+        expression.dat <- counts(expression.dat, normalized = TRUE) + 1
+        scales <- c(scales, list(y = list(log = 10)))
     }
     
-    scales <- c(scales, list(x = list(rot = 45)))
     
     for(probe in rownames(df)){
         if("Symbol" %in% colnames(df)){
@@ -55,8 +60,8 @@
             ylab <- paste(probe, ylab.type)
         }
         bigplot <- stripplot(expression.dat[ probe, ] ~ factor,
-            panel=panel.boxandstrip, groups=factor, ylab=ylab,
-            scales = scales, ...)
+            panel = panel.boxandstrip, groups = factor, ylab = ylab,
+            scales = scales, par.settings = par.settings, xlab = xlab)
         
         miniplot <- .remove.axis.and.padding(bigplot)
         minipng.filename <- paste("mini", probe ,"png", sep='.')

@@ -75,10 +75,19 @@ test_7toReportDF <- function(){
     checkTrue(ncol(df) == 6)
 }
 
-test_9HTMLReport <- function(){
+test_8HTMLReport <- function(){
     htmlRep <- HTMLReport("testMArrayLMhtmlPage4",
         reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 4")
     publish(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2, n = 100,
         make.plots = TRUE)
+    finish(htmlRep)    
+}
+
+test_9ModifyReport <- function(){
+    fives <- function(df, ...){df$Fives <- rep(5, nrow(df)); df}
+    htmlRep <- HTMLReport("testMArrayLMhtmlPage5",
+        reportDirectory = "testHTMLDirectory", title = "Test MArrayLM Report 4")
+    publish(fit, htmlRep, eSet = ALL, factor = ALL$mol.biol, coef = 2, n = 100,
+        make.plots = FALSE, .modifyDF = fives)
     finish(htmlRep)    
 }

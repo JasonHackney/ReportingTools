@@ -80,3 +80,13 @@ test_4publishHTMLReportRef <- function(){
         make.plots = FALSE, name = "DEtable")
     finish(htmlRep)
 }
+
+test_5modifyhHTMLReportRef <- function(){
+    fives <- function(df, ...){df$Fives <- rep(5, nrow(df)); df}
+    htmlRep <- HTMLReport("testhtmlPage5", 
+        reportDirectory = 'testHTMLDirectory', title = "Test Report 5")
+    publish(edgeR.de, htmlRep, countTable = d$counts, conditions = conditions,
+        annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100, 
+        make.plots = FALSE, name = "DEtable", .modifyDF = fives)
+    finish(htmlRep)
+}

@@ -6,6 +6,7 @@
 \alias{toReportDF,data.frame-method}
 \alias{toReportDF,DGEExact-method}
 \alias{toReportDF,DGELRT-method}
+\alias{toReportDF,DESeqDataSet-method}
 \alias{toReportDF,GeneSetCollection-method}
 \alias{toReportDF,GeneSet-method}
 \alias{toReportDF,GOHyperGResult-method}

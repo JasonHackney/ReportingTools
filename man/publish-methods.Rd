@@ -89,7 +89,7 @@
         use the \code{\link{results}} function from the \code{DESeq2} package,
         therefore one of \code{\link{DESeq}}, or something similar must be run
         prior to \code{publish}. By default, the last coefficient from
-        \code{\link(resultsNames)} is reported. Log fold changes, p-values and
+        \code{\link{resultsNames}} is reported. Log fold changes, p-values and
         adjusted p-values are taken directly from the DESeqDataSet. Stripplots
         showing the expression values for each transcript are produced based on
         the normalized counts from the \code{\linkS4class{DESeqDataSet}},

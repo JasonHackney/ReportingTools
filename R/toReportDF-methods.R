@@ -77,7 +77,7 @@ setMethod("toReportDF",
     signature = signature(object = "DESeqDataSet"),
     definition = function(object, report, 
         resultName = length(resultsNames(object)), 
-        annotation.db = NULL, pvalueCutoff = 0.01, lfc = 0, n = 100,
+        annotation.db = NULL, pvalueCutoff = 0.01, lfc = 0, n = 500,
         sort.by = "pvalue", make.plots = FALSE, ...)
     {
         if (!"results" %in% mcols(mcols(object))$type) {

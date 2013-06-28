@@ -77,12 +77,18 @@ setMethod("modifyReportDF",
             df <- entrezGene.link(df)
         }
         if(make.plots == TRUE){
+            dots <- list(...)
+            par.settings <- list()
+            if("par.settings" %in% names(dots))
+                par.settings <- dots$par.settings
+            
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
             figure.directory <- file.path(dirname(path(htmlRep)), 
                 figure.dirname)
             .safe.dir.create(figure.directory)
             
-            df <- eSetPlot(df, eSet, factor, figure.directory, figure.dirname)
+            df <- eSetPlot(df, eSet, factor, figure.directory, figure.dirname, 
+                par.settings = par.settings)
             df
         }
         df
@@ -99,6 +105,11 @@ setMethod("modifyReportDF",
             df <- entrezGene.link(df)
         }
         if(make.plots == TRUE){
+            dots <- list(...)
+            par.settings <- list()
+            if("par.settings" %in% names(dots))
+                par.settings <- dots$par.settings
+            
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
             figure.directory <- file.path(dirname(path(htmlRep)), 
                 figure.dirname)
@@ -106,7 +117,7 @@ setMethod("modifyReportDF",
             
             df <- eSetPlot(df, countTable+1, conditions, figure.directory,
                 figure.dirname, scales = list(y = list(log = 10)),
-                ylab.type = "Normalized Counts")
+                ylab.type = "Normalized Counts", par.settings = par.settings)
             df
         }
         df
@@ -134,13 +145,18 @@ setMethod("modifyReportDF",
             df <- entrezGene.link(df)
         }
         if(make.plots == TRUE){
+            dots <- list(...)
+            par.settings <- list()
+            if("par.settings" %in% names(dots))
+                par.settings <- dots$par.settings
+            
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
             figure.directory <- file.path(dirname(path(htmlRep)), figure.dirname)
             .safe.dir.create(figure.directory)
             
             df <- eSetPlot(df, countTable+1, conditions, figure.directory,
                 figure.dirname, scales = list(y = list(log = 10)), 
-                ylab.type = "Normalized Counts")
+                ylab.type = "Normalized Counts", par.settings = par.settings)
             df
         }
         df
@@ -156,13 +172,19 @@ setMethod("modifyReportDF",
         if("EntrezId" %in% colnames(df)){
             df <- entrezGene.link(df)
         }
-        if(make.plots == TRUE){
+        if(make.plots){
+            dots <- list(...)
+            par.settings <- list()
+            if("par.settings" %in% names(dots))
+                par.settings <- dots$par.settings
+                
             figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
             figure.directory <- file.path(dirname(path(htmlRep)), 
                 figure.dirname)
             .safe.dir.create(figure.directory)
             
-            df <- eSetPlot(df, object, factor, figure.directory, figure.dirname)
+            df <- eSetPlot(df, object, factor, figure.directory, figure.dirname,
+                par.settings = par.settings, ylab.type = "Normalized Counts")
             df
         }
         df

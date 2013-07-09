@@ -1,14 +1,3 @@
-setMethod("publish",
-    signature = signature(
-        object          = "ANY",
-        publicationType = "list"
-    ),
-    definition = function(object, publicationType, ...){
-        for(pubType in publicationType){
-            publish(object, pubType, ...)
-        }
-    }
-)
 
 setMethod("publish",
     signature = signature(
@@ -81,10 +70,6 @@ setMethod("publish",
     }
 )
 
-setMethod("publish",
-          signature = signature(object = "data.frame", publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, ..., name) publicationType$addElement(name, object, ...)
-          )
 
 setMethod("publish",
     signature = signature(object = "data.frame", 

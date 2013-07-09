@@ -7,13 +7,6 @@ setMethod(   '[[<-', c(x="HTMLReportRef"),  function(x, i, ...,value)
 setMethod("[[", c(x="HTMLReportRef"),  function(x, i, exact = TRUE) 
     x$.report[[i, exact = exact]])
  
-setMethod("publish", 
-    signature = signature(object = "ANY", publicationType = "HTMLReportRef"), 
-    definition = function(object, publicationType, .modifyDF = NULL, 
-        .toDF = NULL, ...) 
-        publicationType$addElement(value = object, ..., 
-            .modifyDF = .modifyDF, .toDF = .toDF ))
-
 setMethod("finish",
     signature = signature(publicationType = "HTMLReportRef"),
     definition = function(publicationType, ...){

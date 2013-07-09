@@ -17,36 +17,6 @@ setMethod("publish",
 )
 
 
-setMethod("publish",
-    signature = signature(
-        object = "DGEExact",
-        publicationType = "HTMLReportRef"
-    ),
-    def = function(object, publicationType, ..., name)
-          {
-            publicationType$addElement(name = name,value= object, ...)
-            
-          }
-          )
-
-
-setMethod("publish",
-    signature = signature(
-        object = "DGEExact",
-        publicationType = "ANY"
-    ),
-    def = function(object, publicationType, annotation.db = 'org.Hs.eg', 
-        n = 1000, pvalueCutoff = 0.01, lfc = 0, adjust.method = 'BH', 
-        sort.method = 'p.value', ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .DGEExact.to.data.frame(object, annotation.db = annotation.db,
-            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, 
-            adjust.method = adjust.method, sort.method = sort.method, ...)
-        publish(df, publicationType, ...)
-    }
-)
-
 .DGEExact.to.data.frame <- function(object, annotation.db = 'org.Hs.eg', 
     pvalueCutoff = 0.01, n = 1000, lfc = 0, adjust.method='BH', 
     sort.method = 'p.value', make.plots = FALSE, ...)

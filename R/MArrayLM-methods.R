@@ -23,47 +23,12 @@ setMethod("publish",
 #          )
 
 
-setMethod("publish",
-    signature = signature(
-        object = "MArrayLM",
-        publicationType = "HTMLReportRef"
-    ),
-    definition = function(object, publicationType,
-      eSet, factor, n = 1000, 
-        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', 
-        make.plots = TRUE,..., name)
-          publicationType$addElement(name = name, value=object, eSet = eSet, factor = factor,
-            n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, coef = coef, 
-            adjust.method = adjust.method, make.plots = make.plots, ...)
-)
-
-
-
-setMethod("publish",
-    signature = signature(
-        object = "MArrayLM",
-        publicationType = "ANY"
-    ),
-    definition = function(object, publicationType, eSet, n = 1000, 
-        pvalueCutoff = 0.01, lfc = 0, coef = NULL, adjust.method = 'BH', ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .marrayLM.to.data.frame(object, eSet, n = n, 
-            pvalueCutoff = pvalueCutoff, lfc = lfc, coef = coef, 
-            adjust.method = adjust.method, ...)
-        publish(df, publicationType, ...)
-    }
-)
-
-
-
-
 .marrayLM.to.data.frame <- function(object, eSet = NULL, n = 1000, 
     pvalueCutoff = 0.01, lfc = 0, adjust.method='BH', coef = NULL,
     make.plots = FALSE, factor = NULL, ...)
 {
     dat <- topTable(object, number = n, p.value = pvalueCutoff, lfc = lfc,
-        coef = coef, adjust.method = adjust.method, ...)
+        coef = coef, adjust.method = adjust.method)
     if(is.null(coef))
         coef <- 1:ncol(object)
     

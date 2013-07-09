@@ -1,16 +1,3 @@
-setMethod("publish",
-    signature = signature(
-        object = "GeneSetCollection",
-        publicationType = "ANY"
-    ),
-    definition = function(object, publicationType, setStats = NULL, 
-        setPValues = NULL, ...){
-        df <- .GeneSetCollection.to.data.frame(object, setStats, setPValues)
-        publish(df, publicationType, ...)
-    }
-)
-
-
 .GeneSetCollection.to.data.frame <- function(object, setStats, setPValues)
 {
    setNames <- names(object)
@@ -72,18 +59,6 @@ setMethod("publish",
     }
     ret
 }
-
-setMethod("publish",
-    signature = signature(
-        object = "GeneSetCollection",
-        publicationType = "HTMLReportRef"
-    ),
-    definition = function(object, publicationType,annotation.db=NULL, 
-        setStats=NULL, setPValues=NULL, geneStats=NULL, ..., name)
-          publicationType$addElement(name, value=object, annotation.db=annotation.db, 
-        setStats=setStats, setPValues=setPValues, geneStats=geneStats,...)
-          )
-
 
 setMethod("publish",
     signature = signature(

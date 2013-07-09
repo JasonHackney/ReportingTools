@@ -16,51 +16,15 @@ setMethod("publish",
 setMethod("publish",
     signature = signature(
         object = "GOHyperGResult",
-        publicationType = "ANY"
-    ),
-    definition = function(object, publicationType, 
-        pvalueCutoff = 0.01, categorySize = 10, ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .GOhyperG.to.data.frame(object, pvalueCutoff = pvalueCutoff,
-            categorySize = categorySize)
-        publish(df, publicationType, ...)
-    }
-)
-
-setMethod("publish",
-    signature = signature(
-        object = "GOHyperGResult",
         publicationType = "HTMLReport"
     ),
-    definition = function(object, publicationType, selectedIDs,annotation.db,pvalueCutoff = 0.01, categorySize = 10, makePlot=FALSE, ...){
+    definition = function(object, publicationType, selectedIDs,
+        annotation.db, pvalueCutoff = 0.01, categorySize = 10, 
+        makePlot=FALSE, ...)
+    {
         ## First, make a data.frame for publication,
         ## then call publish on that data.frame
-        df <- .GOhyperG.to.html(object,publicationType,selectedIDs, annotation.db,pvalueCutoff = pvalueCutoff, categorySize=categorySize, makePlot=makePlot)
-        publish(df, publicationType, ...)
-    }
-)
-
-setMethod("publish",
-          signature = signature(
-            object = "GOHyperGResult",
-            publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType,..., name)
-          publicationType$addElement(name, value = object,...)
-          )
-
-
-
-setMethod("publish",
-    signature = signature(
-        object = "PFAMHyperGResult",
-        publicationType = "ANY"
-    ),
-    definition = function(object, publicationType, 
-        pvalueCutoff = 0.01,categorySize=10, ...){
-        ## First, make a data.frame for publication,
-        ## then call publish on that data.frame
-        df <- .PFAMhyperG.to.data.frame(object, pvalueCutoff = pvalueCutoff, categorySize)
+        df <- .GOhyperG.to.html(object, publicationType, selectedIDs, annotation.db,pvalueCutoff = pvalueCutoff, categorySize=categorySize, makePlot=makePlot)
         publish(df, publicationType, ...)
     }
 )
@@ -76,15 +40,6 @@ setMethod("publish",
         publish(df, publicationType, ...)
     }
 )
-
-setMethod("publish",
-          signature = signature(
-            object = "PFAMHyperGResult",
-            publicationType = "HTMLReportRef"),
-          definition = function(object, publicationType, name,  ...)
-          publicationType$addElement(name, value = object, ...)
-          )
-
 
 .hyperG.to.data.frame <- function(object, 
     pvalueCutoff = 0.01, 

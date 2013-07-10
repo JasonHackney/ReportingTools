@@ -21,13 +21,6 @@ test_3fdata <- function(){
     htmlRep <- HTMLReport("testMArrayLMhtmlPage",
         reportDirectory = 'testHTMLDirectory', title = "Test MArrayLM Report")
 
-    fd <- data.frame(
-        ProbeId = featureNames(ALL),
-        EntrezId = unlist(mget(featureNames(ALL), hgu95av2ENTREZID, 
-            ifnotfound=NA)),
-        stringsAsFactors = FALSE
-    )
-    
     ALL2 <- ALL
     annotation(ALL2) <- ""
     df2 <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL2, coef=2, n=100)
@@ -35,6 +28,13 @@ test_3fdata <- function(){
         c("ProbeId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
     checkTrue(all(rownames(df2) %in% rownames(ALL2)), 
         "The rownames of the data.frame are found in the eSet")
+
+    fd <- data.frame(
+        ProbeId = featureNames(ALL),
+        EntrezId = unlist(mget(featureNames(ALL), hgu95av2ENTREZID, 
+            ifnotfound=NA)),
+        stringsAsFactors = FALSE
+    )
     
     ALL3 <- ALL
     annotation(ALL3) <- ""
@@ -42,6 +42,15 @@ test_3fdata <- function(){
     df3 <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL3, coef=2, n=100)
     checkTrue(all.equal(colnames(df3), 
         c("ProbeId", "EntrezId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
+    
+    fit2 <- fit
+    fit2$genes <- data.frame(MProbeId = rownames(fit), row.names = rownames(fit))
+    df4 <- ReportingTools:::.marrayLM.to.data.frame(fit2, ALL2, coef=2, n=100)
+    checkTrue(all.equal(colnames(df4), 
+        c("MProbeId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
+    checkTrue(all(rownames(df4) %in% rownames(ALL2)), 
+        "The rownames of the data.frame are found in the eSet")
+    
 }
 
 test_4publishNoFigures <- function(){

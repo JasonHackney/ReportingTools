@@ -23,8 +23,10 @@ setMethod("publish",
 {
     dat <- topTags(object, n = n, adjust.method = adjust.method, sort.by = sort.method)
 
-    if(is.null(object$genes)){
+    if(!is.null(object$genes) & all(rownames(object$genes) ==
+            as.character(seq_along(rownames(object$genes))))){
         selection <- as.numeric(rownames(dat$table))
+        selection <- rownames(object$table)[selection]
     } else {
         selection <- rownames(dat$table)
     }
@@ -57,7 +59,10 @@ setMethod("publish",
         )
     } else {
         if(!is.null(object$genes)){
-            fdata <- object$genes[selection, ]
+            fdata <- object$genes[match(selection, rownames(object$table)), , 
+                drop = FALSE]
+            if(!all(rownames(fdata) == selection))
+                rownames(fdata) <- selection
         } else {
             IDs <- rownames(dat.lfc)
             fdata <- data.frame(IDs, stringsAsFactors = FALSE)

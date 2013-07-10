@@ -23,6 +23,7 @@ test_1dataframe <- function(){
         annotation.db='org.Mm.eg', pvalueCutoff=1, lfc=0, n=100)
     checkTrue(nrow(df) == 100, 
         "100 rows are returned in coercing fit to data.frame")
+    
     df2 <- ReportingTools:::.DGEExact.to.data.frame(edgeR.de,
         annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100)
     checkTrue(nrow(df2) == 100, 
@@ -30,7 +31,7 @@ test_1dataframe <- function(){
     checkTrue(ncol(df2) == 5, 
         "5 columns are returned in coercing fit to data.frame")
     checkTrue(all.equal(df, df2), "The same data.frame is returned for the calls with and without the annotation db")
-    checkException(ReportingTools:::.edgeR.to.data.frame(edgeR.de, 
+    checkException(ReportingTools:::.DGEExact.to.data.frame(edgeR.de, 
             annotation.db='org.Mm.eg.db', pvalueCutoff=min.pval, n=100), 
         "Returning a zero-length data.frame raises an exception")
     
@@ -39,7 +40,21 @@ test_1dataframe <- function(){
     df3 <- ReportingTools:::.DGEExact.to.data.frame(edgeR.de2,
         annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100)
     checkTrue(all(rownames(df3) %in% rownames(d)), 
-            "rownames for the data.frame match the expression data")
+            "rownames for the data.frame match the expression data when there is no annotation data.")
+    
+    edgeR.de3 <- edgeR.de
+    edgeR.de3$genes <- edgeR.de3$genes[, 1, drop = FALSE]
+    df4 <- ReportingTools:::.DGEExact.to.data.frame(edgeR.de3,
+        annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100)
+    checkTrue(all(rownames(df4) %in% rownames(d)), 
+            "rownames for the data.frame match the expression data when there's one column of annotation data")
+    
+    edgeR.de3$genes <- fd
+    rownames(edgeR.de3$genes) <- NULL
+    df5 <- ReportingTools:::.DGEExact.to.data.frame(edgeR.de3,
+        annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100)
+    checkTrue(all(rownames(df5) %in% rownames(d)), 
+            "rownames for the data.frame match the expression data when there's no rownames on the annotation data")
     
 }
 

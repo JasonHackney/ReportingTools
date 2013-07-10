@@ -33,6 +33,14 @@ test_1dataframe <- function(){
     checkException(ReportingTools:::.edgeR.to.data.frame(edgeR.de, 
             annotation.db='org.Mm.eg.db', pvalueCutoff=min.pval, n=100), 
         "Returning a zero-length data.frame raises an exception")
+    
+    edgeR.de2 <- edgeR.de
+    edgeR.de2$genes <- NULL
+    df3 <- ReportingTools:::.DGEExact.to.data.frame(edgeR.de2,
+        annotation.db = NULL, pvalueCutoff = 1, lfc = 0, n = 100)
+    checkTrue(all(rownames(df3) %in% rownames(d)), 
+            "rownames for the data.frame match the expression data")
+    
 }
 
 

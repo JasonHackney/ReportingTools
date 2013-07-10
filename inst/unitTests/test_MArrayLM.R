@@ -30,17 +30,18 @@ test_3fdata <- function(){
     
     ALL2 <- ALL
     annotation(ALL2) <- ""
-    df <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL2, coef=2, n=100)
-    checkTrue(all.equal(colnames(df), 
+    df2 <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL2, coef=2, n=100)
+    checkTrue(all.equal(colnames(df2), 
         c("ProbeId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
+    checkTrue(all(rownames(df2) %in% rownames(ALL2)), 
+        "The rownames of the data.frame are found in the eSet")
     
     ALL3 <- ALL
     annotation(ALL3) <- ""
     fData(ALL3) <- fd
-    df <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL3, coef=2, n=100)
-    checkTrue(all.equal(colnames(df), 
+    df3 <- ReportingTools:::.marrayLM.to.data.frame(fit, ALL3, coef=2, n=100)
+    checkTrue(all.equal(colnames(df3), 
         c("ProbeId", "EntrezId", "mol.biolBCR/ABL logFC", "mol.biolBCR/ABL Adjusted p-Value")))
-    
 }
 
 test_4publishNoFigures <- function(){

@@ -62,6 +62,7 @@ setMethod("publish",
         } else {
             IDs <- rownames(dat.lfc)
             fdata <- data.frame(IDs, stringsAsFactors = FALSE)
+            rownames(fdata) <- IDs
         }
     }
     

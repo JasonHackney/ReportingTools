@@ -52,6 +52,9 @@
         scales <- c(scales, list(y = list(log = 10)))
     }
     
+    if(any(!rownames(df) %in% rownames(expression.dat))){
+        stop(paste("Can't find expression data for some features\n"))
+    }
     
     for(probe in rownames(df)){
         if("Symbol" %in% colnames(df)){

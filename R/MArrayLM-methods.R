@@ -60,16 +60,10 @@ setMethod("publish",
             error=function(e){ return(FALSE) })
 
         if(inherits(ann.map.available, "AnnDbBimap")){
-            fdata <- data.frame(
-                ProbeId = featureNames(eSet),
-                EntrezId = unlist(mget(featureNames(eSet), 
-                    getAnnMap("ENTREZID", annotation(eSet)))),
-                Symbol = unlist(mget(featureNames(eSet), 
-                    getAnnMap("SYMBOL", annotation(eSet)))),
-                GeneName = unlist(mget(featureNames(eSet), 
-                    getAnnMap("GENENAME", annotation(eSet)))),
-                stringsAsFactors = FALSE
-            )
+            fdata <- annotate.genes(featureNames(eSet), annotation(eSet),
+                keytype = "PROBEID", cols = list(ProbeId = "PROBEID",
+                    EntrezId = "ENTREZID", Symbol = "SYMBOL", 
+                    GeneName = "GENENAME"))
         } else {
             if(ncol(fData(eSet)) > 0){
                 fdata <- fData(eSet)

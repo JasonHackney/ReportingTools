@@ -108,14 +108,9 @@ setMethod("toReportDF",
             ## Check valid Entrez ids are passed in
             check.eg.ids(rownames(resTab), annotation.db)
 
-            fdata <- data.frame(
-                EntrezId = unlist(rownames(resTab)),
-                Symbol = unlist(mget(rownames(resTab),
-                    getAnnMap("SYMBOL", annotation.db), ifnotfound = NA)),
-                GeneName = unlist(mget(rownames(resTab),
-                    getAnnMap("GENENAME", annotation.db), ifnotfound = NA)),
-                stringsAsFactors = FALSE
-            )
+            fdata <- annotate.genes(rownames(resTab), annotation.db,
+                keytype = "ENTREZID", cols = list(EntrezId = "ENTREZID", 
+                    Symbol = "SYMBOL", GeneName = "GENENAME"))
         } else {
             fdata <- data.frame(ID = rownames(resTab), stringsAsFactors = FALSE)
         }

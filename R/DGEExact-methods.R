@@ -51,14 +51,10 @@ setMethod("publish",
     if (inherits(ann.map.available, "AnnDbBimap")){
         ## Check valid Entrez ids are passed in
         check.eg.ids(rownames(dat), annotation.db)
-        fdata <- data.frame(
-            EntrezId = unlist(rownames(dat.lfc)),
-            Symbol = unlist(mget(rownames(dat.lfc), 
-                getAnnMap("SYMBOL", annotation.db), ifnotfound = NA)),
-            GeneName = unlist(mget(rownames(dat.lfc), 
-                getAnnMap("GENENAME", annotation.db), ifnotfound = NA)),
-            stringsAsFactors = FALSE
-        )
+        fdata <- annotate.genes(rownames(dat), annotation.db,
+            keytype = "ENTREZID", cols = list(EntrezId = "ENTREZID", 
+                Symbol = "SYMBOL", GeneName = "GENENAME"))
+        
     } else {
         if(!is.null(object$genes)){
             fdata <- object$genes[match(selection, rownames(object$table)), , 

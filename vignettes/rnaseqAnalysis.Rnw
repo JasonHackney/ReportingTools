@@ -109,8 +109,8 @@ finish(deReport2)
 @ 
 
 
-\section{Differential expression analysis with \tt DESeq \rm}
-In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq \rm package.
+\section{Differential expression analysis with \tt DESeq \rm and \tt DESeq2 \rm}
+In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq \rm and \tt DESeq2 \rm packages.
 
 
 First, we run \tt DESeq \rm to find differentially expressed genes.
@@ -139,6 +139,28 @@ finish(desReport)
 \includegraphics[scale = .5]{rnaseq2.png}
 \caption{Resulting page created by \tt makeDESeqDF \rm}
 \end{figure}
+
+We can also run \tt DESeq2 \rm to find differentially expressed genes.
+<<run_DESeq2, eval=FALSE>>=
+library(DESeq2)
+mockRna.dse <- DESeqDataSetFromMatrix(countData = mockRnaSeqData,
+                        colData = as.data.frame(conditions), design = ~ conditions)
+colData(mockRna.dse)$conditions <- factor(colData(mockRna.dse)$conditions, levels=c("control", "case"))
+## Get a DESeqDataSet object
+mockRna.dse <- DESeq(mockRna.dse)
+@
+
+Now the results can be written to a report after converting the \tt DESeqDataSet \rm output to a data frame.
+
+<<DESeq2_report, eval=FALSE>>=
+des2Report <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq2',
+    title = 'RNA-seq analysis of differential expression using DESeq2',
+    reportDirectory = "./reports")
+publish(mockRna.dse,des2Report, pvalueCutoff=0.05,
+    annotation.db="org.Mm.eg.db", make.plots=FALSE,
+    reportDir="./reports")
+finish(des2Report)
+@ 
 
 \section{GO analysis using GOstats}
 This section will demonstrate how to use \tt ReportingTools \rm to write a table of GO analysis results to an html file.  First we select our genes of interest, and then run the \tt hyperGTest\rm.

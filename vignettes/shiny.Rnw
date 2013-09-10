@@ -16,7 +16,7 @@
 \headheight=-.3in
 
 \title{Using ReportingTools within Shiny Applications}
-\author{Gabriel Becker}
+\author{Gabriel Becker and Jessica L. Larson}
 \date{\today}
 
 \begin{document}
@@ -40,7 +40,12 @@ Using the techniques in this vignette, \verb@ReportingTools@' formatting and dis
 \caption{A shiny web application which uses \tt ReportingTools \rm to display R \tt data.frame \rm objects}
 \end{figure}
 
-The example we will discuss in this document, pictured above, gives the viewer the opportunity to choose between three data frames and displays both a summary and a ReportingTools-powered table containing the chosen data. We will discuss in detail only portions of the code specific to the interface between \verb@shiny@ and \verb@ReportingTools@. Full code for the application is included in our package in the inst/examples/shinyexample directory.
+The example we will discuss in this document, pictured above, gives the viewer the opportunity to choose between three data frames and displays both a summary and a ReportingTools-powered table containing the chosen data. We will discuss in detail only portions of the code specific to the interface between \verb@shiny@ and \verb@ReportingTools@. Full code for the application is included in our package in the inst/examples/shinyexample directory.  To run the example, copy the \tt inst/examples/shinyexample/Ui.R \rm and \tt inst/examples/shinyexample/server \rm files to your working directory run the following from an R session:
+
+<<run_edgeR, eval=FALSE>>=
+library(shiny)
+myRunApp()
+@
 
 \section{Changes to ui.R when using ReportingTools}
 

@@ -11,7 +11,37 @@ renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
   }
 }
 
-myrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = shinyHandlers)
+htmlrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = shinyHandlers)
+
+
+
+###define three .modifyDF functions:
+##This function does nothing.
+noChange <- function(object, ...){ return(object) }
+##this function normalizes the columns of the data frame
+normalize <- function(object, ...){
+  for (j in 1:dim(object)[2]){
+    object[,j] <- (object[,j]-mean(object[,j],na.rm=T))/sd(object[,j],na.rm=T)
+  }
+  return(object)
+}
+##This function subtracts the median from each column
+subMedian <- function(object, ...){
+  for (j in 1:dim(object)[2]){
+    object[,j] <- object[,j]-median(object[,j],na.rm=T)
+  }
+return(object)
+}
+
+##custom rendering function:
+renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
+  func <- exprToFunction(expr, env, quoted)
+  function(){
+    paste(capture.output(func()), collapse="\n")
+  }
+}
+
+
 
 # Define server logic required to summarize and view the selected dataset
 shinyServer(function(input, output) {
@@ -25,6 +55,7 @@ shinyServer(function(input, output) {
   #     new result is compared to the previous result; if the two are
   #     identical, then the callers are not notified
   #
+  
   datasetInput <- reactive(function() {
     switch(input$dataset,
            "rock" = rock,
@@ -32,6 +63,12 @@ shinyServer(function(input, output) {
            "cars" = cars)
   })
   
+   modifyInput <- reactive(function() {
+    switch(input$modifyFunction,
+           "raw data" = noChange,
+           "normalize" = normalize,
+           "subtract median" = subMedian)
+  })
  
   # The output$summary depends on the datasetInput reactive function, 
   # so will be re-executed whenever datasetInput is re-executed 
@@ -42,8 +79,9 @@ shinyServer(function(input, output) {
   })
   
  
-  
+  ###use RT to display output
   output$view2 <- renderRepTools({
-    publish(datasetInput(), myrep, name="view2tabdiv")
+    publish(datasetInput(), htmlrep, .modifyDF = modifyInput())
   })
 })
+

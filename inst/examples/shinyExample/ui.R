@@ -12,18 +12,22 @@ custHeaderPanel = function(title, windowTitle =title, js= NULL, css=NULL)
 shinyUI(pageWithSidebar(
     custHeaderPanel("ReportingTools", 
                   js = list.files(system.file("extdata/jslib", package="ReportingTools"),
-                                  full.names=TRUE),
+                                 full.names=TRUE),
                   css = list.files(system.file("extdata/csslib", package="ReportingTools"),
-                    pattern="bootstrap", full.names=TRUE),
+                    pattern="bootstrap.css", full.names=TRUE),
                   ),
  
+   #### #### #### ####                
+ ####here and below are shiny specific commands:
   # Sidebar with controls to provide a caption, select a dataset, and 
   # specify the number of observations to view. Note that changes made
   # to the caption in the textInput control are updated in the output
   # area immediately as you type
     sidebarPanel(
                  selectInput("dataset", "Choose a dataset:", 
-                             choices = c("rock", "pressure", "cars"))
+                             choices = c("rock", "pressure", "cars")),
+                 selectInput("modifyFunction", "Choose a modification function:", 
+                             choices = c("raw data", "normalize", "subtract median"))
                  ),
   
   

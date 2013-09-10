@@ -5,9 +5,20 @@
 
 Knitr and ReportingTools
 ===============================================
-
+Jessica L. Larson and Gabriel Becker
        
 We can use knitr and ReportingTools together, as shown in this very simple example from our basic vignette.
+
+Here we will create a simple report that integrates `ReportingTools` report capabilities with knitr.
+
+To build this report, simply call the `knit2html` function from the
+knitr package.
+* By default, knitr will write the destination file within the current working directory. 
+* We thus call `knit2html` from within the 
+   `reportDirectory`. 
+* Alternatively, we can call `knit2html` with an
+   `output` argument that matches the `reportDirectory`
+   argument passed to `HTMLReport`.   
 
  **Note: the output html file must be in the directory indicated by
    the location argument.** If this is not the case the ReportingTools

@@ -5,13 +5,25 @@ setGeneric("getDefaultColumnClasses",
 
 setMethod("getDefaultColumnClasses",
     signature = signature(object = "ANY"),
+    definition = function(object, df = NULL, ...)
+    {
+        colClasses <- NULL
+        if(!is.null(df)){
+            colClasses <- getDefaultColumnClasses(df)
+        }
+        colClasses
+    }
+)
+
+setMethod("getDefaultColumnClasses",
+    signature = signature(object = "data.frame"),
     definition = function(object, df = NULL, 
         filter.columns = sapply(object, is.numeric), ...)
     {
         
         filter.columns <-
           IRanges:::normalizeSingleBracketSubscript(filter.columns,object)
-        
+    
         ## For all columns, get the appropriate CSS class for sorting the
         ## data type
         sort.class.map <- c(
@@ -23,7 +35,7 @@ setMethod("getDefaultColumnClasses",
         )
         colClasses <- sort.class.map[sapply(object, class)]
         colClasses[is.na(colClasses)] <- "sort-string-robust"
-        
+    
         ## For filterable datatypes, also include the CSS class for
         ## filtering the appropriate type
         filter.class.map <- c(
@@ -38,7 +50,7 @@ setMethod("getDefaultColumnClasses",
         sel.filter.classes <- filter.classes[filter.columns]
         colClasses[filter.columns] <-
           paste(sel.filter.classes, colClasses[filter.columns])
-        
+    
         names(colClasses) <- colnames(object)
         
         colClasses

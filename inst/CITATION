@@ -1,0 +1,20 @@
+citEntry(entry="article",
+         title = "ReportingTools: an automated result processing and presentation toolkit for high throughput genomic analyses",
+         author = personList( as.person("Melanie A. Huntley"), 
+                              as.person("Jessica L. Larson"),
+			      as.person("Christina Chaivorapol"),
+			      as.person("Gabriel Becker"),
+			      as.person("Michael Lawrence"),
+			      as.person("Jason A. Hackney"),
+			      as.person("Joshua S. Kaminker")),
+         year = "in press",
+         journal = "Bioinformatics",
+         volume = "",
+         pages = "",
+         doi = "10.1093/bioinformatics/btt551",
+         url = "",
+         
+         textVersion = 
+         paste("Melanie A. Huntley, Jessica L. Larson, Christina Chaivorapol, Gabriel Becker, Michael Lawrence, Jason A. Hackney, and Joshua S. Kaminker (in press):", 
+               "ReportingTools: an automated result processing and presentation toolkit for high throughput genomic analyses.",
+                "Bioinformatics" ) )

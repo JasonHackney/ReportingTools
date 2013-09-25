@@ -3,16 +3,8 @@ library(datasets)
 library(XML)
 library(ReportingTools)
 
-renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
-  func <- exprToFunction(expr, env, quoted)
-  
-  function(){
-    paste(capture.output(func()), collapse="\n")
-  }
-}
-
+##open the report with the shinyHandlers
 htmlrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = shinyHandlers)
-
 
 
 ###define three .modifyDF functions:
@@ -32,15 +24,6 @@ subMedian <- function(object, ...){
   }
 return(object)
 }
-
-##custom rendering function:
-renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
-  func <- exprToFunction(expr, env, quoted)
-  function(){
-    paste(capture.output(func()), collapse="\n")
-  }
-}
-
 
 
 # Define server logic required to summarize and view the selected dataset

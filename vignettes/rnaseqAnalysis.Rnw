@@ -81,7 +81,7 @@ finish(deReport)
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{rnaseq1}
+\includegraphics[scale = .5]{rnaseq1.png}
 \caption{Resulting page created by \tt publish \rm for \tt edgeR.de\rm.}
 \end{figure}
 
@@ -151,7 +151,7 @@ colData(mockRna.dse)$conditions <- factor(colData(mockRna.dse)$conditions, level
 mockRna.dse <- DESeq(mockRna.dse)
 @
 
-Now the results can be written to a report after converting the \tt DESeqDataSet \rm output to a data frame.
+Now the results can be written to a report using the \tt DESeqDataSet \rm object.  
 
 <<DESeq2_report, eval=FALSE>>=
 des2Report <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq2',
@@ -162,6 +162,12 @@ publish(mockRna.dse,des2Report, pvalueCutoff=0.05,
     reportDir="./reports")
 finish(des2Report)
 @ 
+
+\begin{figure}
+\centering
+\includegraphics[scale = .5]{rnaseq3.png}
+\caption{Resulting page created with \tt DESeqDataSet \rm object from \tt DESeq2 \rm analysis}
+\end{figure}
 
 \section{GO analysis using GOstats}
 This section will demonstrate how to use \tt ReportingTools \rm to write a table of GO analysis results to an html file.  First we select our genes of interest, and then run the \tt hyperGTest\rm.
@@ -223,7 +229,7 @@ finish(PFAMReport)
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{rnaseq3.png}
+\includegraphics[scale = .5]{rnaseq4.png}
 \caption{Resulting page created by \tt publish \rm for \tt PFAMResults\rm}
 \end{figure}
 
@@ -234,14 +240,14 @@ Here, we make an index page that puts all three analyses together for easy navig
 indexPage <- HTMLReport(shortName = "indexRNASeq",
     title = "Analysis of mockRnaSeqData",
     reportDirectory = "./reports")
-publish(Link(list(deReport,goReport, PFAMReport), report = indexPage),
+publish(Link(list(deReport,des2Report, goReport, PFAMReport), report = indexPage),
     indexPage)
 finish(indexPage)
 @
 
 \begin{figure}
 \centering
-\includegraphics[scale = .5]{rnaseq4.png}
+\includegraphics[scale = .5]{rnaseq5.png}
 \caption{Resulting page created by calling \tt publish \rm on all our analysis pages}
 \end{figure}
 

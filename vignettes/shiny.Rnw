@@ -32,6 +32,7 @@
 A primary strength of \verb@ReportingTools@ is that it provides powerful, customizable facilities for creating rich, interactive (sortable, filterable, pagable, etc.) and aesthetically pleasing HTML tables based on many disparate types of \verb@R@ objects. \verb@shiny@ is a Web application framework developed by RStudio, Inc. which allows the creation, and deployment of Web applications using only \verb@R@ code. Often these Web applications involve the display of \verb@R@ objects or output, but formatting and rendering of complex \verb@R@ objects is not the focus of the \verb@shiny@ framework.
 
 Using the techniques in this vignette, \verb@ReportingTools@' formatting and display capabilities, including both the default mechanisms and the full range of customizable behavior, can be incorporated into \verb@shiny@ applications, allowing the creation of powerful Web applications which involve the display of \verb@R@ objects representing complex data and analysis results. This vignette assumes knowledge of the \verb@shiny@ framework. Readers who are not familiar with shiny are encouraged to read the official \verb@shiny@ tutorial \href{http://rstudio.github.com/shiny/tutorial/}{here} before continuing.
+
 \begin{figure}[h]
 \centering
 \fbox{
@@ -40,7 +41,7 @@ Using the techniques in this vignette, \verb@ReportingTools@' formatting and dis
 \caption{A shiny web application which uses \tt ReportingTools \rm to display R \tt data.frame \rm objects}
 \end{figure}
 
-The example we will discuss in this document, pictured above, gives the viewer the opportunity to choose between three data frames and displays both a summary and a ReportingTools-powered table containing the chosen data. We will discuss in detail only portions of the code specific to the interface between \verb@shiny@ and \verb@ReportingTools@. Full code for the application is included in our package in the inst/examples/shinyexample directory.  To run the example, copy the \tt inst/examples/shinyexample/Ui.R \rm and \tt inst/examples/shinyexample/server \rm files to your working directory run the following from an R session:
+The example we will discuss in this document, pictured above, gives the viewer the opportunity to choose between three data frames and displays both a summary and a ReportingTools-powered table containing the chosen data. We will discuss in detail only portions of the code specific to the interface between \verb@shiny@ and \verb@ReportingTools@. Full code for the application is included in our package in the inst/examples/shinyexample directory.  To run the example, copy the \tt inst/examples/shinyexample/Ui.R \rm and \tt inst/examples/shinyexample/server.R \rm files to your working directory run the following from an R session:
 
 <<run_edgeR, eval=FALSE>>=
 library(shiny)
@@ -52,18 +53,6 @@ myRunApp()
 The single largest change to a ui.R file in order to add \verb@ReportingTools@ functionality is that \verb@ReportingTools@' JavaScript and CSS files must be included in the header of the resulting page so that the \verb@ReportingTools@ tables function properly.
 
 We define a function \verb@custHeaderPanel@ function which accepts the \verb@title@ and \verb@windowTitle@ arguments accepted by \verb@shiny@'s \verb@headerPanel@ function but also accepts additional arguments \verb@js@ and \verb@css@. These are expected to be character vectors which specify locations of additional Javascript and CSS libraries, respectively. These files are then read and inserted into the header as code in <script> and <style> tags, respectively. 
-
-The code for the function, which currently must appear at the head of your ui.R package (it may be moved into either \verb@shiny@ or \verb@ReportingTools@ eventually) is as follows:
-
-<<custHeaderPanelDef eval=FALSE>>=
-custHeaderPanel = function(title, windowTitle =title, js= NULL, css=NULL)
-{
-  mytlist = c(lapply(js, function(x) tags$script(HTML(paste(readLines(x), collapse="\n")))),
-              lapply(css, function(x) tags$style(HTML(paste(readLines(x), collapse="\n")))))
-   tagList(tag("head",mytlist), div(class = "span12", 
-                                                  style = "padding: 10px 0px;", h1(title)))
-}
-@ 
 
 With this function defined we are able to use it within the standard \verb@shiny@ page layout functions, such as \verb@pageWithSidebar@, in place of the \verb@headerPanel@ function. In particular, we include all (Javascript) files in extdata/jslib and all Twitter Bootstrap based CSS files in extdata/csslib:
 
@@ -103,24 +92,14 @@ myrep = HTMLReport(reportDirectory = "./",shortName="bigtest",
 
 These \verb@ReportHandlers@ will stream the HTML form of any elements added to our Report directly to Rout (the same as the default destination of cat, and one used heavily by \verb@shiny@ to collate output).
 
-We then simply define a custom rendering function, \verb@renderRepTools@, like so:
-<<eval=FALSE>>=
-renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
-  func <- exprToFunction(expr, env, quoted)
-  
-  function(){
-    paste(capture.output(func()), collapse="\n")
-  }
-}
-@ 
-
-By using this custom rendering mechanism and \verb@ReportHandlers@ combination, shiny is able to ``hear'' elements being added to our report and insert them into the dynamic HTML of our Web App.
+We then use (or define) a custom rendering function, \verb@renderRepTools@.  By using this custom rendering mechanism and \verb@ReportHandlers@ combination, shiny is able to ``hear'' elements being added to our report and insert them into the dynamic HTML of our Web App.
 
 To make use of this we simply publish elements to our report within the expression passed to \verb@renderRepTools@:
 
 <<eval=FALSE>>=
- output$view2 <- renderRepTools({
-    publish(datasetInput(), myrep, name="view2tabdiv")
+###use RT to display output
+  output$view2 <- renderRepTools({
+    publish(datasetInput(), htmlrep, .modifyDF = modifyInput())
   })
 @ 
 

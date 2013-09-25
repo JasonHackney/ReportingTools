@@ -4,7 +4,7 @@
 ##For more details on the server.R and ui.R files see the 
 ##shiny tutorial at http://rstudio.github.com/shiny/tutorial/
 
-##Look over shinyReportingTools.Rnw for more details
+##Look over shinyReportingTools.Rnw (the shiny vignette) for more details
 
 library(shiny)
 runApp()

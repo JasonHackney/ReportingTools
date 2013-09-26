@@ -158,7 +158,7 @@ des2Report <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq2',
     title = 'RNA-seq analysis of differential expression using DESeq2',
     reportDirectory = "./reports")
 publish(mockRna.dse,des2Report, pvalueCutoff=0.05,
-    annotation.db="org.Mm.eg.db", factor = mockRna.dse$conditions,
+    annotation.db="org.Mm.eg.db", factor = colData(mockRna.dse)$conditions,
     reportDir="./reports")
 finish(des2Report)
 @ 

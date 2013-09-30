@@ -1,30 +1,15 @@
 \name{custHeaderPanel}
 \alias{custHeaderPanel}
-\title{Tells shiny how to use ReportingTools in ui.R}
-\usage{
-    custHeaderPanel(title, window, windowTitle = title, js = NULL, css = NULL) 
-}
-\arguments{
-  \item{title}{}
-
-  \item{window}{}
-
-  \item{windowTitle}{}
-
-  \item{js}{}
-
-  \item{css}{}
-}
-
-\value{
-  
-
-}
+\alias{renderRepTools}
+\title{Helper functions for using ReportingTools with Shiny}
 \description{
-	
-}
-\details{
-	
+  \code{custHeaderPanel} defines a header panel with custom Javascript and CSS
+  included.
+
+  \code{renderRepTools} declares to shiny that the output is raw HTML
+  that was formatted by ReportingTools.
+  
+  See the shiny vignette for example usage.
 }
 \author{
   Gabriel Becker and Jessica L. Larson 

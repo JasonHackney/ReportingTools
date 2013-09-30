@@ -3,6 +3,15 @@ library(datasets)
 library(XML)
 library(ReportingTools)
 
+##custom rendering function for server.R
+renderRepTools = function(expr, env=parent.frame(), quoted=FALSE) {
+  func <- exprToFunction(expr, env, quoted)
+  function(){
+    paste(capture.output(func()), collapse="\n")
+  }
+}
+
+
 ##open the report with the shinyHandlers
 htmlrep = HTMLReport(reportDirectory = "./",shortName="bigtest", handlers = shinyHandlers)
 

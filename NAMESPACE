@@ -31,7 +31,7 @@ importFrom(XML, htmlParse, getNodeSet, saveXML, xmlRoot, addChildren,
 export(HTMLReport, CSVFile, DataPackage, validConnection,
     reporting.theme.alternate, reporting.theme, makeDESeqDF, readReport,
     fileHandlers, connectionHandlers, knitrHandlers, shinyHandlers,
-    fileWIndexHandlers, makeOldHTMLReport, custHeaderPanel, renderRepTools)
+    fileWIndexHandlers, makeOldHTMLReport, custHeaderPanel)
 exportMethods(publish, name, title, 'title<-', reportDirectory,
     'reportDirectory<-', filename, path, url, page, 'page<-', finish, show,
     basePath, baseUrl, dependencies, "dependencies<-", modifyReportDF,

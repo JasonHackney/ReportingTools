@@ -2,7 +2,7 @@
 \alias{custHeaderPanel}
 \title{Define a header panel with custom JS/CSS for a Shiny app}
 \usage{
-    custHeaderPanel(title, window, windowTitle = title, js = NULL, css = NULL) 
+    custHeaderPanel(title, windowTitle = title, js = NULL, css = NULL) 
 }
 \arguments{
   \item{title}{Title of the shiny app}

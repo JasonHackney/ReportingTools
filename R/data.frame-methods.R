@@ -118,7 +118,7 @@ setMethod("publish",
 
     ## mainHtml is the table html for the page
     tableHtml <- hwrite(df, col.class=as.list(col.class), row.names=FALSE,
-                        table.class="dataTable table table-hover table-striped table-bordered")
+                        table.class="dataTable table table-hover table-condensed")
 
     ## make the top row of the table html a header row
     ## (sub only replaces on first match)

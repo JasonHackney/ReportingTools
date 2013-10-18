@@ -4,7 +4,7 @@ div.dataTables_length label {
 }
 
 div.dataTables_length select {
-    width: 75px;
+    width: 70px;
 }
 
 div.dataTables_filter label {
@@ -20,52 +20,100 @@ div.dataTables_paginate {
 	margin: 0;
 }
 
-table {
+h4{}
+h3{}
+h2 { font-size: 22px }
+h1{ }
+
+.table {
 	clear: both;
+        table-layout: fixed;
         margin-bottom: 6px !important;
-        max-width: none !important;
+        font-size: 10pt;
+        border-bottom: 1px solid #F5F5F5;
 }
+
+.table td, .table th{
+    border: none;
+}
+
+.table td {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 
 /* style of the content in the top header row 
    The column headings are padded to allow room for
    the icons (two header rows are requried by js
    sorting library) */
-table th.no-print { 
+.table th.no-print { 
  	font-size: 0pt; 
 } 
 
-
-/* from-to box and search: size of the text entered into input boxes */
-/* also changes height of the box to make the txt centered */
-input {
-    font-size:8pt;
-    min-height: 25px;
+/* decrease space between header section and table */
+/* to give table and title a more condensed look */
+.page-header {
+    margin-top: 0px;
+    margin-bottom: 10px;
+    border: none;
 }
 
+/* set size of image so that it appears about right*/
+/* .table img { */
+/*     width: 100%; */
+/*     height: auto; */
+/* } */
+
+/*common look and feel for text labeling all labels*/
+label {
+    font-weight: bold;
+    font-size: 9pt;
+}
+
+/* any input box: size of text */
+/* line-height and height are to center the text */
+.form-inline input {
+    font-size: 8pt;
+    text-align: left;
+    padding-left: 2px; 
+    padding-right: 2px;
+    line-height: 100%; 
+    height: 2.5em; 
+}
+ 
 /* from-to box: size of the input boxes */
-input.number_range_filter {
-    width:40px;
+input.number_range_filter { 
+    width:30px; 
+}
+
+/*from-to box: input label text */
+/*add min-width so that the from-to boxes don't wrap */
+/*added border to make the line continuous*/
+/*surrounding this column */
+.table th.top-header-row.filter-num{
+    font-weight: bold;
+    vertical-align: middle;
+    font-size: 9pt;
+    border-right: 1px solid #F5F5F5;
+    border-left: 1px solid #F5F5F5;
+    border-top: 1px solid #F5F5F5;
+    width: 130px;
 }
 
 
-/* from-to box: text of the from/to input box label */
-/*adds some color to the top header row */
-/*bottom header row is colored in the .sorting class below*/
-/*also set the width of the bos so that the txt doesn't wrap in the from-to*/
-table th.top-header-row.filter-num {
-        background-color: #515151;
-        color: white;
-        min-width:140px;
-        font-weight: bold;
-        font-size:10pt;
+/* makes room for the icons and adds line */
+/* font size of the bottom-header row */
+/* adds border around header to distinguish the columns */
+.table th.bottom-header-row {
+    padding-right: 11px !important;
+    padding-bottom: 0px;
+    font-size: 10pt;
+    border-bottom: 2px solid black;
+    border-right: 1px solid #F5F5F5;
+    border-left: 1px solid #F5F5F5;
 }
-
-
-/* makes room for the icons */
-table th.bottom-header-row {
-        padding-right: 15px !important;
-}
-
 
 /* Footer cells-- a footer is only included because
    it is needed for the sorting.  The styling here
@@ -74,8 +122,8 @@ div foot {
     font-size:0;
 }
 
+/*color of rows on hover */	
 .table tbody tr:hover td, .table tbody tr:hover th {
-/*     background-color: #C5C5C5; */
     background-color: #dfdfdf;
 }
 
@@ -88,12 +136,11 @@ table.table thead .sorting_desc_disabled {
 	*cursor: hand;
 }
 
+/* icons for sorting */
+table.table thead th.sorting { background: transparent url('images/sort_both.yo.png') no-repeat center; background-position: 96% 50% }
+table.table thead th.sorting_asc { background: transparent url('images/sort_asc.yo.png') no-repeat center; background-position: 96% 50% }
+table.table thead th.sorting_desc { background: transparent url('images/sort_desc.yo.png') no-repeat center;background-position: 96% 50% }
 
-table.table thead .sorting { background: #515151 url('images/sort_both.png') no-repeat center right; color: white; }
-table.table thead .sorting_asc { background: #515151 url('images/sort_asc.png') no-repeat center right; color: white; }
-table.table thead .sorting_desc { background: #515151 url('images/sort_desc.png') no-repeat center right; color: white; }
-
-table.table thead .sorting_disabled { background: #515151; color: white; }
 table.table thead .sorting_asc_disabled { background: #515151 url('images/sort_asc_disabled.png') no-repeat center right; color: white; }
 table.table thead .sorting_desc_disabled { background: #515151 url('images/sort_desc_disabled.png') no-repeat center right; color: white;}
 
@@ -127,8 +174,6 @@ div.dataTables_scrollBody tbody tr:first-child td {
 div.dataTables_scrollFoot table {
 	border-top: none;
 }
-
-
 
 
 /*
@@ -230,6 +275,8 @@ div.DTFC_LeftBodyWrapper tbody tr:first-child td {
 div.DTFC_LeftFootWrapper table {
 	border-top: none;
 }
+
+
 
 
 

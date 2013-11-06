@@ -27,7 +27,7 @@ h1{ }
 
 .table {
 	clear: both;
-        table-layout: fixed;
+        table-layout: auto;
         margin-bottom: 6px !important;
         font-size: 10pt;
         border-bottom: 1px solid #F5F5F5;

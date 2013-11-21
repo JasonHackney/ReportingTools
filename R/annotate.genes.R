@@ -1,5 +1,5 @@
 annotate.genes <- function(keys, annotation.db, keytype = "ENTREZID",
-    cols = list(EntrezId = "ENTREZID", Symbol = "SYMBOL", 
+    columns = list(EntrezId = "ENTREZID", Symbol = "SYMBOL", 
         GeneName = "GENENAME"))
 {
     if(class(annotation.db) == "character")
@@ -9,20 +9,20 @@ annotate.genes <- function(keys, annotation.db, keytype = "ENTREZID",
     ## using the keys and keytype provided above.
     select.fn <- function(col){
         .filter.vals(suppressWarnings(select(annotation.db, keys, 
-            keytype = keytype, cols = col)))[keys]
+            keytype = keytype, columns = col)))[keys]
     }
     
     ## Iterate across the list items in cols, getting the vals using select
     ## The names from the list are the column names in the data.frame.
     annotation.df <- data.frame(
-        lapply(cols, select.fn), 
+        lapply(columns, select.fn), 
         stringsAsFactors = FALSE
     )
     
     ## There is a bug in select that returns factors if the column selected
     ## is the same as the keytype. Let's undo this.
-    if(keytype %in% cols)
-        annotation.df[, which(cols == keytype)] <- keys
+    if(keytype %in% columns)
+        annotation.df[, which(columns == keytype)] <- keys
     
     annotation.df
 }

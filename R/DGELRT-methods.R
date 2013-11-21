@@ -50,7 +50,7 @@ setMethod("publish",
         check.eg.ids(rownames(dat), annotation.db)
 
         fdata <- annotate.genes(rownames(dat), annotation.db,
-            keytype = "ENTREZID", cols = list(EntrezId = "ENTREZID", 
+            keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID", 
                 Symbol = "SYMBOL", GeneName = "GENENAME"))
         
     } else {

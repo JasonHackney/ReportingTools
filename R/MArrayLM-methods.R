@@ -61,7 +61,7 @@ setMethod("publish",
 
         if(inherits(ann.map.available, "AnnDbBimap")){
             fdata <- annotate.genes(featureNames(eSet), annotation(eSet),
-                keytype = "PROBEID", cols = list(ProbeId = "PROBEID",
+                keytype = "PROBEID", columns = list(ProbeId = "PROBEID",
                     EntrezId = "ENTREZID", Symbol = "SYMBOL", 
                     GeneName = "GENENAME"))
         } else {

@@ -20,6 +20,11 @@ importMethodsFrom(GSEABase, geneIds, geneIdType)
 importMethodsFrom(XML, '[[')
 importMethodsFrom(IRanges, as.data.frame)
 
+import(methods)
+import(knitr)
+import(BiocGenerics)
+import(ggplot2)
+import(ggbio)
 import(lattice)
 import(PFAM.db)
 importFrom(R.utils, getRelativePath) #this is a lot of dependencies for one function

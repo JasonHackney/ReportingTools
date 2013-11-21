@@ -109,7 +109,7 @@ setMethod("toReportDF",
             check.eg.ids(rownames(resTab), annotation.db)
 
             fdata <- annotate.genes(rownames(resTab), annotation.db,
-                keytype = "ENTREZID", cols = list(EntrezId = "ENTREZID", 
+                keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID", 
                     Symbol = "SYMBOL", GeneName = "GENENAME"))
         } else {
             fdata <- data.frame(ID = rownames(resTab), stringsAsFactors = FALSE)

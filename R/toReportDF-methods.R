@@ -76,22 +76,22 @@ setMethod("toReportDF",
 setMethod("toReportDF",
     signature = signature(object = "DESeqDataSet"),
     definition = function(object, report, 
-        resultName = length(resultsNames(object)), 
+        coef = length(resultsNames(object)), 
         annotation.db = NULL, pvalueCutoff = 0.01, lfc = 0, n = 500,
         sort.by = "pvalue", make.plots = FALSE, ...)
     {
         if (!"results" %in% mcols(mcols(object))$type) {
             stop("No results found in DESeqDataSet, please run DESeq first.")
         }
-        if(is(resultName, "numeric")){
-            if(resultName > length(resultsNames(object))){
-                stop(paste("No result at index", resultName, "there are only",
+        if(is(coef, "numeric")){
+            if(coef > length(resultsNames(object))){
+                stop(paste("No result at index", coef, "there are only",
                     length(resultsNames(object)), "coefficients available."))
             }
-            resultName <- resultsNames(object)[resultName]
+            coef <- resultsNames(object)[coef]
         }
         
-        resTab <- results(object, resultName)
+        resTab <- results(object, coef)
         resTab <- as.data.frame(resTab[which(resTab$padj < pvalueCutoff & 
             abs(resTab$log2FoldChange) > abs(lfc)), ])
             

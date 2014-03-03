@@ -6,6 +6,7 @@
 \alias{modifyReportDF,ANY,ANY,DGEExact-method}
 \alias{modifyReportDF,ANY,ANY,DGELRT-method}
 \alias{modifyReportDF,ANY,ANY,DESeqDataSet-method}
+\alias{modifyReportDF,ANY,ANY,DESeqResults-method}
 \alias{modifyReportDF,ANY,ANY,MArrayLM-method}
 \alias{modifyReportDF,ANY,ANY,GeneSet-method}
 \alias{modifyReportDF,ANY,ANY,GOHyperGResult-method}

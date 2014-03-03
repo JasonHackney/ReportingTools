@@ -166,6 +166,35 @@ setMethod("modifyReportDF",
 
 setMethod("modifyReportDF",
     signature = signature(
+    object = "DESeqResults"),
+    definition = function(df, htmlRep, object, DataSet, factor, 
+        make.plots = TRUE, ...)
+    {
+        if("EntrezId" %in% colnames(df)){
+            df <- entrezGene.link(df)
+        }
+        if(make.plots){
+            dots <- list(...)
+            par.settings <- list()
+            if("par.settings" %in% names(dots))
+                par.settings <- dots$par.settings
+                
+            figure.dirname <- paste('figures', htmlRep$shortName, sep='')  
+            figure.directory <- file.path(dirname(path(htmlRep)), 
+                figure.dirname)
+            .safe.dir.create(figure.directory)
+            
+            df <- eSetPlot(df, DataSet, factor, figure.directory,
+                figure.dirname, par.settings = par.settings, 
+                ylab.type = "Normalized Counts")
+            df
+        }
+        df
+    }
+)
+
+setMethod("modifyReportDF",
+    signature = signature(
     object = "DESeqDataSet"),
     definition = function(df, htmlRep, object, factor, make.plots = TRUE, ...)
     {

@@ -28,6 +28,21 @@ setMethod("publish",
 
 setMethod("publish",
     signature = signature(
+        object = "DESeqResults",
+        publicationType = "HTMLReportRef"
+    ),
+    definition = function(object, publicationType, DataSet = NULL, 
+        factor = NULL,  n = 1000, pvalueCutoff = 0.01, lfc = 0, 
+        make.plots = TRUE, ..., name)
+    {
+        publicationType$addElement(name = name, value=object, factor = factor,
+            DataSet = DataSet, n = n, pvalueCutoff = pvalueCutoff, lfc = lfc, 
+            make.plots = make.plots, ...)
+    }
+)
+
+setMethod("publish",
+    signature = signature(
         object = "DGEExact",
         publicationType = "ANY"
     ),

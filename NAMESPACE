@@ -4,7 +4,7 @@ importClassesFrom(Biobase, ExpressionSet)
 importClassesFrom(limma, MArrayLM)
 importClassesFrom(edgeR, DGEExact, DGELRT, DGEList)
 importClassesFrom(GSEABase, GeneSetCollection)
-importClassesFrom(DESeq2, DESeqDataSet)
+importClassesFrom(DESeq2, DESeqDataSet, DESeqResults)
 
 importFrom(annotate, getAnnMap, annPkgName)
 importFrom(limma, topTable)

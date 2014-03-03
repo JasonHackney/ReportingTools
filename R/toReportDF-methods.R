@@ -1,6 +1,6 @@
 setMethod("toReportDF",
     signature = signature(object= "ANY"),
-    definition = function(object, report, ...)
+    definition = function(object, htmlReport, ...)
         as.data.frame(object, "data.frame")
 )
 
@@ -8,7 +8,7 @@ setMethod("toReportDF",
 
 setMethod("toReportDF",
     signature = signature(object = "GOHyperGResult"),
-    definition = function(object, report, pvalueCutoff = 0.01, 
+    definition = function(object, htmlReport, pvalueCutoff = 0.01, 
         categorySize = 10, ...)
     {
         summary.tab<-summary(object, pvalue=pvalueCutoff, 
@@ -20,10 +20,10 @@ setMethod("toReportDF",
 
 setMethod("toReportDF",
     signature = signature(object = "PFAMHyperGResult"),
-    definition = function(object, report, selectedIDs, annotation.db,
+    definition = function(object, htmlReport, selectedIDs, annotation.db,
             pvalueCutoff = 0.01,categorySize=10, name, path, ...)
     {
-        df <- .PFAMhyperG.to.htmlDF2(object, report, selectedIDs, annotation.db,
+        df <- .PFAMhyperG.to.htmlDF2(object, htmlReport, selectedIDs, annotation.db,
             pvalueCutoff = pvalueCutoff, categorySize = categorySize)
         df
     }
@@ -31,9 +31,9 @@ setMethod("toReportDF",
 
 setMethod("toReportDF",
     signature = signature(object = "MArrayLM"),
-    definition = function(object, rep, eSet = NULL, n = 1000, 
+    definition = function(object, htmlReport, eSet = NULL, n = 1000, 
         pvalueCutoff = 0.01, lfc = 0, adjust.method = "BH", coef = NULL, 
-        make.plots = FALSE, factor = NULL, ...)
+        make.plots = FALSE, factor = NULL, .modifyDF = list(), ...)
     {
         .marrayLM.to.data.frame(object, eSet = eSet, n = n, 
             pvalueCutoff = pvalueCutoff, lfc = lfc, 
@@ -44,7 +44,7 @@ setMethod("toReportDF",
 
 setMethod("toReportDF", 
     signature = signature(object = "DGEExact"),
-    definition = function(object, rep, ...)
+    definition = function(object, htmlReport, ...)
     {
         .DGEExact.to.data.frame(object, ...)
     }
@@ -52,46 +52,100 @@ setMethod("toReportDF",
 
 setMethod("toReportDF",
     signature = signature(object = "DGELRT"),
-    definition = function(object, rep, ...)
+    definition = function(object, htmlReport, ...)
         .DGELRT.to.data.frame(object, ...)
 )
 
 setMethod("toReportDF",
     signature = signature(object = "GeneSetCollection"),
-    definition = function(object, htmlRep, ...)
-        .GeneSetCollection.to.html2(object, htmlRep, ...)
+    definition = function(object, htmlReport, ...)
+        .GeneSetCollection.to.html2(object, htmlReport, ...)
 )
 
 setMethod("toReportDF",
     signature = signature(object = "GeneSet"),
-    definition = function(object, htmlRep, ...)
-        .GeneSet.to.data.frame(object, htmlRep, ...)
+    definition = function(object, htmlReport, ...)
+        .GeneSet.to.data.frame(object, htmlReport, ...)
 )
 
 setMethod("toReportDF",
     signature = signature(object="data.frame"),
     definition = function(object, rep, ...) object
 )
+    
+setMethod("toReportDF",
+    signature = signature(object = "DESeqResults"),
+    definition = function(object, htmlReport, DataSet = NULL, 
+        annotation.db = NULL, pvalueCutoff = 0.01, lfc = 0, n = 500,
+        sort.by = "pvalue", make.plots = FALSE, ..., name = NULL)
+    {
+        resTab <- as.data.frame(object[
+            which(object$pad < pvalueCutoff & 
+            abs(object$log2FoldChange) > abs(lfc)), ])
+            
+        if(!is.null(sort.by) & sort.by %in% colnames(resTab))
+            resTab <- resTab[order(resTab[, sort.by]), ]
+        
+        if(n < nrow(resTab))
+            resTab <- resTab[1:n, ]
+        
+        ann.map.available <- tryCatch(getAnnMap("SYMBOL", annotation.db), 
+            error=function(e){ return(FALSE) })
+
+        if (inherits(ann.map.available, "AnnDbBimap")){
+            ## Check valid Entrez ids are passed in
+            check.eg.ids(rownames(resTab), annotation.db)
+
+            fdata <- ReportingTools:::annotate.genes(rownames(resTab), annotation.db,
+                keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID", 
+                    Symbol = "SYMBOL", GeneName = "GENENAME"))
+        } else {
+            fdata <- data.frame(ID = rownames(resTab), stringsAsFactors = FALSE)
+        }
+
+        if(make.plots){
+            ret <- data.frame(
+                fdata,
+                Image = rep("", nrow(fdata)),
+                logFC = resTab$log2FoldChange,
+                "p-Value" = resTab$pvalue,
+                "Adjusted p-Value" = resTab$padj,
+                stringsAsFactors = FALSE,
+                check.names = FALSE,
+                row.names = rownames(resTab)
+            )
+        } else {
+            ret <- data.frame(
+                fdata,
+                logFC = resTab$log2FoldChange,
+                "p-Value" = resTab$pvalue,
+                "Adjusted p-Value" = resTab$padj,
+                stringsAsFactors = FALSE,
+                check.names = FALSE,
+                row.names = rownames(resTab)
+            )
+        }
+        ret
+    }
+)
 
 setMethod("toReportDF",
     signature = signature(object = "DESeqDataSet"),
-    definition = function(object, report, 
-        coef = length(resultsNames(object)), 
-        annotation.db = NULL, pvalueCutoff = 0.01, lfc = 0, n = 500,
-        sort.by = "pvalue", make.plots = FALSE, ...)
+    definition = function(object, htmlReport, 
+        contrast = NULL, resultName = NULL, annotation.db = NULL,
+        pvalueCutoff = 0.01, lfc = 0, n = 500, sort.by = "pvalue", 
+        make.plots = FALSE, ...)
     {
         if (!"results" %in% mcols(mcols(object))$type) {
             stop("No results found in DESeqDataSet, please run DESeq first.")
         }
-        if(is(coef, "numeric")){
-            if(coef > length(resultsNames(object))){
-                stop(paste("No result at index", coef, "there are only",
-                    length(resultsNames(object)), "coefficients available."))
-            }
-            coef <- resultsNames(object)[coef]
+        if(is.null(contrast) && !is.null(resultName)){
+            resTab <- results(object, name = resultName)
+        } else if(!is.null(contrast) && is.null(resultName)) {
+            resTab <- results(object, contrast = contrast)
+        } else {
+            resTab <- results(object)
         }
-        
-        resTab <- results(object, coef)
         resTab <- as.data.frame(resTab[which(resTab$padj < pvalueCutoff & 
             abs(resTab$log2FoldChange) > abs(lfc)), ])
             

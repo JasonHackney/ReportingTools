@@ -22,6 +22,7 @@
 \alias{publish,DGEExact,HTMLReportRef-method}
 \alias{publish,DGELRT,HTMLReportRef-method}
 \alias{publish,DESeqDataSet,HTMLReportRef-method}
+\alias{publish,DESeqResults,HTMLReportRef-method}
 \alias{publish,HyperGResultBase,HTMLReportRef-method}
 \alias{publish,PFAMHyperGResult,HTMLReportRef-method}
 \alias{publish,GOHyperGResult,HTMLReportRef-method}
@@ -83,17 +84,35 @@
       
         DESeqDataSet:\cr
         \code{publish(object, publicationType, factor = NULL, n = 1000,
-        pvalueCutoff = 0.01, lfc = 0, coef = NULL, make.plots = TRUE, 
-        ..., name)}
-        To coerce a \code{\linkS4class{DESeqDataSet}} to a \code{data.frame}, we
-        use the \code{\link{results}} function from the \code{DESeq2} package,
-        therefore one of \code{\link{DESeq}}, or something similar must be run
-        prior to \code{publish}. By default, the last coefficient from
-        \code{\link{resultsNames}} is reported. Log fold changes, p-values and
-        adjusted p-values are taken directly from the DESeqDataSet. Stripplots
-        showing the expression values for each transcript are produced based on
-        the normalized counts from the \code{\linkS4class{DESeqDataSet}},
-        grouped by the levels in \code{factor}.
+        pvalueCutoff = 0.01, lfc = 0, contrast = NULL, resultName = NULL, 
+        make.plots = TRUE, ..., name)}
+        To coerce a \code{\linkS4class{DESeqDataSet}} to a \code{data.frame},
+        we use the \code{\link{results}} function from the \code{DESeq2}
+        package, therefore \code{\link{DESeq}}, or something similar must be
+        run prior to \code{publish}. \code{contrast} and \code{resultName} are
+        passed to the \code{\link{results}} function as the \code{contrast}
+        and \code{name} parameters, please consult the documentation for
+        \code{\link{results}} to see how these are specified. If present,
+        \code{annotation.db} is used to find gene-level annotations for the
+        rows in the \code{DESeqDataSet}. Stripplots showing the expression
+        values for each transcript are produced based on the normalized counts
+        from the \code{\linkS4class{DESeqDataSet}}, grouped by the levels in
+        \code{factor}.
+
+        DESeqResults:\cr
+        \code{publish(object, publicationType, DataSet = NULL, 
+        annotation.db = NULL, n = 500, pvalueCutoff = 0.01, lfc = 0, 
+        make.plots = TRUE, ..., name)}
+        To coerce a \code{\linkS4class{DESeqResults}} object to a
+        \code{data.frame}, we filter the results \code{DataFrame} such that
+        the absolute  log fold changes is greater than \code{lfc} and the
+        adjusted p-value is less than \code{pvalueCutoff}. If present,
+        \code{annotation.db} is used to find gene-level annotations for the
+        rows in the \code{DESeqResults}. If \code{make.plots} is TRUE,
+        stripplots showing the expression values for each transcript are
+        produced based on the normalized counts from the \code{DataSet}, which
+        should be of class \code{\linkS4class{DESeqDataSet}}, grouped by the
+        levels in \code{factor}.
         
         DGEExact:\cr
         \code{publish(object, htmlReport, countTable, conditions, 

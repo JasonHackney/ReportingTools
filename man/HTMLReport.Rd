@@ -10,7 +10,9 @@ Special care should be taken if non-default javacsript or css files are used, as
 detailed below.
 }
 \usage{
-makeOldHTMLReport(shortName, title = NULL, reportDirectory = ".", baseUrl = "localhost", basePath = NULL, page = NULL, link.css = NULL, link.javascript = NULL, overwrite.js=TRUE)
+makeOldHTMLReport(shortName, title = NULL, reportDirectory = ".",
+baseUrl = "localhost", basePath = NULL, page = NULL, link.css = NULL,
+link.javascript = NULL, overwrite.js=TRUE)
 }
 \arguments{
   \item{shortName}{

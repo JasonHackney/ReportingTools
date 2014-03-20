@@ -1,5 +1,6 @@
 nullFun = function(...) TRUE
 setClassUnion("characterOrNULL", c("character","NULL"))
+setOldClass("ggplot")
 
 #I'm envisioning each ReportHandlers set representing a distinct target (eg internal DOM, write to pipe, etc)
 #Currently args expects a named list of named lists, up to one for each function, eg list(finish = list(file = "myfile.html"))

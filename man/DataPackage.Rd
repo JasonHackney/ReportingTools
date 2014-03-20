@@ -7,7 +7,9 @@ Function for creating and initializing an object of class DataPackage.
 This is a function for creating a DataPackage. Calls to publish an object to the package serialize the object to disk, adding a file to the data directory, and adding a stubbed .Rd documentation file for the dataset.
 }
 \usage{
-DataPackage(shortName, title = "", reportDirectory = ".", version = "0.0.1", dependencies = c("Biobase"), license = "", description = "", author = "nobody", maintainer = "nobody <nobody@nothing.net>")
+DataPackage(shortName, title = "", reportDirectory = ".", version =
+"0.0.1", dependencies = c("Biobase"), license = "", description = "",
+author = "nobody", maintainer = "nobody <nobody@nothing.net>")
 }
 \arguments{
   \item{shortName}{

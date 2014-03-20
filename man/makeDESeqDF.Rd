@@ -2,8 +2,9 @@
 \alias{makeDESeqDF}
 \title{Converts DESeq results into a data frame to be published}
 \usage{
-    makeDESeqDF(object, countTable, pvalueCutoff, conditions, annotation.db,
-        expName, reportDir, ...) 
+    makeDESeqDF(object, countTable, pvalueCutoff, conditions,
+annotation.db, expName, reportDir, ...)
+
 }
 \arguments{
   \item{object}{Output from nbinomTest; see DESeq manual for details}
@@ -48,6 +49,10 @@
 	#desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
     #title = 'RNA-seq analysis of differential expression using DESeq',
     #reportDirectory = "./reports")
-	#publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05,    #conditions=conditions,annotation.db="org.Mm.eg.db", expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
+	#publish(res,desReport,name="df",countTable=mockRnaSeqData,
+    #pvalueCutoff=0.05,
+    ##conditions=conditions,annotation.db="org.Mm.eg.db",
+    #expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
+
 #finish(desReport)
 }

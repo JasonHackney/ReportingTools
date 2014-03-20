@@ -5,6 +5,7 @@ importClassesFrom(limma, MArrayLM)
 importClassesFrom(edgeR, DGEExact, DGELRT, DGEList)
 importClassesFrom(GSEABase, GeneSetCollection)
 importClassesFrom(DESeq2, DESeqDataSet, DESeqResults)
+#importClassesFrom(ggbio, GGbio)
 
 importFrom(annotate, getAnnMap, annPkgName)
 importFrom(limma, topTable)
@@ -12,6 +13,7 @@ importFrom(grid, grid.newpage, viewport, pushViewport, upViewport, unit)
 importFrom(edgeR, topTags, cpm)
 importFrom(GOstats, termGraphs, inducedTermGraph, plotGOTermGraph)
 importFrom(DESeq2, results, resultsNames)
+importFrom(ggplot2, ggplot) #we don't actually need this, we just need to be able to do setOldClass and have ggplot2 listed in imports
 
 importMethodsFrom(AnnotationDbi, select, summary, mget)
 importMethodsFrom(Category, summary, geneIdsByCategory, geneIdUniverse)
@@ -23,8 +25,8 @@ importMethodsFrom(IRanges, as.data.frame)
 import(methods)
 import(knitr)
 import(BiocGenerics)
-import(ggplot2)
-import(ggbio)
+import(ggbio) #we should only be importing the GGbio class, but it isn't exported properly.
+
 import(lattice)
 import(PFAM.db)
 importFrom(R.utils, getRelativePath) #this is a lot of dependencies for one function

@@ -8,9 +8,9 @@ Maintainer: Jason A. Hackney <hackney.jason@gene.com>, Gabriel Becker
 Depends: methods, knitr
 Imports: Biobase,hwriter,Category,GOstats,limma(>=
         3.17.5),lattice,AnnotationDbi,edgeR, annotate,PFAM.db,
-        GSEABase, BiocGenerics(>= 0.1.6), grid, XML, R.utils, ggplot2,
-        ggbio, DESeq2(>= 1.3.41), IRanges
-Suggests: RUnit, ALL, hgu95av2.db, org.Mm.eg.db
+        GSEABase, BiocGenerics(>= 0.1.6), grid, XML, R.utils,
+         DESeq2(>= 1.3.41), IRanges, ggplot2, ggbio
+Suggests: RUnit, ALL, hgu95av2.db, org.Mm.eg.db, shiny, pasilla,
 Type: Package
 LazyLoad: yes
 License: Artistic-2.0

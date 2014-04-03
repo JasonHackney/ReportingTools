@@ -251,4 +251,12 @@ finish(indexPage)
 \caption{Resulting page created by calling \tt publish \rm on all our analysis pages}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Huntley, M.A., Larson, J.L., Chaivorapol, C., Becker, G., Lawrence, M., Hackney, J.A., 
+and J.S. Kaminker. (2013).  ReportingTools: an automated results processing and 
+presentation toolkit for high throughput genomic analyses. {\it Bioinformatics}. 
+{\bf 29}(24): 3220-3221.
+
 \end{document}

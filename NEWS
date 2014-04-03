@@ -1,3 +1,9 @@
+2013-4-1: version 2.3.8
+------------------------
+ - Minor bug fixes in NAMESPACE and DESCRIPTION and css
+ - Enhanced vignettes to include information on our website and publication
+ - Enhanced vignettes to clarify use of .modifyDF()
+
 2013-4-1: version 2.0.0
 ------------------------
  - HTML reports are now represented by the HTMLReportRef referenceClass

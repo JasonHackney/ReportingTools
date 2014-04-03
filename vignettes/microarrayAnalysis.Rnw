@@ -81,7 +81,15 @@ The resulting output is displayed on an .html page and includes several statisti
 \caption{Resulting page created by \tt publish \rm for \tt fit \rm.}
 \end{figure}
 
-If we want to change our images, we can do so with \tt .modifyDF \rm (see the basic vignette for more examples of how to use this feature).  In this example, we make lattice plots of the expression of each gene in our table stratified by \tt mol.biol \rm and \tt sex \rm.
+If we want to change our images, we can do so with \tt .modifyDF \rm 
+(see the basic vignette for more examples of how to use this feature).  
+In this example, we make lattice plots of the expression of each gene in our 
+table stratified by \tt mol.biol \rm and \tt sex \rm.  Note that \tt .modifyDF \rm 
+uses the basic data frame (output from \tt topTable \rm ) as its default object 
+and then modifies it with the corresponding function.  To modify the decorated 
+\tt ReportingTools\rm \tt data.frame \rm, 
+let  \tt .modifyDF=list(modifyReportDF, makeNewImages) \rm.
+
 
 <<making the DE report with new images, eval=FALSE>>=
 library(hwriter)
@@ -106,7 +114,9 @@ deReport2 <- HTMLReport(shortName='de_analysis2',
                         title = 'Analysis of BCR/ABL translocation differential expression with new plots',
                         reportDirectory = "./reports")
 publish(fit, deReport2, eSet = ALL, factor = ALL$mol.biol, coef=2, 
-        n=100, .modifyDF=makeNewImages)
+        n=100, 
+       ##.modifyDF=list(modifyReportDF, makeNewImages) ) ##to add new images to default RT output
+       .modifyDF=makeNewImages)
 finish(deReport2)
 @
 
@@ -307,5 +317,13 @@ finish(indexPage)
 \includegraphics[scale = .5]{microarray6.png}
 \caption{The page created from calling \tt publish \rm on all of our previous pages.}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Huntley, M.A., Larson, J.L., Chaivorapol, C., Becker, G., Lawrence, M., Hackney, J.A., 
+and J.S. Kaminker. (2013).  ReportingTools: an automated results processing and 
+presentation toolkit for high throughput genomic analyses. {\it Bioinformatics}. 
+{\bf 29}(24): 3220-3221.
 
 \end{document}

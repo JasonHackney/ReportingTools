@@ -1,10 +1,10 @@
 Package: ReportingTools
 Title: Tools for making reports in various formats
-Version: 2.3.7
+Version: 2.3.8
 Author: Jason A. Hackney, Melanie Huntley, Jessica L. Larson, Christina
         Chaivorapol, Gabriel Becker, and Josh Kaminker
 Maintainer: Jason A. Hackney <hackney.jason@gene.com>, Gabriel Becker
-        <gmbecker@ucdavis.edu>
+        <becker.gabe@gene.com>, Jessica L. Larson <larson.jessica@gene.com>
 Depends: methods, knitr
 Imports: Biobase,hwriter,Category,GOstats,limma(>=
         3.17.5),lattice,AnnotationDbi,edgeR, annotate,PFAM.db,
@@ -25,7 +25,8 @@ Description: The ReportingTools software package enables users to
         plots within the HTML page.  Using the package, users can also
         produce a table of contents page to link various reports
         together for a particular project that can be viewed in a web
-        browser.
+        browser.  For more examples, please visit our site: http://
+	research-pub.gene.com/ReportingTools.
 ByteCompile: TRUE
 VignetteBuilder: utils, knitr
-biocViews: Software, Visualization, Microarray, RNASeq, GO
+biocViews: Software, Visualization, Microarray, RNASeq, GO, Bioinformatics, DataRepresentation, Enrichment, GeneSetEnrichment

@@ -33,6 +33,8 @@ Frequently, when performing an analysis, it is helpful to be able to share these
 
 In this vignette we will highlight the fundamentals of \verb@ReportingTools@.  \verb@ReportingTools@ has several methods for displaying microarray and RNA-seq results and can also be incorporated into \tt shiny \rm applications and \tt knitr \rm reports; for more details, please refer to the corresponding vignettes (knitr.Rmd and shiny.Rnw, respectively) or the \verb@ReportingTools@ \href{http://research-pub.gene.com/ReportingTools}{site}.
 
+For more information on \verb@ReportingTools@, please see Huntley, Larson, {\it et al.} (2013).
+
 \section{Basics of Reporting}
 
 The easiest type of report to generate is a csv file. This is done using the \verb@CSVFile@ class and the publish method. To start we'll create a \verb@data.frame@ that we'll use throughout the vignette.
@@ -161,7 +163,7 @@ finish(htmlRep5)
 @
 
 
-We can also update our data frame by editing, adding and removing columns with functions.  We then include these functions in our publish call as a list with \tt .modifyDF \rm and \tt .toHTML\rm.
+We can also update our data frame by editing, adding and removing columns with functions.  We then include these functions in our publish call as a list with \tt .modifyDF \rm and \tt .toHTML\rm.  \tt .modifyDF \rm uses the basic data frame as its default object and then modifies it with the corresponding function.
 
 <<AddPlotLinkFunctions, eval=FALSE>>=
 ##this function adds 5 to each value of my.df$RPKMs 
@@ -258,5 +260,13 @@ For publishing experimental results, including how to publish a \verb@limma@-bas
 \caption{Resulting page created for analysis of a microarray study with \tt limma\rm.}
 \end{figure}
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Huntley, M.A., Larson, J.L., Chaivorapol, C., Becker, G., Lawrence, M., Hackney, J.A., 
+and J.S. Kaminker. (2013).  ReportingTools: an automated results processing and 
+presentation toolkit for high throughput genomic analyses. {\it Bioinformatics}. 
+{\bf 29}(24): 3220-3221.
+ 
+ 
 \end{document}

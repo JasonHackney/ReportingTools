@@ -14,6 +14,7 @@ importFrom(edgeR, topTags, cpm)
 importFrom(GOstats, termGraphs, inducedTermGraph, plotGOTermGraph)
 importFrom(DESeq2, results, resultsNames)
 importFrom(ggplot2, ggplot) #we don't actually need this, we just need to be able to do setOldClass and have ggplot2 listed in imports
+importFrom(S4Vectors, normalizeSingleBracketSubscript)
 
 importMethodsFrom(AnnotationDbi, select, summary, mget)
 importMethodsFrom(Category, summary, geneIdsByCategory, geneIdUniverse)

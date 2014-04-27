@@ -27,7 +27,7 @@ setMethod("publish",
             stop("No columns available in data.")
 
         filter.columns <-
-          IRanges:::normalizeSingleBracketSubscript(filter.columns, object)
+          normalizeSingleBracketSubscript(filter.columns, object)
         
         sort.class.map <- c(
             "numeric"   = "sort-num-robust",

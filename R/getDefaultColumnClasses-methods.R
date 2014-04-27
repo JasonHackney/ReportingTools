@@ -21,8 +21,8 @@ setMethod("getDefaultColumnClasses",
         filter.columns = sapply(object, is.numeric), ...)
     {
         
-        filter.columns <-
-          IRanges:::normalizeSingleBracketSubscript(filter.columns,object)
+        filter.columns <- 
+          normalizeSingleBracketSubscript(filter.columns,object)
     
         ## For all columns, get the appropriate CSS class for sorting the
         ## data type

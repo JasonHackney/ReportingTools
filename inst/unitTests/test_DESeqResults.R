@@ -20,6 +20,13 @@ test_1dataframe <- function(){
         "3 columns are returned for the default data.frame")
 }
 
+test_1nogenes <- function(){
+    minp <- min(ddsRes$padj, na.rm=TRUE) / 2
+    df <- try(toReportDF(ddsRes, n = 100, pvalueCutoff = minp, 
+        make.plots = FALSE), silent=TRUE)
+    checkTrue(class(df) == "try-error")
+}
+
 test_2objectToHTML <- function(){
     rv <- objectToHTML(ddsRes, rep=NULL, factor = ddsRes$condition, 
         n = 100, make.plots=FALSE)

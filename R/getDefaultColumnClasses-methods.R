@@ -21,9 +21,11 @@ setMethod("getDefaultColumnClasses",
         filter.columns = sapply(object, is.numeric), ...)
     {
         
-        filter.columns <- 
-          normalizeSingleBracketSubscript(filter.columns,object)
-    
+        # filter.columns <- 
+        #   normalizeSingleBracketSubscript(filter.columns, object)
+        filter.columns <- .normalizeSubscript(filter.columns, object)
+        # filter.columns <- which(filter.columns)
+        
         ## For all columns, get the appropriate CSS class for sorting the
         ## data type
         sort.class.map <- c(
@@ -280,3 +282,19 @@ setMethod("getDefaultColumnClasses",
     }
 )
 
+.normalizeSubscript <- function(i, x)
+{
+    if( is.logical(i) )
+    {
+        
+        i <- rep(i, length.out = length(x))
+        i <- which(i)
+        
+    } else if( is.character(i) || is.factor(i) )
+    {
+        
+        i <- match(i, names(x))
+        
+    }
+    i
+}

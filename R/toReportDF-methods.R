@@ -82,7 +82,11 @@ setMethod("toReportDF",
         resTab <- as.data.frame(object[
             which(object$pad < pvalueCutoff & 
             abs(object$log2FoldChange) > abs(lfc)), ])
-            
+        
+        if(nrow(resTab) < 1){
+            stop("No features meet selection criteria.\nTry changing the log-fold change or p-value cutoff.")
+        }
+        
         if(!is.null(sort.by) & sort.by %in% colnames(resTab))
             resTab <- resTab[order(resTab[, sort.by]), ]
         

@@ -26,8 +26,9 @@ setMethod("publish",
         if(ncol(object) == 0)
             stop("No columns available in data.")
 
-        filter.columns <-
-          normalizeSingleBracketSubscript(filter.columns, object)
+        # filter.columns <-
+        #   normalizeSingleBracketSubscript(filter.columns, object)
+        filter.columns <- .normalizeSubscript(filter.columns, object)
         
         sort.class.map <- c(
             "numeric"   = "sort-num-robust",

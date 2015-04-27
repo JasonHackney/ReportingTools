@@ -50,10 +50,12 @@
     } else if(is(expression.dat, "DESeqDataSet")){
         expression.dat <- counts(expression.dat, normalized = TRUE) + 1
         scales <- c(scales, list(y = list(log = 10)))
+    } else if(is.null(expression.dat)) {
+        stop("No expression data was provided. Nothing to plot.")
     }
     
     if(any(!rownames(df) %in% rownames(expression.dat))){
-        stop(paste("Can't find expression data for some features\n"))
+        stop("Can't find expression data for some features\n")
     }
     
     for(probe in rownames(df)){

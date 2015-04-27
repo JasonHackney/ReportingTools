@@ -42,7 +42,13 @@ test_4publish <- function(){
         reportDirectory = "testHTMLDirectory", title = "Test DESeqDataSet Report 1")
     publish(ddsRes, htmlRep, factor = dds$condition,
         n = 100, make.plots = TRUE, DataSet = dds)
-    finish(htmlRep)    
+    finish(htmlRep)
+
+    res <- try(publish(ddsRes, htmlRep, factor = dds$condition,
+        n = 100, make.plots = TRUE, DataSet = NULL), silent = TRUE)
+    checkTrue(class(res) == "try-error")
+    checkTrue(conditionMessage(attr(res, "condition")) == 
+        "No expression data was provided. Nothing to plot.")
 }
 
 test_5modifyDF <- function(){

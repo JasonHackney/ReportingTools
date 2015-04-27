@@ -1,7 +1,7 @@
 setMethod("toReportDF",
     signature = signature(object= "ANY"),
     definition = function(object, htmlReport, ...)
-        as.data.frame(object, "data.frame")
+        as(object, "data.frame")
 )
 
 

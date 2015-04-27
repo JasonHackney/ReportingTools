@@ -104,7 +104,7 @@ Please unset these in your environment.")
             css.png.package.dir <- c(system.file("extdata/csslib/images/",
                 package="ReportingTools"))
             css.pngs <- list.files(path=css.png.package.dir)
-            css.pngs <-  paste(css.png.package.dir,css.pngs, sep="")
+            css.pngs <-  paste(css.png.package.dir,css.pngs, sep="/")
 
             cssPngsDir <- (file.path(cssDir, "images"))
             .safe.dir.create(cssPngsDir, recursive=TRUE)            

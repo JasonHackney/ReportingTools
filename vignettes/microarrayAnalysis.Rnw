@@ -152,8 +152,7 @@ With these results, we can then make the GO report.  We must supply \tt publish 
 goReport <- HTMLReport(shortName = 'go_analysis',
                        title = 'GO analysis of BCR/ABL translocation',
                        reportDirectory = "./reports")
-publish(goResults, goReport, selectedIDs = selectedIDs, 
-    annotation.db = "org.Hs.eg")
+publish(goResults, goReport)
 finish(goReport)
 @
 The resulting output is displayed on an .html page and includes several statistics of interest as well as an image of the overlap for each category.
@@ -186,8 +185,7 @@ Then we make the PFAM report.  Again we supply \tt publish \rm with the genes of
 PFAMReport <- HTMLReport(shortName = 'pfam_analysis',
                          title = 'PFAM analysis of BCR/ABL translocation',
                          reportDirectory = "./reports")
-publish(PFAMResults, PFAMReport, selectedIDs = selectedIDs, 
-        annotation.db = "org.Hs.eg", categorySize = 3)
+publish(PFAMResults, PFAMReport, categorySize = 3)
 finish(PFAMReport)
 @
 

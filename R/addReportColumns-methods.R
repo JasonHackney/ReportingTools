@@ -7,11 +7,21 @@ setMethod("modifyReportDF",
 setMethod("modifyReportDF",
           signature = signature(
             object = "GOHyperGResult"),
-          definition = function(df, htmlRep, object, annotation.db, selectedIDs, pvalueCutoff = 0.01, categorySize = 10,...)
+          definition = function(df, htmlRep, object, annotation.db = NULL, 
+              selectedIDs = geneIds(object), pvalueCutoff = 0.01, categorySize = 10, 
+              keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID",
+                  Symbol = "SYMBOL", GeneName = "GENENAME"), ...)
           {
-	tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
-		{stop(paste0("Unable to find your annotation.db: ",annotation.db))})
-	check.eg.ids(selectedIDs,annotation.db)
+    
+              if(is.null(annotation.db)){
+                  annotation.db <- tryCatch(get(paste0(annotation(object), ".db")), 
+                      error=function(e) {
+                          stop(paste0("Unable to find your annotation.db: ", 
+                              paste0(annotation(object), ".db")))
+                      })
+                      
+              }
+	check.ids(selectedIDs, annotation.db, keytype = keytype)
 
 
   	if(dim(df)[1]<1) {stop("No categories match your criteria.")}
@@ -26,7 +36,10 @@ setMethod("modifyReportDF",
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(htmlRep$reportDirectory, 
         pages.dirname, sep="/")
-   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, basePath=htmlRep$basePath)  
+   	makeGeneListPages(object, reportDir=go.reportDirectory, 
+        pvalueCutoff=pvalueCutoff, categorySize, selectedIDs, 
+        annotation.db, keytype = keytype, columns = columns, 
+        GO=TRUE, basePath=htmlRep$basePath)  
    	
    	df$CountLink<-paste('<a href="',pages.dirname, "/" ,df$goName, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname, "/",df$goName, "All.html",'">', df$Size, '</a>', sep="")

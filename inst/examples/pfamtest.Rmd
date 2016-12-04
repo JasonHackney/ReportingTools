@@ -32,7 +32,7 @@ Next we publish some hyperGTest results:
 
 ```{r results="asis"}
 tt <- topTable(fit, coef = 2, n = 100)
-selectedIDs <- unlist(mget(tt$ID, hgu95av2ENTREZID))
+selectedIDs <- unlist(mget(rownames(tt), hgu95av2ENTREZID))
 universeIDs <- unlist(mget(featureNames(ALL), hgu95av2ENTREZID))
 goParams <- new("GOHyperGParams", 
     geneIds = selectedIDs, 
@@ -59,7 +59,7 @@ pfamParams <- new("PFAMHyperGParams",
     testDirection = "over")
 PFAMResults <- hyperGTest(pfamParams)
 
-publish(PFAMResults, myrep, selectedIDs=selectedIDs, annotation.db="org.Hs.eg",categorySize=3, .addColumns = fiveCol)
+publish(PFAMResults, myrep, selectedIDs=selectedIDs, annotation.db=org.Hs.eg.db,categorySize=3, .addColumns = fiveCol)
 ```
 
 Finally we publish a GeneSetCollection, first without set statistics:

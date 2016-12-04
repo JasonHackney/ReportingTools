@@ -8,7 +8,7 @@ annotate.genes <- function(keys, annotation.db, keytype = "ENTREZID",
     ## For each column, return the values for the keys of interest
     ## using the keys and keytype provided above.
     select.fn <- function(col){
-        .filter.vals(suppressWarnings(select(annotation.db, keys, 
+        .filter.vals(suppressMessages(select(annotation.db, keys, 
             keytype = keytype, columns = col)))[keys]
     }
     

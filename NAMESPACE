@@ -15,7 +15,7 @@ importFrom(GOstats, termGraphs, inducedTermGraph, plotGOTermGraph)
 importFrom(DESeq2, results, resultsNames)
 importFrom(ggplot2, ggplot) #we don't actually need this, we just need to be able to do setOldClass and have ggplot2 listed in imports
 
-importMethodsFrom(AnnotationDbi, select, summary, mget)
+importMethodsFrom(AnnotationDbi, select, summary, mget, keytypes)
 importMethodsFrom(Category, summary, geneIdsByCategory, geneIdUniverse)
 importMethodsFrom(GOstats, summary)
 importMethodsFrom(GSEABase, geneIds, geneIdType)
@@ -34,6 +34,11 @@ importFrom(hwriter, openPage, hwrite, closePage, hwriteImage, hmakeTag)
 importFrom(XML, htmlParse, getNodeSet, saveXML, xmlRoot, addChildren,
     newXMLNode, removeChildren, xmlChildren, xmlValue, xmlAttrs, 'xmlValue<-',
     addSibling, xpathSApply)
+importFrom("grDevices", "cairo_pdf", "colorRampPalette", "dev.off",
+         "pdf", "png", "svg")
+importFrom("graphics", "plot", "rect", "text")
+importFrom("stats", "p.adjust", "runif", "setNames")
+importFrom("utils", "promptData", "sessionInfo", "write.csv")
 
 export(HTMLReport, CSVFile, DataPackage, validConnection,
     reporting.theme.alternate, reporting.theme, makeDESeqDF, readReport,

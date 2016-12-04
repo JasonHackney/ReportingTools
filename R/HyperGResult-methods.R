@@ -62,11 +62,21 @@ setMethod("publish",
 }
 
 
-.GOhyperG.to.html <- function(object, htmlRep,selectedIDs,annotation.db,pvalueCutoff = 0.01, categorySize=10, makePlot=FALSE)
+.GOhyperG.to.html <- function(object, htmlRep, selectedIDs = geneIds(object), 
+    annotation.db = NULL, pvalueCutoff = 0.01, categorySize=10, makePlot=FALSE, 
+    keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID", Symbol = "SYMBOL", GeneName = "GENENAME"))
 {    
-	tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
-		{stop(paste0("Unable to find your annotation.db: ",annotation.db))})
-	check.eg.ids(selectedIDs,annotation.db)
+    if(is.null(annotation.db)){
+        annotation.db <- tryCatch(get(paste0(annotation(object), ".db")), 
+            error=function(e) {
+                stop(paste0("Unable to find your annotation.db: ", 
+                    paste0(annotation(object), ".db")))
+            })
+            
+    }	
+    if(! keytype %in% keytypes(annotation.db) )
+		{stop(paste0("Unable to find your annotation.db: ",annotation.db))}
+	check.ids(selectedIDs, annotation.db, keytype = keytype)
 
   	df<-summary(object, pvalue=pvalueCutoff, categorySize = categorySize)
   	if(dim(df)[1]<1) {stop("No categories match your criteria.")}
@@ -80,7 +90,9 @@ setMethod("publish",
     .safe.dir.create(page.directory)
     go.reportDirectory <- paste(reportDirectory(htmlRep), 
         pages.dirname, sep="/")
-   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=TRUE, basePath=basePath(htmlRep))  
+   	makeGeneListPages(object,reportDir=go.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,
+        selectedIDs, annotation.db, keytype = keytype, columns = columns, 
+        GO=TRUE, basePath=basePath(htmlRep))  
    	
    	df$CountLink<-paste('<a href="',pages.dirname, "/" ,df$goName, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname, "/",df$goName, "All.html",'">', df$Size, '</a>', sep="")
@@ -115,11 +127,23 @@ setMethod("publish",
     return(ret)
 }
 
-.PFAMhyperG.to.html <- function(object,htmlRep, selectedIDs,annotation.db, pvalueCutoff = 0.01, categorySize=10 )
+
+.PFAMhyperG.to.html <- function(object, htmlRep, selectedIDs = geneIds(object), annotation.db, 
+    pvalueCutoff = 0.01, categorySize=10 )
 {    
-  	tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
-		{stop(paste0("Unable to find your annotation.db: ",annotation.db))})
-	check.eg.ids(selectedIDs,annotation.db)
+
+    if(is.null(annotation.db)){
+        annotation.db <- tryCatch(get(paste0(annotation(object), ".db")), 
+            error=function(e) {
+                stop(paste0("Unable to find your annotation.db: ", 
+                    paste0(annotation(object), ".db")))
+            })
+            
+    }
+
+    if(! keytype %in% keytypes(annotation.db) )
+		{stop(paste0("Unable to find your annotation.db: ",annotation.db))}
+	check.ids(selectedIDs, annotation.db, keytype = keytype)
 
   	df<-summary(object, pvalue=pvalueCutoff, categorySize )
   	if(dim(df)[1]<1) {stop("No PFAMs match your criteria.")}
@@ -134,7 +158,9 @@ setMethod("publish",
     .safe.dir.create(page.directory)
     pfam.reportDirectory <- paste(reportDirectory(htmlRep), 
         pages.dirname, sep="/")
-    makeGeneListPages(object,reportDir=pfam.reportDirectory,  pvalueCutoff=pvalueCutoff,categorySize,selectedIDs, annotation.db, GO=FALSE,  basePath=basePath(htmlRep))  
+    makeGeneListPages(object,reportDir=pfam.reportDirectory,  pvalueCutoff=pvalueCutoff,
+        categorySize,selectedIDs, annotation.db, keytype = keytype, columns = columns, 
+        GO=FALSE,  basePath=basePath(htmlRep))  
 
   	df$CountLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, ".html",'">', df$Count, '</a>', sep="")
    	df$SizeLink<-paste('<a href="',pages.dirname,"/", df$PFAMID, "All.html",'">', df$Size, '</a>', sep="")

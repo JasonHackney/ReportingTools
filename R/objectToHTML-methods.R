@@ -174,13 +174,23 @@ setMethod("objectToHTML",
 }
 
 
-.PFAMhyperG.to.htmlDF2 <- function(object, report, selectedIDs,annotation.db, 
-    pvalueCutoff = 0.01, categorySize=10)
+.PFAMhyperG.to.htmlDF2 <- function(object, report, selectedIDs = geneIds(object), 
+    annotation.db = NULL, pvalueCutoff = 0.01, categorySize=10, keytype = "ENTREZID", 
+    columns = list(EntrezId = "ENTREZID", Symbol = "SYMBOL", GeneName = "GENENAME"))
 {    
-    tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
+    
+    if(is.null(annotation.db)){
+        annotation.db <- tryCatch(get(paste0(annotation(object), ".db")), 
+            error=function(e) {
+                stop(paste0("Unable to find your annotation.db: ", 
+                    paste0(annotation(object), ".db")))
+            })
+            
+    }
+    
+    if(! keytype %in% keytypes(annotation.db) )
         {stop(paste0("Unable to find your annotation.db: ",annotation.db))}
-    )
-    check.eg.ids(selectedIDs,annotation.db)
+    check.ids(selectedIDs, annotation.db, keytype = keytype)
     
     df<-summary(object, pvalue=pvalueCutoff, categorySize )
     if(dim(df)[1]<1) {stop("No PFAMs match your criteria.")}
@@ -197,7 +207,7 @@ setMethod("objectToHTML",
     pfam.reportDirectory <- paste(report$reportDirectory, pages.dirname, sep="/")
     makeGeneListPages(object,reportDir=pfam.reportDirectory,  
         pvalueCutoff=pvalueCutoff, categorySize, selectedIDs, annotation.db, 
-        GO=FALSE, basePath=report$basePath) 
+        keytype = keytype, columns = columns, GO=FALSE, basePath=report$basePath) 
     
     df$CountLink <- paste0('<a href="', pages.dirname, "/", df$PFAMID, ".html",
         '">', df$Count, '</a>')
@@ -242,89 +252,6 @@ setMethod("objectToHTML",
     } 
     return(ret)
 }
-
-
-.GOhyperG.to.html2 <- function(object, htmlRep, selectedIDs, annotation.db, 
-    pvalueCutoff = 0.01, categorySize = 10, makePlot = FALSE)
-{    
-    tryCatch(getAnnMap("SYMBOL", annotation.db), error=function(e)
-        {stop(paste0("Unable to find your annotation.db: ",annotation.db))}
-    )
-    check.eg.ids(selectedIDs,annotation.db)
-    
-    df<-summary(object, pvalue=pvalueCutoff, categorySize = categorySize)
-    
-    if(dim(df)[1]<1) {stop("No categories match your criteria.")}
-    
-    df$GOID <- df[,1]
-    df$GOLink <- paste('<a href="http://amigo.geneontology.org/cgi-bin/amigo/term_details?term=', 
-        df$GOID, '">', df$GOID, '</a>', sep="")
-    df$goName <- unlist(lapply(df$GOID, function(x) {strsplit(x, ":")[[1]][2]}))
-    
-    pages.dirname <- paste0('GOPages', htmlRep$shortName)  
-    page.directory <- file.path(dirname(path(htmlRep)), pages.dirname)
-    .safe.dir.create(page.directory)
-    
-    go.reportDirectory <- paste(htmlRep$reportDirectory, pages.dirname, sep="/")
-    
-    makeGeneListPages(object, reportDir = go.reportDirectory, 
-        pvalueCutoff = pvalueCutoff, categorySize, selectedIDs, annotation.db, 
-        GO=TRUE, basePath = htmlRep$basePath)  
-        
-    df$CountLink <- paste('<a href="', pages.dirname, "/" , 
-        df$goName, ".html",'">', df$Count, '</a>', sep="")
-    df$SizeLink <- paste('<a href="', pages.dirname, "/", 
-        df$goName, "All.html",'">', df$Size, '</a>', sep="")
-    ret <- data.frame(df$GOLink, df$Term, df$SizeLink, Image = rep("", nrow(df)), 
-        df$CountLink, signif(df$OddsRatio, 3), signif(df$Pvalue, 3),
-        stringsAsFactors = FALSE)
-    colnames(ret) <- c("Accession", "GO Term", "Category Size", "Image", 
-        "Overlap", "Odds Ratio", "P-value")
- 
-    figure.dirname <- paste0('GOFigures', htmlRep$shortName)
-    figure.directory <- file.path(dirname(path(htmlRep)), figure.dirname)
-    .safe.dir.create(figure.directory)
-    
-    if (makePlot==TRUE){
-        plotGOResults(object,pvalueCutoff, categorySize, reportDir=figure.directory)
-        plotret = hwrite(hwriteImage(paste(figure.dirname,"GOPlot.svg", sep="/"), link=paste(figure.dirname,"GOPlot.svg", sep="/"),width=400, height=400), br = TRUE)
-    }
-    
-    numSelectedIDs<-length(selectedIDs)    
-    largestTerm<-max(df$Size)
-    
-    for (i in 1:dim(df)[1]){
-        GONum<-as.character(strsplit(df$GOID[i], ":")[[1]][2])
-        png.filename <- paste(GONum ,"png", sep='.')
-        png.file <- file.path(figure.directory, png.filename)
-        
-        png(png.file)
-        hyperGPlot(df$Size[i]-df$Count[i], numSelectedIDs-df$Count[i], 
-            df$Count[i], df$GOID[i], df$Term[i])
-        dev.off()
-
-        pdf.filename <- paste(GONum, "pdf", sep=".")
-        pdf.file <- file.path(figure.directory, pdf.filename)
-        pdf(pdf.file)
-        hyperGPlot(df$Size[i]-df$Count[i], numSelectedIDs-df$Count[i], 
-            df$Count[i], df$GOID[i], df$Term[i])
-        dev.off()
-        
-        ret$Image[i] <- hwriteImage(paste(figure.dirname,png.filename, sep="/"), 
-            link=paste(figure.dirname,pdf.filename, sep="/"), 
-            table=FALSE,width=100, height=100)
-    }
-    
-    if(makePlot)
-        # If we have the plot we need to mash it all together into HTML here
-        # because of how the dispatch is currently set up. We may want to change
-        # this in the future...
-        paste("<div>",plotret, objectToHTML(ret), "</div>", sep="\n") 
-    else
-        ret
-}
-
-
 
 .GeneSetCollection.to.html2 <- function(object, htmlRep, annotation.db = NULL, 
     setStats = NULL, setPValues = NULL, geneStats = NULL, .setToHTML = NULL, 

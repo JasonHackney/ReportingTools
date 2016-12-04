@@ -11,3 +11,13 @@ check.eg.ids <- function(ids, annotation.db = 'org.Hs.eg'){
         warning("More than half of your IDs could not be mapped.", call. = FALSE)
     }
 }
+
+check.ids <- function(ids, annotation.db = org.Hs.eg.db, keytype = "ENTREZID"){
+    allIds <- keys(annotation.db, keytype = keytype)
+    check <- sum(ids %in% allIds)
+    if(check == 0){
+        stop("Ids do not appear to be the correct key for this annotation database.", call. = FALSE)
+    } else if(check < length(ids)/2){
+        warning("More than half of your IDs could not be mapped.", call. = FALSE)
+    }
+}

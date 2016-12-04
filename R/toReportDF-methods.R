@@ -20,11 +20,11 @@ setMethod("toReportDF",
 
 setMethod("toReportDF",
     signature = signature(object = "PFAMHyperGResult"),
-    definition = function(object, htmlReport, selectedIDs, annotation.db,
+    definition = function(object, htmlReport, selectedIDs = geneIds(object), annotation.db = NULL,
             pvalueCutoff = 0.01,categorySize=10, name, path, ...)
     {
         df <- .PFAMhyperG.to.htmlDF2(object, htmlReport, selectedIDs, annotation.db,
-            pvalueCutoff = pvalueCutoff, categorySize = categorySize)
+            pvalueCutoff = pvalueCutoff, categorySize = categorySize, ...)
         df
     }
 )

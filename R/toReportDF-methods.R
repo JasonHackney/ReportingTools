@@ -80,7 +80,7 @@ setMethod("toReportDF",
         sort.by = "pvalue", make.plots = FALSE, ..., name = NULL)
     {
         resTab <- as.data.frame(object[
-            which(object$pad < pvalueCutoff & 
+            which(object$padj < pvalueCutoff & 
             abs(object$log2FoldChange) > abs(lfc)), ])
         
         if(nrow(resTab) < 1){

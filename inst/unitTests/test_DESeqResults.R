@@ -9,6 +9,7 @@ dds <- DESeqDataSetFromMatrix(countData = countData,
                               design = ~ condition + type)
 colData(dds)$condition <- factor(colData(dds)$condition,
                                  levels=c("untreated","treated"))
+levels(dds$type) <- c("paired.end", "single.end")
 dds <- DESeq(dds)
 ddsRes <- results(dds)
 

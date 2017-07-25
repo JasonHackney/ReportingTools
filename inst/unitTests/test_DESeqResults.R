@@ -4,12 +4,12 @@ library(pasilla)
 data(pasillaGenes)
 countData <- counts(pasillaGenes)
 colData <- pData(pasillaGenes)[,c("condition","type")]
+levels(colData$type) <- c("paired.end", "single.end")
 dds <- DESeqDataSetFromMatrix(countData = countData,
                               colData = colData,
                               design = ~ condition + type)
 colData(dds)$condition <- factor(colData(dds)$condition,
                                  levels=c("untreated","treated"))
-levels(dds$type) <- c("paired.end", "single.end")
 dds <- DESeq(dds)
 ddsRes <- results(dds)
 

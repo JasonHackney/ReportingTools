@@ -23,14 +23,14 @@ setMethod("publish",
 {
     dat <- topTags(object, n = n, adjust.method = adjust.method, 
         sort.by = sort.method)
-
-    if(!is.null(object$genes) & all(rownames(object$genes) == 
-            as.character(seq_along(rownames(object$genes))))){
-        selection <- as.numeric(rownames(dat$table))
-        selection <- rownames(object$table)[selection]
-    } else {
-        selection <- rownames(dat$table)
-    }
+    
+    # if(!is.null(object$genes) & all(rownames(object$genes) ==
+    #         as.character(seq_along(rownames(object$genes))))){
+    #     selection <- as.numeric(rownames(dat$table))
+    #     selection <- rownames(object$table)[selection]
+    # } else {
+    selection <- rownames(dat$table)
+    # }
     
     ##The following gives you all pvalues
     padj <- p.adjust(object$table$PValue, method = adjust.method)

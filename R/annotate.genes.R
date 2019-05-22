@@ -2,8 +2,15 @@ annotate.genes <- function(keys, annotation.db, keytype = "ENTREZID",
     columns = list(EntrezId = "ENTREZID", Symbol = "SYMBOL", 
         GeneName = "GENENAME"))
 {
-    if(class(annotation.db) == "character")
-        annotation.db <- get(annPkgName(annotation.db))
+    if(class(annotation.db) == "character"){
+        if(exists(annPkgName(annotation.db, "db"))){
+            annotation.db <- get(annPkgName(annotation.db, "db"))
+        } else if(exists(annPkgName(annotation.db, "env"))){
+            annotation.db <- get(annPkgName(annotation.db, "env"))
+        } else{
+            stop("Can't find annotation database:", annotation.db)
+        }
+    }
     
     ## For each column, return the values for the keys of interest
     ## using the keys and keytype provided above.

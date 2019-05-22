@@ -77,7 +77,8 @@ setMethod("toReportDF",
     signature = signature(object = "DESeqResults"),
     definition = function(object, htmlReport, DataSet = NULL, 
         annotation.db = NULL, pvalueCutoff = 0.01, lfc = 0, n = 500,
-        sort.by = "pvalue", make.plots = FALSE, ..., name = NULL)
+        sort.by = "pvalue", make.plots = FALSE, keytype = "ENTREZID", ..., 
+        name = NULL)
     {
         resTab <- as.data.frame(object[
             which(object$padj < pvalueCutoff & 
@@ -93,15 +94,17 @@ setMethod("toReportDF",
         if(n < nrow(resTab))
             resTab <- resTab[1:n, ]
         
-        ann.map.available <- tryCatch(getAnnMap("SYMBOL", annotation.db), 
-            error=function(e){ return(FALSE) })
+        ann.db.available <- !is.null(annotation.db) && 
+            (exists(annPkgName(annotation.db, "db")) || 
+                exists(annPkgName(annotation.db, "env")))
 
-        if (inherits(ann.map.available, "AnnDbBimap")){
+        if (ann.db.available){
             ## Check valid Entrez ids are passed in
-            check.eg.ids(rownames(resTab), annotation.db)
+            check.ids(rownames(resTab), annotation.db, keytype = keytype)
 
-            fdata <- ReportingTools:::annotate.genes(rownames(resTab), annotation.db,
-                keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID", 
+            fdata <- ReportingTools:::annotate.genes(rownames(resTab), 
+                annotation.db, keytype = keytype, 
+                columns = list(EntrezId = "ENTREZID", 
                     Symbol = "SYMBOL", GeneName = "GENENAME"))
         } else {
             fdata <- data.frame(ID = rownames(resTab), stringsAsFactors = FALSE)
@@ -138,7 +141,7 @@ setMethod("toReportDF",
     definition = function(object, htmlReport, 
         contrast = NULL, resultName = NULL, annotation.db = NULL,
         pvalueCutoff = 0.01, lfc = 0, n = 500, sort.by = "pvalue", 
-        make.plots = FALSE, ...)
+        make.plots = FALSE, keytype = "ENTREZID", ...)
     {
         if (!"results" %in% mcols(mcols(object))$type) {
             stop("No results found in DESeqDataSet, please run DESeq first.")
@@ -159,15 +162,16 @@ setMethod("toReportDF",
         if(n < nrow(resTab))
             resTab <- resTab[1:n, ]
         
-        ann.map.available <- tryCatch(getAnnMap("SYMBOL", annotation.db), 
-            error=function(e){ return(FALSE) })
-
-        if (inherits(ann.map.available, "AnnDbBimap")){
+        ann.db.available <- !is.null(annotation.db) && 
+            (exists(annPkgName(annotation.db, "db")) || 
+                exists(annPkgName(annotation.db, "env")))
+                
+        if (ann.db.available){
             ## Check valid Entrez ids are passed in
-            check.eg.ids(rownames(resTab), annotation.db)
+            check.ids(rownames(resTab), annotation.db, keytype = keytype)
 
             fdata <- annotate.genes(rownames(resTab), annotation.db,
-                keytype = "ENTREZID", columns = list(EntrezId = "ENTREZID", 
+                keytype = keytype, columns = list(EntrezId = "ENTREZID", 
                     Symbol = "SYMBOL", GeneName = "GENENAME"))
         } else {
             fdata <- data.frame(ID = rownames(resTab), stringsAsFactors = FALSE)

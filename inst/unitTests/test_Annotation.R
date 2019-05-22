@@ -26,3 +26,4 @@ test_AnnotationData <- function()
     checkTrue(sum(ann.vals[,"Symbol"] == "B2M") == 2,
         "2 rows are returned for a duplicated key")
 }
+

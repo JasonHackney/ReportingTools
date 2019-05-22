@@ -2,6 +2,7 @@
 ##' 
 ##' @param ids character vector containing gene identifiers
 ##' @param annotation.db character string containing annotation database that matches with gene identifiers
+##' @param keytype character string containing what kind of keys were passed in.
 check.eg.ids <- function(ids, annotation.db = 'org.Hs.eg'){
     ann.map <- getAnnMap("SYMBOL", annotation.db)
     check <- unlist(mget(ids, ann.map, ifnotfound=NA))
@@ -13,6 +14,16 @@ check.eg.ids <- function(ids, annotation.db = 'org.Hs.eg'){
 }
 
 check.ids <- function(ids, annotation.db = org.Hs.eg.db, keytype = "ENTREZID"){
+    if(class(annotation.db) == "character"){
+        if(exists(annPkgName(annotation.db, "db"))){
+            annotation.db <- get(annPkgName(annotation.db, "db"))
+        } else if(exists(annPkgName(annotation.db, "env"))){
+            annotation.db <- get(annPkgName(annotation.db, "env"))
+        } else{
+            stop("Can't find annotation database:", annotation.db)
+        }
+    }
+    
     allIds <- keys(annotation.db, keytype = keytype)
     check <- sum(ids %in% allIds)
     if(check == 0){

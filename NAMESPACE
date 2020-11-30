@@ -41,7 +41,7 @@ importFrom("stats", "p.adjust", "runif", "setNames")
 importFrom("utils", "promptData", "sessionInfo", "write.csv")
 
 export(HTMLReport, CSVFile, DataPackage, validConnection,
-    reporting.theme.alternate, reporting.theme, makeDESeqDF, readReport,
+    reporting.theme.alternate, reporting.theme, readReport,
     fileHandlers, connectionHandlers, knitrHandlers, shinyHandlers,
     fileWIndexHandlers, makeOldHTMLReport, custHeaderPanel)
 exportMethods(publish, name, title, 'title<-', reportDirectory,

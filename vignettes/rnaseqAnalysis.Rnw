@@ -109,38 +109,11 @@ finish(deReport2)
 @ 
 
 
-\section{Differential expression analysis with \tt DESeq \rm and \tt DESeq2 \rm}
-In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq \rm and \tt DESeq2 \rm packages.
+\section{Differential expression analysis with \tt DESeq2 \rm}
+In this section we demonstrate how to use the \tt ReportingTools \rm package to generate a table of differentially expressed genes as determined by the \tt DESeq2 \rm packages.
 
 
-First, we run \tt DESeq \rm to find differentially expressed genes.
-<<run_DESeq, eval=FALSE>>=
-library(DESeq)
-cds<-newCountDataSet(mockRnaSeqData, conditions)
-cds<-estimateSizeFactors(cds)
-cds<-estimateDispersions(cds)
-res<-nbinomTest(cds,"control", "case" )
-@
-
-Now the results can be written to a report after converting the \tt DESeq \rm output to a data frame. This is done using the \tt makeDESeqDF \rm command, which is a built-in function to convert DESeq differential expression output to a more meaningful data frame with plots, details about the genes, etc.  With \tt ReportingTools \rm, you can replace the \tt makeDESeqDf \rm with any function you like for more flexibility (see the basic vignette for more details and examples).
-
-<<DESeq_report, eval=FALSE>>=
-desReport <- HTMLReport(shortName = 'RNAseq_analysis_with_DESeq',
-    title = 'RNA-seq analysis of differential expression using DESeq',
-    reportDirectory = "./reports")
-publish(res,desReport,name="df",countTable=mockRnaSeqData, pvalueCutoff=0.05,
-    conditions=conditions,annotation.db="org.Mm.eg.db", 
-    expName="deseq",reportDir="./reports", .modifyDF=makeDESeqDF)
-finish(desReport)
-@ 
-
-\begin{figure}
-\centering
-\includegraphics[scale = .5]{rnaseq2.png}
-\caption{Resulting page created by \tt makeDESeqDF \rm}
-\end{figure}
-
-We can also run \tt DESeq2 \rm to find differentially expressed genes.
+We start by running \tt DESeq2 \rm to find differentially expressed genes.
 <<run_DESeq2, eval=FALSE>>=
 library(DESeq2)
 conditions <- c(rep("case",3), rep("control", 3))

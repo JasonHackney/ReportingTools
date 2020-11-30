@@ -27,13 +27,7 @@
         
     scales <- c(scales, list(x = list(rot = 45)))
     
-    if(is(expression.dat, "CountDataSet")){
-        ## Get the normalized counts, but add a pseudocount to all of the
-        ## entries, because we're going to plot on a log-scale
-        
-        expression.dat <- counts(expression.dat, normalized=TRUE)+1
-        scales <- c(scales, list(y = list(log = 10)))
-    } else if(inherits(expression.dat, "eSet")){
+    if(inherits(expression.dat, "eSet")){
     
         expression.dat <- exprs(expression.dat)
         

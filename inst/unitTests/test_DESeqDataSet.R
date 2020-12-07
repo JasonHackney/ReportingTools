@@ -1,12 +1,16 @@
 library(DESeq2)
 library(pasilla)
 
-data(pasillaGenes)
-countData <- counts(pasillaGenes)
-colData <- pData(pasillaGenes)[,c("condition","type")]
-levels(colData$type) <- c("paired.end", "single.read")
+countData <- read.delim(system.file("extdata/pasilla_gene_counts.tsv", package = "pasilla"),
+    stringsAsFactors = FALSE, row.names=1)
+pData <- read.csv(system.file("extdata/pasilla_sample_annotation.csv", package = "pasilla"), 
+    stringsAsFactors = FALSE)
+rownames(pData) <- gsub("fb", "", pData$file)
+pData <- pData[colnames(countData),]
+pData$type <- factor(pData$type)
+levels(pData$type) <- c("paired.end", "single.end")
 dds <- DESeqDataSetFromMatrix(countData = countData,
-                              colData = colData,
+                              colData = pData,
                               design = ~ condition + type)
 colData(dds)$condition <- factor(colData(dds)$condition,
                                  levels=c("untreated","treated"))

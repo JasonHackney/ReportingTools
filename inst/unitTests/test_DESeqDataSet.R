@@ -27,7 +27,7 @@ test_1dataframe <- function(){
 test_2coefs <- function(){
     df <- toReportDF(dds.res, resultName = "condition_treated_vs_untreated", n = 100,
         make.plots = FALSE)
-    df2 <- toReportDF(dds.res, resultName = "type_single.read_vs_paired.end", n = 100,
+    df2 <- toReportDF(dds.res, resultName = "type_single.end_vs_paired.end", n = 100,
         make.plots = FALSE)
     checkTrue(any(df$logFC != df2$logFC),
         "Results are different between selected coefficients")

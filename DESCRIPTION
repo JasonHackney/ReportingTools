@@ -1,6 +1,6 @@
 Package: ReportingTools
 Title: Tools for making reports in various formats
-Version: 2.41.0
+Version: 2.41.1
 Author: Jason A. Hackney, Melanie Huntley, Jessica L. Larson, Christina
         Chaivorapol, Gabriel Becker, and Josh Kaminker
 Maintainer: Jason A. Hackney <hackney.jason@gene.com>, Gabriel Becker
@@ -31,3 +31,4 @@ ByteCompile: TRUE
 VignetteBuilder: utils, knitr
 biocViews: ImmunoOncology, Software, Visualization, Microarray, RNASeq, GO, DataRepresentation, 
            GeneSetEnrichment
+PackageStatus: Deprecated

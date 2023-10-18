@@ -1,6 +1,9 @@
 <!--
-%\VignetteEngine{knitr}
-%\VignetteIndexEntry{Knitr and ReportingTools}
+title: "Knitr and ReportingTools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{Knitr and ReportingTools}
 -->
 
 Knitr and ReportingTools

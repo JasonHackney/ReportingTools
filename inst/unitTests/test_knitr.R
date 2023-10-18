@@ -6,5 +6,6 @@ test_knitr = function(){
   rmarkdown::render(system.file("examples/testRmd.Rmd", package="ReportingTools"), output_dir = "./")
   checkTrue(file.exists("testRmd.html"))
   lines = readLines("testRmd.html")
-  # checkTrue(length(grep("Error", lines)) == 0)
+  checkTrue(length(lines)
+  checkTrue(length(grep("Using ReportingTools", lines)) == 1)
 }

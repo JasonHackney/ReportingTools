@@ -1,14 +1,14 @@
-library(knitr)
-knit2html("testRmd.Rmd")
+library(rmarkdown)
+render("testRmd.Rmd")
 
-knit2html("marraylmtest.Rmd")
-knit2html("pfamtest.Rmd")
-knit2html("rnaseqtest.Rmd")
+render("marraylmtest.Rmd")
+render("pfamtest.Rmd")
+render("rnaseqtest.Rmd")
 
-knit2html("knitrformattest.Rmd")
-knit2html("extensibility.Rmd")
+render("knitrformattest.Rmd")
+render("extensibility.Rmd")
 
 
 #knit2html("../../vignettes/knitr.Rmd")
 setwd("../../vignettes")
-knit2html("knitr.Rmd", output = "./reports/knitr.html")
+render("knitr.Rmd", output = "./reports/knitr.html")

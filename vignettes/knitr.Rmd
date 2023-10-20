@@ -1,7 +1,7 @@
 ---
 title: "Knitr and ReportingTools"
 author: Jessica L. Larson and Gabriel Becker
-output: rmarkdown::html_vignette
+output: html_vignette
 vignette: >
   %\VignetteEngine{rmarkdown::render}
   %\VignetteIndexEntry{Knitr and ReportingTools}
